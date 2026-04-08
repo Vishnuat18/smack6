@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer - Sem 6 Notes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body, html {
+            height: 100vh;
+            overflow: hidden;
+            background: #1e293b;
+            display: flex;
+            flex-direction: column;
+        }
+        .viewer-header {
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .viewer-title {
+            font-family: 'Outfit';
+            font-weight: 700;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        .viewer-frame {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+    <header class="viewer-header glass">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a id="back-link" href="#" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <img src="logo.png" alt="SMACK" style="width: 28px; height: 28px; border-radius: 4px;">
+            <div id="viewer-title" class="viewer-title">SMACK Material</div>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <div id="full-screen-toggle" class="eye-btn" title="Full Screen">
+                <i class="fas fa-expand"></i>
+            </div>
+            <a id="external-link" href="#" target="_blank" class="eye-btn" title="Open External">
+                <i class="fas fa-external-link-alt"></i>
+            </a>
+        </div>
+    </header>
+
+    <iframe id="pdf-frame" class="viewer-frame no-scrollbar" src=""></iframe>
+
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const file = urlParams.get('file');
+            const title = urlParams.get('title');
+            const subject = urlParams.get('subject');
+
+            const backLink = document.getElementById('back-link');
+            const viewerTitle = document.getElementById('viewer-title');
+            const frame = document.getElementById('pdf-frame');
+            const externalLink = document.getElementById('external-link');
+            const fullScreenBtn = document.getElementById('full-screen-toggle');
+
+            if (file) {
+                frame.src = decodeURIComponent(file);
+                externalLink.href = decodeURIComponent(file);
+                if (title) viewerTitle.textContent = decodeURIComponent(title);
+                if (subject) backLink.href = `subject_details.html?subject=${subject}`;
+            } else {
+                backLink.href = 'home.html';
+                viewerTitle.textContent = 'Error';
+            }
+
+            fullScreenBtn.onclick = () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                    fullScreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                } else {
+                    document.exitFullscreen();
+                    fullScreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                }
+            };
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if the user is an admin
+    // This allows centralized control of admin-only actions
+    function isAdmin() {
+      return request.auth != null && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Rules for the 'users' collection
+    match /users/{userId} {
+      // READ: Admins can see all profiles; Student can only read their own profile
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      
+      // WRITE: Only the user can create/update their profile
+      // Added validation to ensure roles are strictly 'student' or 'admin'
+      allow create, update: if request.auth != null && request.auth.uid == userId
+                            && request.resource.data.role in ['student', 'admin'];
+                            
+      // DELETE: Only admins can delete user profile documentation
+      allow delete: if isAdmin();
+    }
+
+    // Rules for study materials
+    match /materials/{document=**} {
+      // Any authenticated student/admin can read/view materials
+      allow read: if request.auth != null;
+      
+      // Only admins can upload, edit, or delete actual materials
+      allow write: if isAdmin();
+    }
+  }
+}

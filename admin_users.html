@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Info - Admin Console</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="app-header glass">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="admin.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 6px;">
+            <div style="font-family: 'Outfit'; font-weight: 700; font-size: 1.1rem;">SMACK Users</div>
+        </div>
+        <div class="badge" style="background: rgba(99, 102, 241, 0.1); color: var(--primary-light); border: 1px solid var(--glass-border);">Students List</div>
+    </header>
+
+    <div class="container" style="padding-top: 1rem; padding-bottom: 5rem;">
+        <div class="dashboard-header" style="margin-bottom: 1.5rem;">
+            <h1>Registered Users</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">View and manage portal students and administrators.</p>
+        </div>
+
+        <div class="glass" style="border-radius: var(--radius-lg); overflow-x: auto; padding: 1rem;">
+            <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                <thead style="border-bottom: 1px solid var(--glass-border);">
+                    <tr>
+                        <th style="padding: 1rem; text-align: left; color: var(--primary-light);">Name</th>
+                        <th style="padding: 1rem; text-align: left; color: var(--primary-light);">Email</th>
+                        <th style="padding: 1rem; text-align: left; color: var(--primary-light);">Role</th>
+                        <th style="padding: 1rem; text-align: left; color: var(--primary-light);">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="user-list-body">
+                    <tr><td colspan="4" style="text-align: center; padding: 3rem;">Loading Users Info...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Admin Mobile Nav -->
+    <div class="mobile-nav">
+        <a href="admin.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-chart-pie"></i></a>
+        <a href="admin_users.html" class="back-btn" style="background: var(--primary);"><i class="fas fa-users"></i></a>
+        <a href="admin_upload.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-cloud-upload"></i></a>
+    </div>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { auth, db, ref, onValue, get, child } from "./firebase-config.js";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userListBody = document.getElementById('user-list-body');
+
+            auth.onAuthStateChanged(async (user) => {
+                if (user && user.email === 'vishnurajan24766@gmail.com') {
+                    syncUsersList();
+                } else {
+                    location.href = "home.html";
+                }
+            });
+
+            function syncUsersList() {
+                onValue(ref(db, 'users'), (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const users = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+                        userListBody.innerHTML = '';
+                        users.forEach(u => {
+                            const row = `
+                                <tr style="border-bottom: 1px solid var(--glass-border);">
+                                    <td style="padding: 1rem; font-weight: 600;">${u.name}</td>
+                                    <td style="padding: 1rem; color: var(--text-muted);">${u.email}</td>
+                                    <td style="padding: 1rem;"><div class="badge" style="display:inline-block">${u.role || 'student'}</div></td>
+                                    <td style="padding: 1rem;"><button class="btn glass" onclick="alert('User editing not yet enabled')" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; width: auto;">Edit</button></td>
+                                </tr>
+                            `;
+                            userListBody.innerHTML += row;
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Material - Admin Console</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="app-header glass">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="admin.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 6px;">
+            <div style="font-family: 'Outfit'; font-weight: 700; font-size: 1.1rem;">SMACK Upload</div>
+        </div>
+        <div class="badge" style="background: rgba(236, 72, 153, 0.1); color: var(--secondary); border: 1px solid var(--glass-border);">New Upload</div>
+    </header>
+
+    <div class="container" style="padding-top: 1rem; padding-bottom: 5rem;">
+        <div class="dashboard-header" style="margin-bottom: 1.5rem;">
+            <h1>Upload Study Material</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Add new resources, PDFs, or previous year question papers.</p>
+        </div>
+
+        <div class="glass" style="padding: 2.5rem; border-radius: var(--radius-lg); max-width: 650px; margin: 0 auto;">
+            <form id="admin-upload-form">
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display:block; margin-bottom: 0.5rem; font-weight: 600;">Material Title</label>
+                    <input type="text" id="upload-title" placeholder="e.g. Unit 4 - Risk Management" required>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display:block; margin-bottom: 0.5rem; font-weight: 600;">Select Subject</label>
+                    <select id="upload-subject" required 
+                        style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); color: var(--text-main); font-family: inherit;">
+                        <option value="ba">BA - Business Analytics (CCW331)</option>
+                        <option value="oose">OOSE - Object Oriented Software Engineering (CCS356)</option>
+                        <option value="eh">EH - Ethical Hacking (CCS344)</option>
+                        <option value="esia">ESIA - Environmental and Social Assessment (OCE351)</option>
+                        <option value="ppl">PPL - Principles of Programming languages (CCS358)</option>
+                        <option value="vce">VCE - Video Creation and Editing (CCS371)</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display:block; margin-bottom: 0.5rem; font-weight: 600;">File Selection (PDF)</label>
+                    <input type="file" id="upload-file" accept=".pdf" required
+                        style="padding: 0.6rem; background: transparent; border: 1px dashed var(--glass-border); cursor: pointer;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label style="display:block; margin-bottom: 0.5rem; font-weight: 600;">Short Description</label>
+                    <textarea id="upload-desc" rows="3" placeholder="Brief summary of the document contents..."
+                        style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); color: var(--text-main); font-family: inherit;"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; border-radius: var(--radius-md);">
+                    <i class="fas fa-cloud-upload-alt"></i> Publish to Portal
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Mobile Nav -->
+    <div class="mobile-nav">
+        <a href="admin.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-chart-pie"></i></a>
+        <a href="admin_users.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-users"></i></a>
+        <a href="admin_upload.html" class="back-btn" style="background: var(--primary);"><i class="fas fa-cloud-upload"></i></a>
+    </div>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { auth, db, ref, set, get, child } from "./firebase-config.js";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadForm = document.getElementById('admin-upload-form');
+
+            auth.onAuthStateChanged(async (user) => {
+                if (user && user.email === 'vishnurajan24766@gmail.com') {
+                    // Authorized admin
+                } else {
+                    location.href = "home.html";
+                }
+            });
+
+            uploadForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert(`Upload Simulation: Successfully published your new material to the portal database.`);
+                uploadForm.reset();
+            });
+        });
+    </script>
+</body>
+</html>

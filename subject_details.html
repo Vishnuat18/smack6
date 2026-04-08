@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Materials - Sem 6 Notes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="app-header glass">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="home.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 6px;">
+            <div id="subject-title" style="font-family: 'Outfit'; font-weight: 700; font-size: 1.1rem;">SMACK Materials</div>
+        </div>
+        <a href="profile.html" id="nav-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none;">U</a>
+    </header>
+
+    <div class="container" style="padding-top: 1rem; padding-bottom: 5rem;">
+        <div id="resource-header" style="margin-bottom: 2rem;">
+            <h1 id="header-title">Loading...</h1>
+            <p style="color: var(--text-muted);">Select a unit or study material below to view the PDF.</p>
+        </div>
+
+        <div id="resource-list" class="resource-list">
+            <!-- Dynamically populated -->
+            <div style="text-align: center; padding: 3rem; color: var(--text-muted); grid-column: 1/-1;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                <p>Fetching materials...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div class="mobile-nav">
+        <a href="home.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-home"></i></a>
+        <a href="profile.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-user"></i></a>
+        <a href="admin.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-cog"></i></a>
+    </div>
+
+    <script type="module">
+        import { auth, db, ref, get, child } from "./firebase-config.js";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const subject = urlParams.get('subject');
+            const headerTitle = document.getElementById('header-title');
+            const subjectTitle = document.getElementById('subject-title');
+            const resourceList = document.getElementById('resource-list');
+            const navAvatar = document.getElementById('nav-avatar');
+
+            // Sync profile for avatar
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    const snapshot = await get(child(ref(db), `users/${user.uid}`));
+                    if (snapshot.exists()) {
+                        navAvatar.textContent = snapshot.val().name.charAt(0).toUpperCase();
+                    }
+                }
+            });
+
+            if (subject) {
+                const subjectNames = {
+                    'ba': 'Business Analytics',
+                    'oose': 'Software Engineering',
+                    'eh': 'Ethical Hacking',
+                    'esia': 'Environmental Assessment',
+                    'ppl': 'Programming Languages',
+                    'vce': 'Video Creation & Editing'
+                };
+                
+                const fullName = subjectNames[subject] || subject.toUpperCase();
+                headerTitle.textContent = fullName;
+                subjectTitle.textContent = subject.toUpperCase();
+
+                const unitMap = {
+                    'ba': [
+                        { name: 'Unit 1 & 2 Notes', file: 'ba/Ba_notes.pdf' },
+                        { name: 'Full Lecture Notes', file: 'ba/CCW331-Business-Analytics-Lecture-Notes-2.pdf' },
+                        { name: 'Unit 3 Notes', file: 'ba/BA_u3.pdf' },
+                        { name: 'Unit 4 Notes', file: 'ba/BA_u4.pdf' },
+                        { name: 'Unit 5 Notes', file: 'ba/BA_u5.pdf' },
+                        { name: '2-Mark Questions', file: 'ba/BA_2m.pdf' }
+                    ],
+                    'oose': [
+                        { name: 'Object Oriented SE Full', file: 'oose/oose_notes.pdf' },
+                        { name: 'Unit 1 Basics', file: 'oose/oose_unit1.pdf' },
+                        { name: 'Unit 3 Design', file: 'oose/oose_u3.pdf' },
+                        { name: 'Unit 4 Implementation', file: 'oose/oose_u4.pdf' },
+                        { name: 'Unit 5 Testing', file: 'oose/oose_u5.pdf' },
+                        { name: '2-Mark Master List', file: 'oose/oose_2m.pdf' }
+                    ],
+                    'eh': [
+                        { name: 'Ethical Hacking Full', file: 'eh/Eh_notes.pdf' },
+                        { name: 'Unit 1 Intro', file: 'eh/eh_unit1.pdf' },
+                        { name: 'Unit 2 Footprinting', file: 'eh/eh_unit2.pdf' },
+                        { name: 'Unit 3 Scanning', file: 'eh/eh_unit3.pdf' },
+                        { name: 'Advanced EH-16', file: 'eh/EH-16.pdf' }
+                    ],
+                    'esia': [
+                        { name: 'ESIA Comprehensive', file: 'esia/ESIA_merged.pdf' },
+                        { name: 'Unit 1 & 2 Assessment', file: 'esia/esia_notes.pdf' },
+                        { name: 'Unit 3 Monitoring', file: 'esia/esia_u3.pdf' },
+                        { name: 'Unit 4 Audit', file: 'esia/esia_u4.pdf' },
+                        { name: 'Term Assignment 2', file: 'esia/ESIA Assignment 2.pdf' }
+                    ],
+                    'ppl': [
+                        { name: 'Principles of PL Full', file: 'ppl/PPL.pdf' },
+                        { name: 'Unit 1 Overview', file: 'ppl/ppl_unit 1.pdf' },
+                        { name: 'Unit 2 Data Types', file: 'ppl/ppl_unit 2.pdf' },
+                        { name: 'Unit 3 Subprograms', file: 'ppl/ppl_unit 3.pdf' },
+                        { name: 'Unit 4 Object Orientation', file: 'ppl/ppl_u4.pdf' },
+                        { name: 'Unit 5 Exception Handling', file: 'ppl/ppl_u5.pdf' },
+                        { name: 'Cheat Sheet', file: 'ppl/ppl_cs.pdf' }
+                    ],
+                    'vce': [
+                        { name: 'Video Creation Guide', file: 'vce/CCS371-Video Creation and Editing.pdf' },
+                        { name: 'Unit 1 Pre-production', file: 'vce/vce_unit1.pdf' },
+                        { name: 'Unit 2 Production', file: 'vce/vce_unit2.pdf' },
+                        { name: 'Unit 3 Post-production', file: 'vce/VCE_U3.pdf' },
+                        { name: 'Unit 4 Effects', file: 'vce/VCE_U4.pdf' },
+                        { name: 'Unit 5 Distribution', file: 'vce/VCE_U5.pdf' },
+                        { name: '2-Mark Qns', file: 'vce/vce_2m.pdf' }
+                    ]
+                };
+
+                if (unitMap[subject]) {
+                    resourceList.innerHTML = '';
+                    unitMap[subject].forEach(unit => {
+                        const card = document.createElement('div');
+                        card.className = 'resource-card glass';
+                        card.onclick = () => {
+                            location.href = `viewer.html?file=${encodeURIComponent(unit.file)}&title=${encodeURIComponent(unit.name)}&subject=${subject}`;
+                        };
+                        
+                        card.innerHTML = `
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: var(--primary-light);"></i>
+                                <div>
+                                    <span style="font-weight: 600; display: block;">${unit.name}</span>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">PDF Document</span>
+                                </div>
+                            </div>
+                            <div class="arrow-btn">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        `;
+                        resourceList.appendChild(card);
+                    });
+                } else {
+                    resourceList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">No materials available yet.</div>';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

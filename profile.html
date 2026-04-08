@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Sem 6 Notes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="app-header glass">
+        <a href="home.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 6px; margin-left: 0.5rem;">
+        <h2 style="font-family: 'Outfit'; margin-left: 0.8rem;">My Profile</h2>
+        <div style="width: 40px;"></div> <!-- Spacer for centering -->
+    </header>
+
+    <div class="container" style="max-width: 600px; padding-top: 2rem;">
+        <div class="profile-card glass">
+            <div class="profile-avatar" id="profile-avatar-char">U</div>
+            <div class="profile-info">
+                <h1 id="display-name">Loading...</h1>
+                <p id="display-email">email@example.com</p>
+                <div class="badge" id="display-role" style="display: inline-block; margin-top: 0.5rem;">Student</div>
+            </div>
+
+            <div style="text-align: left; margin-top: 2rem;">
+                <div class="form-group">
+                    <label>Edit Display Name</label>
+                    <div class="input-container">
+                        <i class="fas fa-edit" style="position: absolute; left: 1rem; color: var(--text-muted);"></i>
+                        <input type="text" id="edit-name-input" placeholder="Your full name" style="padding-left: 2.5rem;">
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="update-profile-btn" style="margin-top: 1rem;">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+
+        <div class="glass" style="padding: 1.5rem; border-radius: var(--radius-md); margin-top: 1rem;">
+            <h3 style="margin-bottom: 1rem;"><i class="fas fa-shield-alt"></i> Account Security</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Your account is secured with Firebase Authentication. To change your password, please check your registered email for reset instructions.</p>
+        </div>
+
+        <button class="btn glass logout" style="margin-top: 2rem; color: #ef4444; border-color: rgba(239, 68, 68, 0.2);">
+            <i class="fas fa-sign-out-alt"></i> Logout from Portal
+        </button>
+    </div>
+
+    <!-- Mobile Nav for consistency -->
+    <div class="mobile-nav">
+        <a href="home.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-home"></i></a>
+        <a href="profile.html" class="back-btn" style="background: var(--primary);"><i class="fas fa-user"></i></a>
+        <a href="admin.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-cog"></i></a>
+    </div>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { auth, db, ref, set, get, child, onValue } from "./firebase-config.js";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const updateBtn = document.getElementById('update-profile-btn');
+            const editInput = document.getElementById('edit-name-input');
+            const displayName = document.getElementById('display-name');
+            const displayEmail = document.getElementById('display-email');
+            const displayRole = document.getElementById('display-role');
+            const avatarChar = document.getElementById('profile-avatar-char');
+
+            // Sync profile data
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    displayEmail.textContent = user.email;
+                    try {
+                        const snapshot = await get(child(ref(db), `users/${user.uid}`));
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            const name = data.name || "User";
+                            const role = data.role || "student";
+                            
+                            displayName.textContent = name;
+                            editInput.value = name;
+                            displayRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+                            avatarChar.textContent = name.charAt(0).toUpperCase();
+                        } else {
+                            displayName.textContent = "New Student";
+                            displayRole.textContent = "Student";
+                            avatarChar.textContent = "?";
+                        }
+                    } catch (error) {
+                        console.error("Error fetching profile:", error);
+                        displayName.textContent = "Profile Error";
+                    }
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+
+            // Update Name
+            updateBtn.addEventListener('click', async () => {
+                const user = auth.currentUser;
+                const newName = editInput.value.trim();
+                if (user && newName) {
+                    try {
+                        const userRef = ref(db, `users/${user.uid}/name`);
+                        await set(userRef, newName);
+                        alert("Profile updated successfully!");
+                        location.reload();
+                    } catch (error) {
+                        alert("Update failed: " + error.message);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
