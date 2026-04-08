@@ -26,19 +26,21 @@
     </nav>
 
     <!-- Mobile Header -->
-    <header class="app-header glass" style="display: none;">
+    <header class="app-header glass profile-mobile-header">
         <a href="home.html" class="back-btn">
             <i class="fas fa-arrow-left"></i>
         </a>
-        <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 6px; margin-left: 0.5rem;">
-        <h2 style="font-family: 'Outfit'; margin-left: 0.8rem;">My Profile</h2>
+        <div style="display: flex; align-items: center; gap: 0.8rem;">
+            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 6px;">
+            <h2 style="font-family: 'Outfit';">My Profile</h2>
+        </div>
         <div style="width: 40px;"></div>
     </header>
 
-    <div class="container" style="max-width: 800px; padding-top: 2rem; padding-bottom: 5rem;">
-        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem;">
+    <div class="container profile-container">
+        <div class="profile-grid">
             <!-- Profile Main Card -->
-            <div class="profile-card glass" style="margin-bottom: 0;">
+            <div class="profile-card glass">
                 <div class="profile-avatar" id="profile-avatar-char">U</div>
                 <div class="profile-info">
                     <h1 id="display-name">Loading...</h1>
@@ -46,53 +48,53 @@
                     <div class="badge" id="display-role" style="display: inline-block; margin-top: 0.5rem;">Student</div>
                 </div>
                 
-                <div style="text-align: left; border-top: 1px solid var(--glass-border); padding-top: 1.5rem; margin-top: 1rem;">
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">ACCOUNT DETAILS</p>
-                    <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem;">
-                        <i class="fas fa-calendar-alt" style="color: var(--primary-light);"></i>
+                <div class="profile-details-section">
+                    <p class="section-label">ACCOUNT DETAILS</p>
+                    <div class="detail-item">
+                        <i class="fas fa-calendar-alt"></i>
                         <div>
-                            <span style="display: block; font-size: 0.8rem; color: var(--text-muted);">Joined On</span>
-                            <span id="display-joined" style="font-weight: 600; font-size: 0.9rem;">Loading...</span>
+                            <span class="detail-title">Joined On</span>
+                            <span id="display-joined" class="detail-value">Loading...</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Profile Actions & Stats -->
-            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="profile-actions-column">
                 <!-- Edit Info -->
-                <div class="glass" style="padding: 1.5rem; border-radius: var(--radius-md);">
-                    <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-user-edit" style="color: var(--primary-light); margin-right: 0.5rem;"></i> Edit Profile</h3>
+                <div class="glass action-card">
+                    <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
                     <div class="form-group">
                         <label>Full Name</label>
                         <div class="input-container">
                             <i class="fas fa-id-card"></i>
-                            <input type="text" id="edit-name-input" placeholder="Your full name" style="padding-left: 2.5rem;">
+                            <input type="text" id="edit-name-input" placeholder="Your full name">
                         </div>
                     </div>
                     <button class="btn btn-primary" id="update-profile-btn">
                         <i class="fas fa-save"></i> Save Changes
                     </button>
-                    <p id="update-status" style="font-size: 0.8rem; text-align: center; margin-top: 0.5rem; display: none;"></p>
+                    <p id="update-status" class="status-msg"></p>
                 </div>
 
                 <!-- Stats -->
-                <div class="glass" style="padding: 1.5rem; border-radius: var(--radius-md);">
-                    <h3 style="margin-bottom: 1rem;"><i class="fas fa-chart-pie" style="color: var(--secondary); margin-right: 0.5rem;"></i> Portal Activity</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: var(--radius-sm); text-align: center;">
-                            <span style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--primary-light);">12</span>
-                            <span style="font-size: 0.7rem; color: var(--text-muted);">FILES VIEWED</span>
+                <div class="glass action-card">
+                    <h3><i class="fas fa-chart-pie"></i> Portal Activity</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-value">12</span>
+                            <span class="stat-label">FILES VIEWED</span>
                         </div>
-                        <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: var(--radius-sm); text-align: center;">
-                            <span style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--accent);">5</span>
-                            <span style="font-size: 0.7rem; color: var(--text-muted);">SUBJECTS EXPLORED</span>
+                        <div class="stat-box">
+                            <span class="stat-value" style="color: var(--accent);">5</span>
+                            <span class="stat-label">SUBJECTS EXPLORED</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="glass" style="padding: 1rem; border-radius: var(--radius-md);">
-                    <button class="btn logout" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <div class="glass logout-card">
+                    <button class="btn logout-btn">
                         <i class="fas fa-sign-out-alt"></i> Sign Out from SMACK
                     </button>
                 </div>
@@ -102,11 +104,181 @@
 
     <!-- Mobile Nav -->
     <div class="mobile-nav">
-        <a href="home.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-home"></i></a>
-        <a href="resources.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-book-open"></i></a>
-        <a href="profile.html" class="back-btn" style="background: var(--primary);"><i class="fas fa-user"></i></a>
-        <a href="admin.html" id="mobile-admin-btn" class="back-btn" style="background: transparent; border: none; display: none;"><i class="fas fa-cog"></i></a>
+        <a href="home.html" class="back-nav-btn"><i class="fas fa-home"></i></a>
+        <a href="resources.html" class="back-nav-btn"><i class="fas fa-book-open"></i></a>
+        <a href="profile.html" class="active-nav-btn"><i class="fas fa-user"></i></a>
+        <a href="admin.html" id="mobile-admin-btn" class="back-nav-btn" style="display: none;"><i class="fas fa-cog"></i></a>
     </div>
+
+    <style>
+        .profile-container {
+            max-width: 900px;
+            padding-top: 2rem;
+            padding-bottom: 7rem;
+        }
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+        }
+        .profile-mobile-header {
+            display: none;
+        }
+        .profile-details-section {
+            text-align: left;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 1.5rem;
+            margin-top: 1rem;
+        }
+        .section-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .detail-item i {
+            color: var(--primary-light);
+            font-size: 1.1rem;
+        }
+        .detail-title {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .detail-value {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .profile-actions-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .action-card {
+            padding: 1.8rem;
+            border-radius: var(--radius-md);
+        }
+        .action-card h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .action-card h3 i {
+            color: var(--primary-light);
+        }
+        .input-container input {
+            padding-left: 2.8rem;
+        }
+        .status-msg {
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 0.8rem;
+            display: none;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.03);
+            padding: 1.2rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+        .stat-value {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-light);
+            line-height: 1.2;
+        }
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .logout-card {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+        }
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            width: 100%;
+        }
+        .logout-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Responsive Navigation Overrides */
+        .back-nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        .active-nav-btn {
+            background: var(--primary);
+            color: white;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                display: none;
+            }
+            .profile-mobile-header {
+                display: flex;
+            }
+            .profile-container {
+                padding-top: 1.5rem;
+                padding-bottom: 6rem;
+            }
+            .profile-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .profile-card {
+                padding: 2.5rem 1.5rem;
+            }
+            .action-card {
+                padding: 1.5rem;
+            }
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 
     <script type="module" src="script.js"></script>
     <script type="module">
