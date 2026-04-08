@@ -8,58 +8,109 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header class="app-header glass">
+    <nav class="navbar glass">
+        <div class="logo">
+            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 8px;">
+            <span>SMACK</span>
+        </div>
+        <div class="nav-links">
+            <a href="home.html">Dashboard</a>
+            <a href="resources.html">Resources</a>
+            <a href="admin.html" id="nav-admin-link" style="display: none;">Admin Panel</a>
+            <a href="profile.html" class="active profile-link" style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-weight: 600;">
+                <div id="nav-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: white;">?</div>
+                <span id="nav-user-name">Profile</span>
+            </a>
+            <a href="#" class="logout"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </nav>
+
+    <!-- Mobile Header -->
+    <header class="app-header glass" style="display: none;">
         <a href="home.html" class="back-btn">
             <i class="fas fa-arrow-left"></i>
         </a>
         <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 6px; margin-left: 0.5rem;">
         <h2 style="font-family: 'Outfit'; margin-left: 0.8rem;">My Profile</h2>
-        <div style="width: 40px;"></div> <!-- Spacer for centering -->
+        <div style="width: 40px;"></div>
     </header>
 
-    <div class="container" style="max-width: 600px; padding-top: 2rem;">
-        <div class="profile-card glass">
-            <div class="profile-avatar" id="profile-avatar-char">U</div>
-            <div class="profile-info">
-                <h1 id="display-name">Loading...</h1>
-                <p id="display-email">email@example.com</p>
-                <div class="badge" id="display-role" style="display: inline-block; margin-top: 0.5rem;">Student</div>
-            </div>
-
-            <div style="text-align: left; margin-top: 2rem;">
-                <div class="form-group">
-                    <label>Edit Display Name</label>
-                    <div class="input-container">
-                        <i class="fas fa-edit" style="position: absolute; left: 1rem; color: var(--text-muted);"></i>
-                        <input type="text" id="edit-name-input" placeholder="Your full name" style="padding-left: 2.5rem;">
+    <div class="container" style="max-width: 800px; padding-top: 2rem; padding-bottom: 5rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem;">
+            <!-- Profile Main Card -->
+            <div class="profile-card glass" style="margin-bottom: 0;">
+                <div class="profile-avatar" id="profile-avatar-char">U</div>
+                <div class="profile-info">
+                    <h1 id="display-name">Loading...</h1>
+                    <p id="display-email">email@example.com</p>
+                    <div class="badge" id="display-role" style="display: inline-block; margin-top: 0.5rem;">Student</div>
+                </div>
+                
+                <div style="text-align: left; border-top: 1px solid var(--glass-border); padding-top: 1.5rem; margin-top: 1rem;">
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">ACCOUNT DETAILS</p>
+                    <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem;">
+                        <i class="fas fa-calendar-alt" style="color: var(--primary-light);"></i>
+                        <div>
+                            <span style="display: block; font-size: 0.8rem; color: var(--text-muted);">Joined On</span>
+                            <span id="display-joined" style="font-weight: 600; font-size: 0.9rem;">Loading...</span>
+                        </div>
                     </div>
                 </div>
-                <button class="btn btn-primary" id="update-profile-btn" style="margin-top: 1rem;">
-                    <i class="fas fa-save"></i> Save Changes
-                </button>
+            </div>
+
+            <!-- Profile Actions & Stats -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Edit Info -->
+                <div class="glass" style="padding: 1.5rem; border-radius: var(--radius-md);">
+                    <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-user-edit" style="color: var(--primary-light); margin-right: 0.5rem;"></i> Edit Profile</h3>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <div class="input-container">
+                            <i class="fas fa-id-card"></i>
+                            <input type="text" id="edit-name-input" placeholder="Your full name" style="padding-left: 2.5rem;">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="update-profile-btn">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <p id="update-status" style="font-size: 0.8rem; text-align: center; margin-top: 0.5rem; display: none;"></p>
+                </div>
+
+                <!-- Stats -->
+                <div class="glass" style="padding: 1.5rem; border-radius: var(--radius-md);">
+                    <h3 style="margin-bottom: 1rem;"><i class="fas fa-chart-pie" style="color: var(--secondary); margin-right: 0.5rem;"></i> Portal Activity</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: var(--radius-sm); text-align: center;">
+                            <span style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--primary-light);">12</span>
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">FILES VIEWED</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: var(--radius-sm); text-align: center;">
+                            <span style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--accent);">5</span>
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">SUBJECTS EXPLORED</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass" style="padding: 1rem; border-radius: var(--radius-md);">
+                    <button class="btn logout" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);">
+                        <i class="fas fa-sign-out-alt"></i> Sign Out from SMACK
+                    </button>
+                </div>
             </div>
         </div>
-
-        <div class="glass" style="padding: 1.5rem; border-radius: var(--radius-md); margin-top: 1rem;">
-            <h3 style="margin-bottom: 1rem;"><i class="fas fa-shield-alt"></i> Account Security</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Your account is secured with Firebase Authentication. To change your password, please check your registered email for reset instructions.</p>
-        </div>
-
-        <button class="btn glass logout" style="margin-top: 2rem; color: #ef4444; border-color: rgba(239, 68, 68, 0.2);">
-            <i class="fas fa-sign-out-alt"></i> Logout from Portal
-        </button>
     </div>
 
-    <!-- Mobile Nav for consistency -->
+    <!-- Mobile Nav -->
     <div class="mobile-nav">
         <a href="home.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-home"></i></a>
+        <a href="resources.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-book-open"></i></a>
         <a href="profile.html" class="back-btn" style="background: var(--primary);"><i class="fas fa-user"></i></a>
-        <a href="admin.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-cog"></i></a>
+        <a href="admin.html" id="mobile-admin-btn" class="back-btn" style="background: transparent; border: none; display: none;"><i class="fas fa-cog"></i></a>
     </div>
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, db, ref, set, get, child, onValue } from "./firebase-config.js";
+        import { auth, db, ref, set, get, child } from "./firebase-config.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             const updateBtn = document.getElementById('update-profile-btn');
@@ -67,9 +118,12 @@
             const displayName = document.getElementById('display-name');
             const displayEmail = document.getElementById('display-email');
             const displayRole = document.getElementById('display-role');
+            const displayJoined = document.getElementById('display-joined');
             const avatarChar = document.getElementById('profile-avatar-char');
+            const navAvatar = document.getElementById('nav-avatar');
+            const navName = document.getElementById('nav-user-name');
+            const updateStatus = document.getElementById('update-status');
 
-            // Sync profile data
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     displayEmail.textContent = user.email;
@@ -79,37 +133,61 @@
                             const data = snapshot.val();
                             const name = data.name || "User";
                             const role = data.role || "student";
+                            const createdAt = data.createdAt ? new Date(data.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : "N/A";
                             
                             displayName.textContent = name;
                             editInput.value = name;
                             displayRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+                            displayJoined.textContent = createdAt;
                             avatarChar.textContent = name.charAt(0).toUpperCase();
-                        } else {
-                            displayName.textContent = "New Student";
-                            displayRole.textContent = "Student";
-                            avatarChar.textContent = "?";
+
+                            // Sync Navbar
+                            if (navAvatar) navAvatar.textContent = name.charAt(0).toUpperCase();
+                            if (navName) navName.textContent = name.split(' ')[0];
+
+                            // Role-based UI visibility
+                            const adminLinks = document.querySelectorAll('a[href="admin.html"]');
+                            if (data.role === 'admin') {
+                                adminLinks.forEach(link => link.style.display = 'flex');
+                            } else {
+                                adminLinks.forEach(link => link.style.display = 'none');
+                            }
                         }
                     } catch (error) {
                         console.error("Error fetching profile:", error);
-                        displayName.textContent = "Profile Error";
                     }
                 } else {
                     window.location.href = 'index.html';
                 }
             });
 
-            // Update Name
             updateBtn.addEventListener('click', async () => {
                 const user = auth.currentUser;
                 const newName = editInput.value.trim();
                 if (user && newName) {
+                    updateBtn.disabled = true;
+                    updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                    
                     try {
-                        const userRef = ref(db, `users/${user.uid}/name`);
-                        await set(userRef, newName);
-                        alert("Profile updated successfully!");
-                        location.reload();
+                        await set(ref(db, `users/${user.uid}/name`), newName);
+                        updateStatus.textContent = "Profile updated successfully!";
+                        updateStatus.style.color = "var(--accent)";
+                        updateStatus.style.display = "block";
+                        
+                        // Update UI immediately
+                        displayName.textContent = newName;
+                        avatarChar.textContent = newName.charAt(0).toUpperCase();
+                        if (navAvatar) navAvatar.textContent = newName.charAt(0).toUpperCase();
+                        if (navName) navName.textContent = newName.split(' ')[0];
+
+                        setTimeout(() => { updateStatus.style.display = "none"; }, 3000);
                     } catch (error) {
-                        alert("Update failed: " + error.message);
+                        updateStatus.textContent = "Failed: " + error.message;
+                        updateStatus.style.color = "#ef4444";
+                        updateStatus.style.display = "block";
+                    } finally {
+                        updateBtn.disabled = false;
+                        updateBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
                     }
                 }
             });

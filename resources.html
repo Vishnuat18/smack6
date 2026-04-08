@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - Sem 6 Notes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar glass">
+        <div class="logo">
+            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 8px;">
+            <span>SMACK</span>
+        </div>
+        <div class="nav-links">
+            <a href="home.html">Dashboard</a>
+            <a href="resources.html" class="active">Resources</a>
+            <a href="admin.html" id="nav-admin-link" style="display: none;">Admin Panel</a>
+            <a href="profile.html" class="profile-link" style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-weight: 600;">
+                <div id="nav-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: white;">?</div>
+                <span id="nav-user-name">Profile</span>
+            </a>
+            <a href="#" class="logout"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </nav>
+
+    <!-- Mobile Header -->
+    <header class="app-header glass" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 0.8rem;">
+            <img src="logo.png" alt="SMACK" style="width: 35px; height: 35px; border-radius: 8px;">
+            <h2 style="font-family: 'Outfit';">Resources</h2>
+        </div>
+        <a href="profile.html" id="mobile-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white;">?</a>
+    </header>
+
+    <div class="container" style="padding-bottom: 5rem;">
+        <div class="dashboard-header" style="margin-bottom: 2rem;">
+            <h1>Special Resources</h1>
+            <p style="color: var(--text-muted);">Access previous year question papers, important questions, and specialized 2-mark notes.</p>
+        </div>
+
+        <div class="subject-grid">
+            <!-- Previous Year QPs Card -->
+            <div class="subject-card glass" style="cursor: default;">
+                <div class="badge" style="background: rgba(236, 72, 153, 0.2); color: var(--secondary);">COMING SOON</div>
+                <i class="fas fa-file-invoice" style="color: var(--secondary);"></i>
+                <h3>Previous Year QPs</h3>
+                <p>Access university question papers from previous years for all subjects.</p>
+                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+                    <i class="fas fa-clock"></i> Uploading shortly
+                </div>
+            </div>
+
+            <!-- Important Qns Card -->
+            <div class="subject-card glass" style="cursor: default;">
+                <div class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent);">COMING SOON</div>
+                <i class="fas fa-question-circle" style="color: var(--accent);"></i>
+                <h3>Important Qns</h3>
+                <p>Hand-picked questions based on frequency and university importance.</p>
+                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+                    <i class="fas fa-clock"></i> Uploading shortly
+                </div>
+            </div>
+
+            <!-- 2-Mark Notes Card -->
+            <div class="subject-card glass" style="cursor: default;">
+                <div class="badge" style="background: rgba(99, 102, 241, 0.2); color: var(--primary-light);">COMING SOON</div>
+                <i class="fas fa-marker"></i>
+                <h3>2-Mark Notes</h3>
+                <p>Concise notes specifically targeted for Part-A (2 marks) questions.</p>
+                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+                    <i class="fas fa-clock"></i> Uploading shortly
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Nav Foot -->
+    <div class="mobile-nav">
+        <a href="home.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-home"></i></a>
+        <a href="resources.html" class="back-btn" style="background: var(--primary);"><i class="fas fa-book-open"></i></a>
+        <a href="profile.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-user"></i></a>
+        <a href="admin.html" id="mobile-admin-btn" class="back-btn" style="background: transparent; border: none; display: none;"><i class="fas fa-cog"></i></a>
+    </div>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { auth, db, ref, get, child } from "./firebase-config.js";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    const snapshot = await get(child(ref(db), `users/${user.uid}`));
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        document.getElementById('nav-user-name').textContent = data.name.split(' ')[0];
+                        document.getElementById('nav-avatar').textContent = data.name.charAt(0).toUpperCase();
+                        document.getElementById('mobile-avatar').textContent = data.name.charAt(0).toUpperCase();
+                        
+                        // Role-based UI visibility
+                        const adminLinks = document.querySelectorAll('a[href="admin.html"]');
+                        if (data.role === 'admin') {
+                            adminLinks.forEach(link => link.style.display = 'flex');
+                        } else {
+                            adminLinks.forEach(link => link.style.display = 'none');
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

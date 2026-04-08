@@ -37,8 +37,9 @@
     <!-- Mobile Nav -->
     <div class="mobile-nav">
         <a href="home.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-home"></i></a>
+        <a href="resources.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-book-open"></i></a>
         <a href="profile.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-user"></i></a>
-        <a href="admin.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-cog"></i></a>
+        <a href="admin.html" id="mobile-admin-btn" class="back-btn" style="background: transparent; border: none; display: none;"><i class="fas fa-cog"></i></a>
     </div>
 
     <script type="module">
@@ -57,7 +58,13 @@
                 if (user) {
                     const snapshot = await get(child(ref(db), `users/${user.uid}`));
                     if (snapshot.exists()) {
-                        navAvatar.textContent = snapshot.val().name.charAt(0).toUpperCase();
+                        const data = snapshot.val();
+                        navAvatar.textContent = data.name.charAt(0).toUpperCase();
+                        
+                        // Admin Check
+                        if (data.role === 'admin') {
+                            document.getElementById('mobile-admin-btn').style.display = 'flex';
+                        }
                     }
                 }
             });
