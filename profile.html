@@ -282,7 +282,7 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, db, ref, set, get, child } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, updateDoc } from "./firebase-config.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             const updateBtn = document.getElementById('update-profile-btn');
@@ -300,12 +300,12 @@
                 if (user) {
                     displayEmail.textContent = user.email;
                     try {
-                        const snapshot = await get(child(ref(db), `users/${user.uid}`));
-                        if (snapshot.exists()) {
-                            const data = snapshot.val();
+                        const userDoc = await getDoc(doc(fs, "users", user.uid));
+                        if (userDoc.exists()) {
+                            const data = userDoc.data();
                             const name = data.name || "User";
                             const role = data.role || "student";
-                            const createdAt = data.createdAt ? new Date(data.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : "N/A";
+                            const createdAt = data.createdAt ? new Date(data.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : "Recently";
                             
                             displayName.textContent = name;
                             editInput.value = name;
@@ -319,14 +319,17 @@
 
                             // Role-based UI visibility
                             const adminLinks = document.querySelectorAll('a[href="admin.html"]');
+                            const mobileAdmin = document.getElementById('mobile-admin-btn');
                             if (data.role === 'admin') {
                                 adminLinks.forEach(link => link.style.display = 'flex');
+                                if (mobileAdmin) mobileAdmin.style.display = 'flex';
                             } else {
                                 adminLinks.forEach(link => link.style.display = 'none');
+                                if (mobileAdmin) mobileAdmin.style.display = 'none';
                             }
                         }
                     } catch (error) {
-                        console.error("Error fetching profile:", error);
+                        console.error("Error fetching profile from Firestore:", error);
                     }
                 } else {
                     window.location.href = 'index.html';
@@ -341,7 +344,11 @@
                     updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
                     
                     try {
-                        await set(ref(db, `users/${user.uid}/name`), newName);
+                        // Update in Firestore
+                        await updateDoc(doc(fs, "users", user.uid), {
+                            name: newName
+                        });
+                        
                         updateStatus.textContent = "Profile updated successfully!";
                         updateStatus.style.color = "var(--accent)";
                         updateStatus.style.display = "block";

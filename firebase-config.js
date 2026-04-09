@@ -1,9 +1,7 @@
-// Firebase Configuration and Initialization
-// Using Firebase v12.11.0 Modular SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 import { getDatabase, ref, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection, query, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
 
 // Your web app's Firebase configuration
@@ -26,4 +24,8 @@ const fs = getFirestore(app);
 const analytics = getAnalytics(app);
 
 // Exporting for use in other scripts
-export { auth, db, fs, analytics, ref, set, get, child, onValue };
+export { 
+    auth, db, fs, analytics, 
+    ref, set, get, child, onValue,
+    doc, getDoc, getDocs, setDoc, updateDoc, collection, query, where
+};

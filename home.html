@@ -40,10 +40,27 @@
             <h1>Welcome back, Study Buddy!</h1>
             <p style="color: var(--text-muted);">Access your Semester 6 study materials and previous year question papers below.</p>
         </div>
+
+        <!-- Search Bar Section -->
+        <div class="search-container glass" style="margin-bottom: 2.5rem; padding: 0.5rem; display: flex; align-items: center; gap: 0.8rem; border-radius: 12px; position: relative; z-index: 100;">
+            <i class="fas fa-search" style="margin-left: 1rem; color: var(--primary-light);"></i>
+            <input type="text" id="main-search" placeholder="Search for notes, units, or 2-mark questions..." style="width: 100%; padding: 0.8rem 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: 'Outfit'; font-size: 1rem;">
+        </div>
+
+        <!-- Search Results Section (Inline) -->
+        <div id="search-results-section" style="display: none; margin-bottom: 3rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <h2 style="font-family: 'Outfit';">Search Results</h2>
+                <button id="clear-search" class="glass" style="padding: 0.5rem 1rem; border: none; border-radius: 8px; color: var(--text-main); cursor: pointer; font-size: 0.8rem;">
+                    <i class="fas fa-times"></i> Clear Results
+                </button>
+            </div>
+            <div id="inline-results" class="resource-list">
+                <!-- Results will be injected here -->
+            </div>
+        </div>
         
-        <!-- Subject Grid stays similar but we'll add the Eye functionality later if needed -->
-        <!-- For now, I'll update the counts based on the recent scan -->
-        <div class="subject-grid">
+        <div class="subject-grid" id="main-subject-grid">
             <!-- BA Card -->
             <div class="subject-card glass" onclick="location.href='subject_details.html?subject=ba'">
                 <div class="badge">CCW331</div>
@@ -123,24 +140,126 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, db, ref, get, child } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, collection, getDocs } from "./firebase-config.js";
+        import { subjectMaterials } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
+            // 1. Fetch User Data from Firestore
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
-                    const snapshot = await get(child(ref(db), `users/${user.uid}`));
-                    if (snapshot.exists()) {
-                        const data = snapshot.val();
-                        document.getElementById('nav-user-name').textContent = data.name.split(' ')[0];
-                        document.getElementById('nav-avatar').textContent = data.name.charAt(0).toUpperCase();
-                        document.getElementById('mobile-avatar').textContent = data.name.charAt(0).toUpperCase();
-                        
-                        // Role-based UI visibility
-                        if (data.role !== 'admin') {
-                            const adminLinks = document.querySelectorAll('a[href="admin.html"]');
-                            adminLinks.forEach(link => link.style.display = 'none');
+                    try {
+                        const userDoc = await getDoc(doc(fs, "users", user.uid));
+                        if (userDoc.exists()) {
+                            const data = userDoc.data();
+                            document.getElementById('nav-user-name').textContent = data.name.split(' ')[0];
+                            document.getElementById('nav-avatar').textContent = data.name.charAt(0).toUpperCase();
+                            document.getElementById('mobile-avatar').textContent = data.name.charAt(0).toUpperCase();
+                            
+                            // Role-based UI visibility
+                            if (data.role !== 'admin') {
+                                const adminLinks = document.querySelectorAll('a[href="admin.html"]');
+                                adminLinks.forEach(link => link.style.display = 'none');
+                            }
                         }
+                    } catch (error) {
+                        console.error("Error loading profile:", error);
                     }
+                }
+            });
+
+            // 2. Dynamic Subject Grid
+            const mainGrid = document.getElementById('main-subject-grid');
+            
+            async function loadSubjects() {
+                try {
+                    // Try to fetch from Firestore first
+                    const querySnapshot = await getDocs(collection(fs, "subjects"));
+                    if (!querySnapshot.empty) {
+                        renderGrid(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                    } else {
+                        // Fallback to materials.js if Firestore is empty
+                        renderGrid(Object.entries(subjectMaterials).map(([key, data]) => ({ id: key, ...data })));
+                    }
+                } catch (error) {
+                    console.error("Firestore error, falling back to local data:", error);
+                    renderGrid(Object.entries(subjectMaterials).map(([key, data]) => ({ id: key, ...data })));
+                }
+            }
+
+            function renderGrid(subjects) {
+                mainGrid.innerHTML = subjects.map(sub => `
+                    <div class="subject-card glass" onclick="location.href='subject_details.html?subject=${sub.id}'">
+                        <div class="badge">${sub.courseCode || 'N/A'}</div>
+                        <i class="${sub.icon || 'fas fa-book'}"></i>
+                        <h3>${sub.fullName || sub.name}</h3>
+                        <p>Course Code: ${sub.courseCode || 'N/A'}</p>
+                        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--primary-light);">
+                            <i class="fas fa-file-pdf"></i> ${sub.materials ? sub.materials.length : 0} Files Found
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            loadSubjects();
+
+            // 3. Search Logic (Inline)
+            const searchInput = document.getElementById('main-search');
+            const searchResultsSection = document.getElementById('search-results-section');
+            const inlineResults = document.getElementById('inline-results');
+            const clearSearchBtn = document.getElementById('clear-search');
+
+            function clearSearch() {
+                searchInput.value = '';
+                searchResultsSection.style.display = 'none';
+                mainGrid.style.display = 'grid';
+            }
+
+            if (clearSearchBtn) {
+                clearSearchBtn.addEventListener('click', clearSearch);
+            }
+
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase().trim();
+                
+                if (term.length < 2) {
+                    searchResultsSection.style.display = 'none';
+                    mainGrid.style.display = 'grid';
+                    return;
+                }
+
+                const matches = [];
+                // Search across the materials data
+                Object.entries(subjectMaterials).forEach(([key, subject]) => {
+                    subject.materials.forEach(material => {
+                        if (material.name.toLowerCase().includes(term) || key.includes(term) || subject.fullName.toLowerCase().includes(term) || subject.shortName.toLowerCase().includes(term)) {
+                            matches.push({ ...material, subjectKey: key, subjectName: subject.fullName, subjectShort: subject.shortName });
+                        }
+                    });
+                });
+
+                mainGrid.style.display = 'none';
+                searchResultsSection.style.display = 'block';
+
+                if (matches.length > 0) {
+                    inlineResults.innerHTML = matches.map(m => `
+                        <div class="resource-card glass" onclick="location.href='viewer.html?file=${encodeURIComponent(m.file)}&title=${encodeURIComponent(m.name)}&subject=${m.subjectKey}'" style="padding: 1.2rem; display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: rgba(99, 102, 241, 0.1); width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-file-pdf" style="color: var(--primary-light); font-size: 1.4rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 1rem; color: #fff;">${m.name}</div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 4px;">
+                                        <span style="background: var(--primary); color: white; padding: 1px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 800;">${m.subjectShort}</span>
+                                        <span style="font-size: 0.75rem; color: var(--text-muted);">${m.subjectName}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: var(--text-muted); font-size: 0.8rem;"></i>
+                        </div>
+                    `).join('');
+                } else {
+                    inlineResults.innerHTML = '<div style="grid-column: 1/-1; padding: 3rem; text-align: center; color: var(--text-muted);">No matching files found. Check your spelling or try another subject.</div>';
                 }
             });
         });
