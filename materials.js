@@ -24,6 +24,33 @@ export const subjectMaterials = {
         shortName: 'OOSE',
         courseCode: 'CCS356',
         icon: 'fas fa-code-branch',
+        syllabus: [
+            {
+                unit: 'UNIT I',
+                title: 'SOFTWARE PROCESS AND AGILE DEVELOPMENT',
+                topics: 'Introduction to Software Engineering, Software Process, Perspective and Specialized Process Models –Introduction to Agility-Agile process-Extreme programming-XP Process-Case Study.'
+            },
+            {
+                unit: 'UNIT II',
+                title: 'REQUIREMENTS ANALYSIS AND SPECIFICATION',
+                topics: 'Requirement analysis and specification – Requirements gathering and analysis – Software Requirement Specification – Formal system specification – Finite State Machines – Petrinets –Object modelling using UML – Use case Model – Class diagrams – Interaction diagrams – Activity diagrams – State chart diagrams – Functional modelling – Data Flow Diagram- CASE TOOLS.'
+            },
+            {
+                unit: 'UNIT III',
+                title: 'SOFTWARE DESIGN',
+                topics: 'Software design – Design process – Design concepts – Coupling – Cohesion – Functional independence – Design patterns – Model-view-controller – Publish-subscribe – Adapter – Command – Strategy – Observer – Proxy – Facade – Architectural styles – Layered - Client Server - Tiered - Pipe and filter- User interface design-Case Study.'
+            },
+            {
+                unit: 'UNIT IV',
+                title: 'SOFTWARE TESTING AND MAINTENANCE',
+                topics: 'Testing – Unit testing – Black box testing– White box testing – Integration and System testing– Regression testing – Debugging - Program analysis – Symbolic execution – Model Checking- Case Study'
+            },
+            {
+                unit: 'UNIT V',
+                title: 'PROJECT MANAGEMENT',
+                topics: 'Software Project Management- Software Configuration Management - Project Scheduling- DevOps: Motivation-Cloud as a platform-Operations- Deployment Pipeline:Overall Architecture Building and Testing-Deployment- Tools- Case Study'
+            }
+        ],
         materials: [
             { name: 'Object Oriented SE Full', file: 'oose/oose_notes.pdf' },
             { name: 'Unit 1 Basics', file: 'oose/oose_unit1.pdf' },
@@ -34,6 +61,13 @@ export const subjectMaterials = {
             { name: 'Unit 5 Advanced (VI)', file: 'oose/VI_CSE_CCS356_OOSE_Unit5.pdf' },
             { name: '2-Mark Master List', file: 'oose/oose_2m.pdf' },
             { name: 'Assignment Front Page', file: 'oose/OOSE-Assignment front page.docx' }
+        ],
+        importantQuestions: [
+            { unit: 'Unit 1', questions: ['Agile Process', 'Software Process', 'Extreme Programming (XP) Process'] },
+            { unit: 'Unit 2', questions: ['Software Requirement Specification (SRS)', 'Requirement Gathering and Analysis', 'Object Modeling using UML (Class, Activity, Use Case, Sequence, State Chart, Component, Deployment Diagrams)', 'Case Study'] },
+            { unit: 'Unit 3', questions: ['UI Interface Design', 'MVC Architecture', 'Types of Cohesion and Coupling', 'Architectural Styles'] },
+            { unit: 'Unit 4', questions: ['Regression Testing', 'Unit Testing and Integration Testing', 'Types of Software Testing', 'Debugging', 'Comparison of White and Black Box Testing'] },
+            { unit: 'Unit 5', questions: ['Software Project Management', 'Deployment Pipeline Architecture', 'DevOps'] }
         ]
     },
     'eh': {
@@ -41,6 +75,33 @@ export const subjectMaterials = {
         shortName: 'EH',
         courseCode: 'CCS344',
         icon: 'fas fa-user-secret',
+        syllabus: [
+            {
+                unit: 'UNIT I',
+                title: 'INTRODUCTION',
+                topics: 'Ethical Hacking Overview - Role of Security and Penetration Testers .- Penetration-Testing Methodologies- Laws of the Land - Overview of TCP/IP- The Application Layer - The Transport Layer - The Internet Layer - IP Addressing .- Network and Computer Attacks - Malware - Protecting Against Malware Attacks.- Intruder Attacks - Addressing Physical Security'
+            },
+            {
+                unit: 'UNIT II',
+                title: 'FOOT PRINTING, RECONNAISSANCE AND SCANNING NETWORKS',
+                topics: 'Footprinting Concepts - Footprinting through Search Engines, Web Services, Social Networking Sites, Website, Email - Competitive Intelligence - Footprinting through Social Engineering - Footprinting Tools - Network Scanning Concepts - Port-Scanning Tools - Scanning Techniques - Scanning Beyond IDS and Firewall'
+            },
+            {
+                unit: 'UNIT III',
+                title: 'ENUMERATION AND VULNERABILITY ANALYSIS',
+                topics: 'Enumeration Concepts - NetBIOS Enumeration – SNMP, LDAP, NTP, SMTP and DNS Enumeration - Vulnerability Assessment Concepts - Desktop and Server OS Vulnerabilities - Windows OS Vulnerabilities - Tools for Identifying Vulnerabilities in Windows- Linux OS Vulnerabilities- Vulnerabilities of Embedded Oss'
+            },
+            {
+                unit: 'UNIT IV',
+                title: 'SYSTEM HACKING',
+                topics: 'Hacking Web Servers - Web Application Components- Vulnerabilities - Tools for Web Attackers and Security Testers Hacking Wireless Networks - Components of a Wireless Network – Wardriving- Wireless Hacking - Tools of the Trade -'
+            },
+            {
+                unit: 'UNIT V',
+                title: 'NETWORK PROTECTION SYSTEMS',
+                topics: 'Access Control Lists. - Cisco Adaptive Security Appliance Firewall - Configuration and Risk Analysis Tools for Firewalls and Routers - Intrusion Detection and Prevention Systems - Network-Based and Host-Based IDSs and IPSs - Web Filtering - Security Incident Response Teams – Honeypots.'
+            }
+        ],
         materials: [
             { name: 'Ethical Hacking Full', file: 'eh/Eh_notes.pdf' },
             { name: 'Unit 1 Intro', file: 'eh/eh_unit1.pdf' },
@@ -84,6 +145,33 @@ export const subjectMaterials = {
         shortName: 'VCE',
         courseCode: 'CCS371',
         icon: 'fas fa-video',
+        syllabus: [
+            {
+                unit: 'UNIT I',
+                title: 'FUNDAMENTALS',
+                topics: 'Evolution of filmmaking - linear editing - non-linear digital video - Economy of Expression - risks associated with altering reality through editing.'
+            },
+            {
+                unit: 'UNIT II',
+                title: 'STORYTELLING',
+                topics: 'Storytelling styles in a digital world through jump cuts, L-cuts, match cuts, cutaways, dissolves, split edits - Consumer and pro NLE systems - digitizing images - managing resolutions - mechanics of digital editing - pointer files - media management.'
+            },
+            {
+                unit: 'UNIT III',
+                title: 'USING AUDIO AND VIDEO',
+                topics: 'Capturing digital and analog video importing audio putting video on exporting digital video to tape recording to CDs and VCDs.'
+            },
+            {
+                unit: 'UNIT IV',
+                title: 'WORKING WITH FINAL CUT PRO',
+                topics: 'Working with clips and the Viewer - working with sequences, the Timeline, and the canvas - Basic Editing - Adding and Editing Testing Effects - Advanced Editing and Training Techniques - Working with Audio - Using Media Tools - Viewing and Setting Preferences.'
+            },
+            {
+                unit: 'UNIT V',
+                title: 'WORKING WITH AVID XPRESS DV 4',
+                topics: 'Starting Projects and Working with Project Window - Using Basic Tools and Logging - Preparing to Record and Recording - Importing Files - Organizing with Bins - Viewing and Making Footage - Using Timeline and Working in Trim Mode - Working with Audio - Output Options.'
+            }
+        ],
         materials: [
             { name: 'Video Creation Guide', file: 'vce/CCS371-Video Creation and Editing.pdf' },
             { name: 'Unit 1 Pre-production', file: 'vce/vce_unit1.pdf' },

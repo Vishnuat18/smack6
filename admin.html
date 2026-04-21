@@ -64,28 +64,38 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, db, ref, onValue, get, child } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, collection, getDocs } from "./firebase-config.js";
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Guard Logic: Only vishnurajan24766@gmail.com is admin
+            // Guard Logic: Check Firestore role
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
-                    if (user.email !== 'vishnurajan24766@gmail.com') {
+                    try {
+                        const userDoc = await getDoc(doc(fs, "users", user.uid));
+                        if (userDoc.exists() && userDoc.data().role === 'admin') {
+                            syncDashboard();
+                        } else {
+                            location.href = "home.html";
+                        }
+                    } catch (error) {
+                        console.error("Admin check error:", error);
                         location.href = "home.html";
-                    } else {
-                        syncDashboard();
                     }
+                } else {
+                    location.href = "index.html";
                 }
             });
 
-            function syncDashboard() {
+            async function syncDashboard() {
                 const statsUsers = document.getElementById('stat-users');
-                onValue(ref(db, 'users'), (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        statsUsers.textContent = Object.keys(data).length;
-                    }
-                });
+                try {
+                    // Fetch total users from Firestore
+                    const querySnapshot = await getDocs(collection(fs, "users"));
+                    statsUsers.textContent = querySnapshot.size;
+                } catch (error) {
+                    console.error("Error fetching stats:", error);
+                    statsUsers.textContent = "Err";
+                }
             }
         });
     </script>

@@ -282,7 +282,7 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, fs, doc, getDoc, updateDoc } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, setDoc, updateDoc } from "./firebase-config.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             const updateBtn = document.getElementById('update-profile-btn');
@@ -296,15 +296,29 @@
             const navName = document.getElementById('nav-user-name');
             const updateStatus = document.getElementById('update-status');
 
+            // Admin Email for fallback
+            const ADMIN_EMAIL = 'vishnurajan24766@gmail.com';
+
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     displayEmail.textContent = user.email;
+                    
+                    // Fallback name if DB is loading
+                    if (displayName.textContent === "Loading...") {
+                        displayName.textContent = user.email.split('@')[0];
+                        avatarChar.textContent = user.email.charAt(0).toUpperCase();
+                    }
+
+                    // Fallback Role
+                    const fallbackRole = user.email === ADMIN_EMAIL ? 'admin' : 'student';
+                    displayRole.textContent = fallbackRole.charAt(0).toUpperCase() + fallbackRole.slice(1);
+
                     try {
                         const userDoc = await getDoc(doc(fs, "users", user.uid));
                         if (userDoc.exists()) {
                             const data = userDoc.data();
-                            const name = data.name || "User";
-                            const role = data.role || "student";
+                            const name = data.name || user.email.split('@')[0];
+                            const role = data.role || fallbackRole;
                             const createdAt = data.createdAt ? new Date(data.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : "Recently";
                             
                             displayName.textContent = name;
@@ -317,43 +331,61 @@
                             if (navAvatar) navAvatar.textContent = name.charAt(0).toUpperCase();
                             if (navName) navName.textContent = name.split(' ')[0];
 
-                            // Role-based UI visibility
-                            const adminLinks = document.querySelectorAll('a[href="admin.html"]');
-                            const mobileAdmin = document.getElementById('mobile-admin-btn');
-                            if (data.role === 'admin') {
-                                adminLinks.forEach(link => link.style.display = 'flex');
-                                if (mobileAdmin) mobileAdmin.style.display = 'flex';
-                            } else {
-                                adminLinks.forEach(link => link.style.display = 'none');
-                                if (mobileAdmin) mobileAdmin.style.display = 'none';
-                            }
+                            // Admin UI logic
+                            syncAdminLinks(role);
+                        } else {
+                            console.log("No profile found event, using fallbacks.");
+                            displayJoined.textContent = "New Member";
+                            syncAdminLinks(fallbackRole);
                         }
                     } catch (error) {
-                        console.error("Error fetching profile from Firestore:", error);
+                        console.error("Error fetching profile:", error);
+                        displayJoined.textContent = "Error loading";
                     }
                 } else {
                     window.location.href = 'index.html';
                 }
             });
 
+            function syncAdminLinks(role) {
+                const adminLinks = document.querySelectorAll('a[href="admin.html"]');
+                const mobileAdmin = document.getElementById('mobile-admin-btn');
+                if (role === 'admin') {
+                    adminLinks.forEach(link => link.style.display = 'flex');
+                    if (mobileAdmin) mobileAdmin.style.display = 'flex';
+                } else {
+                    adminLinks.forEach(link => link.style.display = 'none');
+                    if (mobileAdmin) mobileAdmin.style.display = 'none';
+                }
+            }
+
             updateBtn.addEventListener('click', async () => {
                 const user = auth.currentUser;
                 const newName = editInput.value.trim();
+                
                 if (user && newName) {
                     updateBtn.disabled = true;
                     updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                    updateStatus.style.display = "none";
                     
                     try {
-                        // Update in Firestore
-                        await updateDoc(doc(fs, "users", user.uid), {
-                            name: newName
-                        });
+                        // Use setDoc with merge:true to avoid "document not found" errors
+                        // This handles both initial creation and updates
+                        const userRef = doc(fs, "users", user.uid);
+                        const updateData = {
+                            name: newName,
+                            email: user.email,
+                            // Ensure role is preserved or set if it's a new doc
+                            role: user.email === ADMIN_EMAIL ? 'admin' : 'student'
+                        };
+
+                        await setDoc(userRef, updateData, { merge: true });
                         
                         updateStatus.textContent = "Profile updated successfully!";
                         updateStatus.style.color = "var(--accent)";
                         updateStatus.style.display = "block";
                         
-                        // Update UI immediately
+                        // Update UI
                         displayName.textContent = newName;
                         avatarChar.textContent = newName.charAt(0).toUpperCase();
                         if (navAvatar) navAvatar.textContent = newName.charAt(0).toUpperCase();
@@ -361,7 +393,8 @@
 
                         setTimeout(() => { updateStatus.style.display = "none"; }, 3000);
                     } catch (error) {
-                        updateStatus.textContent = "Failed: " + error.message;
+                        console.error("Update error:", error);
+                        updateStatus.textContent = "Failed: " + (error.code === 'permission-denied' ? "Access Denied (Security Rules)" : error.message);
                         updateStatus.style.color = "#ef4444";
                         updateStatus.style.display = "block";
                     } finally {

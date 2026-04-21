@@ -21,15 +21,41 @@
 
     <div class="container" style="padding-top: 1rem; padding-bottom: 5rem;">
         <div id="resource-header" style="margin-bottom: 2rem;">
-            <h1 id="header-title">Loading...</h1>
-            <p style="color: var(--text-muted);">Select a unit or study material below to view the PDF.</p>
+            <h1 id="header-title">Loading materials...</h1>
+            <p style="color: var(--text-muted);">Access syllabus and study materials for this subject.</p>
         </div>
 
-        <div id="resource-list" class="resource-list">
-            <!-- Dynamically populated -->
-            <div style="text-align: center; padding: 3rem; color: var(--text-muted); grid-column: 1/-1;">
-                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                <p>Fetching materials...</p>
+        <div id="syllabus-section" style="display: none; margin-bottom: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.2rem;">
+                <i class="fas fa-list-ul" style="color: var(--secondary);"></i>
+                <h2 style="font-size: 1.4rem;">Course Syllabus</h2>
+            </div>
+            <div id="syllabus-list" class="syllabus-list">
+                <!-- Dynamically populated units -->
+            </div>
+        </div>
+
+        <div id="important-questions-section" style="display: none; margin-bottom: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.2rem;">
+                <i class="fas fa-star" style="color: #fbbf24;"></i>
+                <h2 style="font-size: 1.4rem;">Important Questions</h2>
+            </div>
+            <div id="important-questions-list" class="important-questions-grid">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <div id="materials-section">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.2rem;">
+                <i class="fas fa-book" style="color: var(--primary-light);"></i>
+                <h2 style="font-size: 1.4rem;">Study Materials</h2>
+            </div>
+            <div id="resource-list" class="resource-list">
+                <!-- Dynamically populated -->
+                <div style="text-align: center; padding: 3rem; color: var(--text-muted); grid-column: 1/-1;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>Fetching materials...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -43,7 +69,7 @@
     </div>
 
     <script type="module">
-        import { auth, db, ref, get, child } from "./firebase-config.js";
+        import { auth, db, fs, doc, getDoc, ref, get, child } from "./firebase-config.js";
         import { subjectMaterials } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -52,62 +78,134 @@
             const headerTitle = document.getElementById('header-title');
             const subjectTitle = document.getElementById('subject-title');
             const resourceList = document.getElementById('resource-list');
+            const syllabusSection = document.getElementById('syllabus-section');
+            const syllabusList = document.getElementById('syllabus-list');
+            const importantSection = document.getElementById('important-questions-section');
+            const importantList = document.getElementById('important-questions-list');
 
-            // Navbar User Info
+            console.log("Loading subject:", subject);
+
+            // Navbar User Info - Firestore based
             auth.onAuthStateChanged(async (user) => {
-                const navAvatar = document.getElementById('nav-avatar');
-                const navName = document.getElementById('nav-user-name');
-                const mobileAvatar = document.getElementById('mobile-avatar');
-
                 if (user) {
                     try {
                         const userDoc = await getDoc(doc(fs, "users", user.uid));
                         if (userDoc.exists()) {
                             const data = userDoc.data();
                             const name = data.name || "User";
+                            const navAvatar = document.getElementById('nav-avatar');
+                            const mobileAvatar = document.getElementById('mobile-avatar');
+                            
                             if (navAvatar) navAvatar.textContent = name.charAt(0).toUpperCase();
-                            if (navName) navName.textContent = name.split(' ')[0];
                             if (mobileAvatar) mobileAvatar.textContent = name.charAt(0).toUpperCase();
                             
-                            // Admin check
                             if (data.role === 'admin') {
-                                document.getElementById('mobile-admin-btn').style.display = 'flex';
+                                const adminBtn = document.getElementById('mobile-admin-btn');
+                                if (adminBtn) adminBtn.style.display = 'flex';
                             }
                         }
-                    } catch (e) { console.error("Nav fetch error", e); }
+                    } catch (e) { 
+                        console.error("Profile fetch error:", e); 
+                    }
                 }
             });
 
-            if (subject && subjectMaterials[subject]) {
-                const subjectData = subjectMaterials[subject];
-                
-                headerTitle.textContent = subjectData.fullName;
-                subjectTitle.textContent = subject.toUpperCase();
-
-                resourceList.innerHTML = '';
-                subjectData.materials.forEach(unit => {
-                    const card = document.createElement('div');
-                    card.className = 'resource-card glass';
-                    card.onclick = () => {
-                        location.href = `viewer.html?file=${encodeURIComponent(unit.file)}&title=${encodeURIComponent(unit.name)}&subject=${subject}`;
-                    };
+            // Main rendering logic
+            try {
+                if (subject && subjectMaterials[subject]) {
+                    const subjectData = subjectMaterials[subject];
+                    console.log("Subject Data found:", subjectData);
                     
-                    card.innerHTML = `
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: var(--primary-light);"></i>
-                            <div>
-                                <span style="font-weight: 600; display: block;">${unit.name}</span>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">PDF Document</span>
-                            </div>
-                        </div>
-                        <div class="arrow-btn">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    `;
-                    resourceList.appendChild(card);
-                });
-            } else {
-                resourceList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">No materials available yet.</div>';
+                    if (headerTitle) headerTitle.textContent = subjectData.fullName || "Subject Details";
+                    if (subjectTitle) subjectTitle.textContent = subject.toUpperCase();
+
+                    // 1. Render Syllabus
+                    if (subjectData.syllabus && subjectData.syllabus.length > 0) {
+                        syllabusSection.style.display = 'block';
+                        syllabusList.innerHTML = '';
+                        subjectData.syllabus.forEach((unit) => {
+                            const unitCard = document.createElement('div');
+                            unitCard.className = 'syllabus-card glass';
+                            unitCard.innerHTML = `
+                                <div class="syllabus-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <span class="unit-badge">${unit.unit}</span>
+                                        <span style="font-weight: 600; font-family: 'Outfit';">${unit.title}</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="syllabus-content">
+                                    <p>${unit.topics}</p>
+                                </div>
+                            `;
+                            syllabusList.appendChild(unitCard);
+                        });
+                    } else {
+                        syllabusSection.style.display = 'none';
+                    }
+
+                    // 2. Render Important Questions
+                    if (subjectData.importantQuestions && subjectData.importantQuestions.length > 0) {
+                        importantSection.style.display = 'block';
+                        importantList.innerHTML = '';
+                        subjectData.importantQuestions.forEach(item => {
+                            const qCard = document.createElement('div');
+                            qCard.className = 'important-card glass';
+                            qCard.innerHTML = `
+                                <div style="padding: 1.2rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem;">
+                                        <span style="font-size: 0.7rem; font-weight: 800; background: rgba(251, 191, 36, 0.2); color: #fbbf24; padding: 2px 8px; border-radius: 4px;">${item.unit.toUpperCase()}</span>
+                                        <h4 style="font-size: 0.95rem; margin: 0;">Key Topics</h4>
+                                    </div>
+                                    <ul style="margin: 0; padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem;">
+                                        ${item.questions.map(q => `<li style="margin-bottom: 0.4rem;">${q}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            `;
+                            importantList.appendChild(qCard);
+                        });
+                    } else {
+                        importantSection.style.display = 'none';
+                    }
+
+                    // 3. Render Materials
+                    resourceList.innerHTML = '';
+                    if (subjectData.materials && subjectData.materials.length > 0) {
+                        subjectData.materials.forEach(unit => {
+                            const card = document.createElement('div');
+                            card.className = 'resource-card glass';
+                            card.onclick = () => {
+                                location.href = `viewer.html?file=${encodeURIComponent(unit.file)}&title=${encodeURIComponent(unit.name)}&subject=${subject}`;
+                            };
+                            
+                            card.innerHTML = `
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: var(--primary-light);"></i>
+                                    <div>
+                                        <span style="font-weight: 600; display: block;">${unit.name}</span>
+                                        <span style="font-size: 0.75rem; color: var(--text-muted);">PDF Document</span>
+                                    </div>
+                                </div>
+                                <div class="arrow-btn">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            `;
+                            resourceList.appendChild(card);
+                        });
+                    } else {
+                        resourceList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">No materials available yet.</div>';
+                    }
+                } else {
+                    console.warn("Subject not found or missing from database");
+                    if (headerTitle) headerTitle.textContent = "Subject Not Found";
+                    resourceList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">This subject is currently unavailable or the link is broken.</div>';
+                }
+            } catch (error) {
+                console.error("Critical rendering error:", error);
+                resourceList.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #ef4444;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>Something went wrong while loading the materials. Please try refreshing the page.</p>
+                </div>`;
             }
         });
     </script>

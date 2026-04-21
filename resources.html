@@ -99,26 +99,33 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, db, ref, get, child } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc } from "./firebase-config.js";
         import { subjectMaterials } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
-                    const snapshot = await get(child(ref(db), `users/${user.uid}`));
-                    if (snapshot.exists()) {
-                        const data = snapshot.val();
-                        document.getElementById('nav-user-name').textContent = data.name.split(' ')[0];
-                        document.getElementById('nav-avatar').textContent = data.name.charAt(0).toUpperCase();
-                        document.getElementById('mobile-avatar').textContent = data.name.charAt(0).toUpperCase();
-                        
-                        // Role-based UI visibility
-                        const adminLinks = document.querySelectorAll('a[href="admin.html"]');
-                        if (data.role === 'admin') {
-                            adminLinks.forEach(link => link.style.display = 'flex');
-                        } else {
-                            adminLinks.forEach(link => link.style.display = 'none');
+                    try {
+                        const userDoc = await getDoc(doc(fs, "users", user.uid));
+                        if (userDoc.exists()) {
+                            const data = userDoc.data();
+                            document.getElementById('nav-user-name').textContent = data.name.split(' ')[0];
+                            document.getElementById('nav-avatar').textContent = data.name.charAt(0).toUpperCase();
+                            document.getElementById('mobile-avatar').textContent = data.name.charAt(0).toUpperCase();
+                            
+                            // Role-based UI visibility
+                            const adminLinks = document.querySelectorAll('a[href="admin.html"]');
+                            const adminBtn = document.getElementById('mobile-admin-btn');
+                            if (data.role === 'admin') {
+                                adminLinks.forEach(link => link.style.display = 'flex');
+                                if (adminBtn) adminBtn.style.display = 'flex';
+                            } else {
+                                adminLinks.forEach(link => link.style.display = 'none');
+                                if (adminBtn) adminBtn.style.display = 'none';
+                            }
                         }
+                    } catch (error) {
+                        console.error("Error loading profile:", error);
                     }
                 }
             });

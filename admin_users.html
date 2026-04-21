@@ -51,29 +51,39 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, db, ref, onValue, get, child } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, collection, getDocs } from "./firebase-config.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             const userListBody = document.getElementById('user-list-body');
 
             auth.onAuthStateChanged(async (user) => {
-                if (user && user.email === 'vishnurajan24766@gmail.com') {
-                    syncUsersList();
+                if (user) {
+                    try {
+                        const userDoc = await getDoc(doc(fs, "users", user.uid));
+                        if (userDoc.exists() && userDoc.data().role === 'admin') {
+                            syncUsersList();
+                        } else {
+                            location.href = "home.html";
+                        }
+                    } catch (error) {
+                        console.error("Admin check error:", error);
+                        location.href = "home.html";
+                    }
                 } else {
-                    location.href = "home.html";
+                    location.href = "index.html";
                 }
             });
 
-            function syncUsersList() {
-                onValue(ref(db, 'users'), (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        const users = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+            async function syncUsersList() {
+                try {
+                    const querySnapshot = await getDocs(collection(fs, "users"));
+                    if (!querySnapshot.empty) {
                         userListBody.innerHTML = '';
-                        users.forEach(u => {
+                        querySnapshot.forEach((doc) => {
+                            const u = doc.data();
                             const row = `
                                 <tr style="border-bottom: 1px solid var(--glass-border);">
-                                    <td style="padding: 1rem; font-weight: 600;">${u.name}</td>
+                                    <td style="padding: 1rem; font-weight: 600;">${u.name || 'Anonymous'}</td>
                                     <td style="padding: 1rem; color: var(--text-muted);">${u.email}</td>
                                     <td style="padding: 1rem;"><div class="badge" style="display:inline-block">${u.role || 'student'}</div></td>
                                     <td style="padding: 1rem;"><button class="btn glass" onclick="alert('User editing not yet enabled')" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; width: auto;">Edit</button></td>
@@ -81,8 +91,13 @@
                             `;
                             userListBody.innerHTML += row;
                         });
+                    } else {
+                        userListBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 3rem;">No users found.</td></tr>';
                     }
-                });
+                } catch (error) {
+                    console.error("Error fetching users:", error);
+                    userListBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 3rem; color: #ef4444;">Error loading users list.</td></tr>';
+                }
             }
         });
     </script>

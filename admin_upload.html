@@ -73,16 +73,26 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, db, ref, set, get, child } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc } from "./firebase-config.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             const uploadForm = document.getElementById('admin-upload-form');
 
             auth.onAuthStateChanged(async (user) => {
-                if (user && user.email === 'vishnurajan24766@gmail.com') {
-                    // Authorized admin
+                if (user) {
+                    try {
+                        const userDoc = await getDoc(doc(fs, "users", user.uid));
+                        if (userDoc.exists() && userDoc.data().role === 'admin') {
+                            // Authorized admin
+                        } else {
+                            location.href = "home.html";
+                        }
+                    } catch (error) {
+                        console.error("Admin check error:", error);
+                        location.href = "home.html";
+                    }
                 } else {
-                    location.href = "home.html";
+                    location.href = "index.html";
                 }
             });
 

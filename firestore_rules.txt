@@ -11,15 +11,18 @@ service cloud.firestore {
 
     // Rules for the 'users' collection
     match /users/{userId} {
-      // READ: Admins can see all profiles; Student can only read their own profile
+      // READ: Admins can see all profiles; User can only read their own profile
       allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
       
-      // WRITE: Only the user can create/update their profile
-      // Added validation to ensure roles are strictly 'student' or 'admin'
-      allow create, update: if request.auth != null && request.auth.uid == userId
-                            && request.resource.data.role in ['student', 'admin'];
-                            
-      // DELETE: Only admins can delete user profile documentation
+      // CREATE: Any authenticated user can create their own profile
+      allow create: if request.auth != null && request.auth.uid == userId;
+      
+      // UPDATE: Users can update their own profile. 
+      // Protect the 'role' field from being changed unless the caller is already an admin.
+      allow update: if request.auth != null && request.auth.uid == userId
+                    && (request.resource.data.role == resource.data.role || isAdmin());
+                             
+      // DELETE: Only admins can delete user profiles
       allow delete: if isAdmin();
     }
 
