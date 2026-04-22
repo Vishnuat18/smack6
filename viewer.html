@@ -21,20 +21,27 @@
         }
         .viewer-header {
             padding: 1rem 1.5rem;
+            padding-top: calc(1rem + env(safe-area-inset-top, 0px)); /* Notch support */
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 1000;
-            flex-shrink: 0; /* Prevent header from shrinking */
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
         }
         .viewer-title {
             font-family: 'Outfit';
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.1rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 200px;
+            flex: 1; /* Allow title to grow */
+            max-width: 250px;
         }
         
         #pdf-container {
@@ -229,8 +236,8 @@
                 gap: 0.6rem !important;
             }
             .viewer-title {
-                max-width: 110px;
-                font-size: 0.85rem;
+                max-width: 160px;
+                font-size: 0.95rem;
             }
             .viewer-header img {
                 display: none; /* Hide logo on mobile to save space */
