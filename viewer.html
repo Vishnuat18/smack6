@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Viewer - Sem 6 Notes</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -10,8 +10,7 @@
     <style>
         body, html {
             height: 100vh;
-            height: 100dvh;
-            height: -webkit-fill-available; /* Classic mobile fix */
+            height: 100dvh; /* Dynamic viewport height for mobile browsers */
             width: 100%;
             margin: 0;
             padding: 0;
@@ -21,18 +20,22 @@
             flex-direction: column;
         }
         .viewer-header {
-            padding: 1.2rem 1.5rem;
-            padding-top: calc(1.2rem + env(safe-area-inset-top, 0px)); /* Enhanced notch/bar support */
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            padding: 0.6rem 1rem;
+            padding-top: calc(0.6rem + env(safe-area-inset-top, 0px));
             display: flex;
             align-items: center;
             justify-content: space-between;
-            z-index: 1000;
-            flex-shrink: 0;
-            position: sticky;
-            top: 0;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--glass-border);
+            z-index: 2000;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px; /* Box size design */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            box-sizing: border-box;
         }
         .viewer-title {
             font-family: 'Outfit';
@@ -47,10 +50,12 @@
         
         #pdf-container {
             flex: 1;
+            margin-top: 90px;
+            margin-bottom: 140px; /* Space for boxed bottom nav */
             overflow-y: auto;
             overflow-x: hidden;
             position: relative;
-            padding: 0; /* Remove padding for true edge-to-edge look */
+            padding: 1rem 0.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -62,13 +67,17 @@
         .main-canvas-wrapper {
             position: relative;
             transition: transform 0.1s ease-out, opacity 0.2s ease-out;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             transform-origin: center center;
             touch-action: none;
-            margin: auto 0; /* Center vertically if PDF is short */
-            width: 100%;
+            margin: auto 0;
+            width: 95%; /* Boxed look */
+            max-width: 800px;
             display: flex;
             justify-content: center;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         .main-canvas-wrapper.sliding-left {
@@ -90,15 +99,20 @@
 
         /* Bottom Bar Styling */
         .bottom-nav-bar {
-            padding: 0.8rem 1rem;
+            position: fixed;
+            bottom: 15px;
+            left: 10px;
+            right: 10px;
+            padding: 0.8rem;
             display: flex;
             flex-direction: column;
             gap: 0.8rem;
-            z-index: 100;
-            flex-shrink: 0;
+            z-index: 2000;
             background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
         }
 
         .slider-container {

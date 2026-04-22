@@ -56,7 +56,8 @@ h1, h2, h3, h4 {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 1.5rem;
+    margin-top: 80px; /* Offset for fixed app-header */
 }
 
 /* Auth Pages Styling */
@@ -442,10 +443,17 @@ iframe {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.2rem 1.5rem;
-    position: sticky;
+    padding: 1rem 1.5rem;
+    padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+    position: fixed;
     top: 0;
-    z-index: 1000;
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--glass-border);
+    box-sizing: border-box;
 }
 
 .back-btn {
