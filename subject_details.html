@@ -25,22 +25,41 @@
             <p style="color: var(--text-muted);">Access syllabus and study materials for this subject.</p>
         </div>
 
-        <div id="syllabus-section" style="display: none; margin-bottom: 2.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.2rem;">
-                <i class="fas fa-list-ul" style="color: var(--secondary);"></i>
-                <h2 style="font-size: 1.4rem;">Course Syllabus</h2>
+        <div id="syllabus-section" class="collapsible-section glass" style="display: none;">
+            <div class="collapsible-header" onclick="this.parentElement.classList.toggle('expanded')">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-list-ul" style="color: var(--secondary);"></i>
+                    <h2>Course Information</h2>
+                </div>
+                <i class="fas fa-chevron-down toggle-icon"></i>
             </div>
-            <div id="syllabus-list" class="syllabus-list">
+            <div id="syllabus-list" class="collapsible-content syllabus-list">
                 <!-- Dynamically populated units -->
             </div>
         </div>
 
-        <div id="important-questions-section" style="display: none; margin-bottom: 2.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.2rem;">
-                <i class="fas fa-star" style="color: #fbbf24;"></i>
-                <h2 style="font-size: 1.4rem;">Important Questions</h2>
+        <div id="important-questions-section" class="collapsible-section glass" style="display: none;">
+            <div class="collapsible-header" onclick="this.parentElement.classList.toggle('expanded')">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-star" style="color: #fbbf24;"></i>
+                    <h2>Important Questions</h2>
+                </div>
+                <i class="fas fa-chevron-down toggle-icon"></i>
             </div>
-            <div id="important-questions-list" class="important-questions-grid">
+            <div id="important-questions-list" class="collapsible-content important-questions-grid">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <div id="two-marks-section" class="collapsible-section glass" style="display: none;">
+            <div class="collapsible-header" onclick="this.parentElement.classList.toggle('expanded')">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-marker" style="color: var(--primary-light);"></i>
+                    <h2>2-Mark Notes</h2>
+                </div>
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+            <div id="two-marks-list" class="collapsible-content resource-list">
                 <!-- Dynamically populated -->
             </div>
         </div>
@@ -168,32 +187,62 @@
                         importantSection.style.display = 'none';
                     }
 
-                    // 3. Render Materials
+                    // 3. Render 2-Mark Notes & Study Materials
+                    const allMaterials = subjectData.materials || [];
+                    const twoMarkFiles = allMaterials.filter(m => 
+                        m.file.toLowerCase().includes('2m') || 
+                        m.file.toLowerCase().includes('2mark') ||
+                        m.name.toLowerCase().includes('2-mark') ||
+                        m.name.toLowerCase().includes('2 mark')
+                    );
+                    const genericMaterials = allMaterials.filter(m => !twoMarkFiles.includes(m));
+
+                    // 3a. Render 2-Mark Section
+                    const twoMarksSection = document.getElementById('two-marks-section');
+                    const twoMarksList = document.getElementById('two-marks-list');
+                    if (twoMarkFiles.length > 0) {
+                        twoMarksSection.style.display = 'block';
+                        twoMarksList.innerHTML = '';
+                        twoMarkFiles.forEach(unit => {
+                            const card = createResourceCard(unit, subject);
+                            twoMarksList.appendChild(card);
+                        });
+                    } else {
+                        twoMarksSection.style.display = 'none';
+                    }
+
+                    // 3b. Render Generic Study Materials
                     resourceList.innerHTML = '';
-                    if (subjectData.materials && subjectData.materials.length > 0) {
-                        subjectData.materials.forEach(unit => {
-                            const card = document.createElement('div');
-                            card.className = 'resource-card glass';
-                            card.onclick = () => {
-                                location.href = `viewer.html?file=${encodeURIComponent(unit.file)}&title=${encodeURIComponent(unit.name)}&subject=${subject}`;
-                            };
-                            
-                            card.innerHTML = `
-                                <div style="display: flex; align-items: center; gap: 1rem;">
-                                    <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: var(--primary-light);"></i>
-                                    <div>
-                                        <span style="font-weight: 600; display: block;">${unit.name}</span>
-                                        <span style="font-size: 0.75rem; color: var(--text-muted);">PDF Document</span>
-                                    </div>
-                                </div>
-                                <div class="arrow-btn">
-                                    <i class="fas fa-chevron-right"></i>
-                                </div>
-                            `;
+                    if (genericMaterials.length > 0) {
+                        genericMaterials.forEach(unit => {
+                            const card = createResourceCard(unit, subject);
                             resourceList.appendChild(card);
                         });
                     } else {
-                        resourceList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">No materials available yet.</div>';
+                        resourceList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">No general materials available yet.</div>';
+                    }
+
+                    // Helper function to create resource cards
+                    function createResourceCard(unit, subjectKey) {
+                        const card = document.createElement('div');
+                        card.className = 'resource-card glass';
+                        card.onclick = () => {
+                            location.href = `viewer.html?file=${encodeURIComponent(unit.file)}&title=${encodeURIComponent(unit.name)}&subject=${subjectKey}`;
+                        };
+                        
+                        card.innerHTML = `
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: var(--primary-light);"></i>
+                                <div>
+                                    <span style="font-weight: 600; display: block;">${unit.name}</span>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">PDF Document</span>
+                                </div>
+                            </div>
+                            <div class="arrow-btn">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        `;
+                        return card;
                     }
                 } else {
                     console.warn("Subject not found or missing from database");

@@ -57,17 +57,57 @@ export const subjectMaterials = {
             { name: 'Unit 3 Design', file: 'oose/oose_u3.pdf' },
             { name: 'Unit 4 Implementation', file: 'oose/oose_u4.pdf' },
             { name: 'Unit 5 Testing', file: 'oose/oose_u5.pdf' },
-            { name: 'Unit 4 Advanced (VI)', file: 'oose/VI_CSE_CCS356_OOSE_Unit4.pdf' },
-            { name: 'Unit 5 Advanced (VI)', file: 'oose/VI_CSE_CCS356_OOSE_Unit5.pdf' },
-            { name: '2-Mark Master List', file: 'oose/oose_2m.pdf' },
-            { name: 'Assignment Front Page', file: 'oose/OOSE-Assignment front page.docx' }
+
+            { name: '2-Mark Questions', file: 'oose/oose_2m.pdf' }
         ],
         importantQuestions: [
-            { unit: 'Unit 1', questions: ['Agile Process', 'Software Process', 'Extreme Programming (XP) Process'] },
-            { unit: 'Unit 2', questions: ['Software Requirement Specification (SRS)', 'Requirement Gathering and Analysis', 'Object Modeling using UML (Class, Activity, Use Case, Sequence, State Chart, Component, Deployment Diagrams)', 'Case Study'] },
-            { unit: 'Unit 3', questions: ['UI Interface Design', 'MVC Architecture', 'Types of Cohesion and Coupling', 'Architectural Styles'] },
-            { unit: 'Unit 4', questions: ['Regression Testing', 'Unit Testing and Integration Testing', 'Types of Software Testing', 'Debugging', 'Comparison of White and Black Box Testing'] },
-            { unit: 'Unit 5', questions: ['Software Project Management', 'Deployment Pipeline Architecture', 'DevOps'] }
+            { 
+                unit: 'Unit 1', 
+                questions: [
+                    'Perspective Process Models (Waterfall, Spiral, etc.)', 
+                    'Agile Process Models and Principles', 
+                    'Extreme Programming (XP) Process', 
+                    'Specialized Process Models'
+                ] 
+            },
+            { 
+                unit: 'Unit 2', 
+                questions: [
+                    'Software Requirement Engineering Process', 
+                    'SRS (Software Requirement Specification) Components', 
+                    'UML Modeling: Use Case, Class, and Interaction Diagrams', 
+                    'Data Flow Diagrams (DFD) and State Chart Diagrams', 
+                    'Formal Specifications and Petri Nets'
+                ] 
+            },
+            { 
+                unit: 'Unit 3', 
+                questions: [
+                    'Software Design Principles: Coupling and Cohesion', 
+                    'Architectural Styles (Layered, Client-Server, Pipe and Filter)', 
+                    'Design Patterns: MVC, Observer, Proxy, and Facade', 
+                    'User Interface Design Principles'
+                ] 
+            },
+            { 
+                unit: 'Unit 4', 
+                questions: [
+                    'Black-box and White-box Testing Techniques', 
+                    'Levels of Testing: Unit, Integration, and System Testing', 
+                    'Regression Testing and its Importance', 
+                    'Debugging Process and Techniques', 
+                    'Program Analysis: Symbolic Execution and Model Checking'
+                ] 
+            },
+            { 
+                unit: 'Unit 5', 
+                questions: [
+                    'Software Configuration Management (SCM)', 
+                    'Project Scheduling and Tracking (Gantt, PERT)', 
+                    'DevOps: CI/CD Pipeline and Deployment Architecture', 
+                    'Cloud as a Platform(Case study)'
+                ] 
+            }
         ]
     },
     'eh': {

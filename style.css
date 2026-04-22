@@ -623,3 +623,62 @@ iframe {
         align-items: center;
     }
 }
+
+/* Collapsible Sections */
+.collapsible-section {
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.collapsible-header {
+    padding: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.collapsible-header:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary-light);
+}
+
+.collapsible-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0 1rem;
+    opacity: 0;
+}
+
+.collapsible-section.expanded .collapsible-content {
+    max-height: 2000px; /* Large enough to fit content */
+    padding: 1.5rem 1rem;
+    opacity: 1;
+}
+
+.collapsible-section.expanded .collapsible-header {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.collapsible-section .toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.collapsible-section.expanded .toggle-icon {
+    transform: rotate(180deg);
+}

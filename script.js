@@ -7,11 +7,46 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. UI Elements (unchanged)
-    // ... logic for showSignup, showLogin ...
+    // 1. UI Elements
+    const loginSection = document.getElementById('login-section');
+    const signupSection = document.getElementById('signup-section');
+    const showSignupLink = document.getElementById('show-signup');
+    const showLoginLink = document.getElementById('show-login');
 
-    // 2. Captcha Logic (unchanged)
-    // ... logic for generateCaptcha ...
+    if (showSignupLink) {
+        showSignupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginSection.style.display = 'none';
+            signupSection.style.display = 'block';
+            generateCaptcha();
+        });
+    }
+
+    if (showLoginLink) {
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupSection.style.display = 'none';
+            loginSection.style.display = 'block';
+        });
+    }
+
+    // 2. Captcha Logic
+    let currentCaptcha = "";
+    window.generateCaptcha = function() {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let captcha = "";
+        for (let i = 0; i < 6; i++) {
+            captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        currentCaptcha = captcha;
+        const display = document.getElementById('captcha-display');
+        if (display) display.textContent = captcha;
+    };
+
+    const refreshCaptcha = document.getElementById('refresh-captcha');
+    if (refreshCaptcha) {
+        refreshCaptcha.addEventListener('click', generateCaptcha);
+    }
 
     // 3. Auth Persistence Check
     onAuthStateChanged(auth, async (user) => {
@@ -20,24 +55,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (user) {
             console.log("User logged in:", user.email);
-            if (page === "index.html" || page === "") {
-                window.location.href = "home.html";
-            }
             
-            // Show username using Firestore
-            const userNameDisplay = document.getElementById('user-name');
-            if (userNameDisplay) {
-                try {
-                    const userDoc = await getDoc(doc(fs, "users", user.uid));
-                    if (userDoc.exists()) {
-                        userNameDisplay.textContent = userDoc.data().name;
-                    } else {
-                        userNameDisplay.textContent = user.email.split('@')[0];
-                    }
-                } catch (error) {
-                    console.error("Error fetching user data:", error);
-                    userNameDisplay.textContent = "Student";
+            // Check if user has a profile, if not create one (Joined Date logic)
+            try {
+                const userRef = doc(fs, "users", user.uid);
+                const userDoc = await getDoc(userRef);
+                
+                if (!userDoc.exists()) {
+                    // First time login or missing profile
+                    await setDoc(userRef, {
+                        name: user.displayName || user.email.split('@')[0],
+                        email: user.email,
+                        role: user.email === 'vishnurajan24766@gmail.com' ? 'admin' : 'student',
+                        createdAt: new Date().toISOString()
+                    });
                 }
+                
+                if (page === "index.html" || page === "") {
+                    window.location.href = "home.html";
+                }
+
+                // Show username using Firestore
+                const userNameDisplay = document.getElementById('user-name');
+                if (userNameDisplay) {
+                    const data = userDoc.exists() ? userDoc.data() : { name: user.email.split('@')[0] };
+                    userNameDisplay.textContent = data.name || user.email.split('@')[0];
+                }
+            } catch (error) {
+                console.error("Error managing user profile:", error);
             }
         } else {
             if (page !== "index.html" && page !== "") {
@@ -72,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
                 const user = userCredential.user;
 
-                // Save profile to Firestore instead of RTDB
+                // Save profile to Firestore
                 await setDoc(doc(fs, "users", user.uid), {
                     name: name,
                     email: email,
@@ -81,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 alert("Account created successfully!");
+                window.location.href = "home.html";
             } catch (error) {
                 alert("Signup failed: " + error.message);
             }
