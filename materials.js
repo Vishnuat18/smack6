@@ -52,32 +52,32 @@ export const subjectMaterials = {
             }
         ],
         materials: [
-            { name: 'Object Oriented SE Full', file: 'oose/oose_notes.pdf' },
-            { name: 'Unit 1 Basics', file: 'oose/oose_unit1.pdf' },
-            { name: 'Unit 3 Design', file: 'oose/oose_u3.pdf' },
-            { name: 'Unit 4 Implementation', file: 'oose/oose_u4.pdf' },
-            { name: 'Unit 5 Testing', file: 'oose/oose_u5.pdf' },
-
-            { name: '2-Mark Questions', file: 'oose/oose_2m.pdf' }
+            { name: 'Unit 1: Software Process & Agile', file: 'oose/notes/oose_u1.pdf' },
+            { name: 'Unit 2: Requirements Analysis', file: 'oose/notes/oose_u2.pdf' },
+            { name: 'Unit 3: Software Design', file: 'oose/notes/oose_u3.pdf' },
+            { name: 'Unit 4: Testing & Maintenance', file: 'oose/notes/oose_u4.pdf' },
+            { name: 'Unit 5: Project Management', file: 'oose/notes/oose_u5.pdf' },
+            { name: '2-Mark Question Bank', file: 'oose/2m/oose_2m.pdf' }
+        ],
+        previousYearQuestions: [
+            { year: 'Apr/May 2024', file: 'oose/qn/CCS356-Object-Oriented-Software-Engineering-Apr-May-2024-Question-Paper-Download.pdf' }
         ],
         importantQuestions: [
             { 
                 unit: 'Unit 1', 
                 questions: [
-                    'Perspective Process Models (Waterfall, Spiral, etc.)', 
+                    'Software Process Models (Waterfall, RAD, Spiral)', 
                     'Agile Process Models and Principles', 
                     'Extreme Programming (XP) Process', 
-                    'Specialized Process Models'
                 ] 
             },
             { 
                 unit: 'Unit 2', 
                 questions: [
-                    'Software Requirement Engineering Process', 
-                    'SRS (Software Requirement Specification) Components', 
-                    'UML Modeling: Use Case, Class, and Interaction Diagrams', 
-                    'Data Flow Diagrams (DFD) and State Chart Diagrams', 
-                    'Formal Specifications and Petri Nets'
+                    'Software Requirement Analysis and Gathering', 
+                    'Software Requirement Specification(SRS)', 
+                    'Object Modelling using UML(Case study)', 
+                    'Petrinets'
                 ] 
             },
             { 
@@ -86,25 +86,23 @@ export const subjectMaterials = {
                     'Software Design Principles: Coupling and Cohesion', 
                     'Architectural Styles (Layered, Client-Server, Pipe and Filter)', 
                     'Design Patterns: MVC, Observer, Proxy, and Facade', 
-                    'User Interface Design Principles'
                 ] 
             },
             { 
                 unit: 'Unit 4', 
                 questions: [
-                    'Black-box and White-box Testing Techniques', 
+                    'Compare Black-box and White-box Testing', 
                     'Levels of Testing: Unit, Integration, and System Testing', 
                     'Regression Testing and its Importance', 
-                    'Debugging Process and Techniques', 
-                    'Program Analysis: Symbolic Execution and Model Checking'
+                    'Debugging Process and Techniques'
                 ] 
             },
             { 
                 unit: 'Unit 5', 
                 questions: [
-                    'Software Configuration Management (SCM)', 
-                    'Project Scheduling and Tracking (Gantt, PERT)', 
-                    'DevOps: CI/CD Pipeline and Deployment Architecture', 
+                    'Software Project Management (SPM)',
+                    'Project Scheduling', 
+                    'DevOps: Motivation and Deployment Architecture', 
                     'Cloud as a Platform(Case study)'
                 ] 
             }

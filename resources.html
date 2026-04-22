@@ -8,30 +8,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav class="navbar glass">
-        <div class="logo">
-            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 8px;">
-            <span>SMACK</span>
-        </div>
-        <div class="nav-links">
-            <a href="home.html">Dashboard</a>
-            <a href="resources.html" class="active">Resources</a>
-            <a href="admin.html" id="nav-admin-link" style="display: none;">Admin Panel</a>
-            <a href="profile.html" class="profile-link" style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-weight: 600;">
-                <div id="nav-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: white;">?</div>
-                <span id="nav-user-name">Profile</span>
+    <header class="app-header glass">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="home.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
             </a>
-            <a href="#" class="logout"><i class="fas fa-sign-out-alt"></i></a>
+            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 6px;">
+            <div style="font-family: 'Outfit'; font-weight: 700; font-size: 1.1rem;">Resources</div>
         </div>
-    </nav>
-
-    <!-- Mobile Header -->
-    <header class="app-header glass" style="display: none;">
-        <div style="display: flex; align-items: center; gap: 0.8rem;">
-            <img src="logo.png" alt="SMACK" style="width: 35px; height: 35px; border-radius: 8px;">
-            <h2 style="font-family: 'Outfit';">Resources</h2>
-        </div>
-        <a href="profile.html" id="mobile-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white;">?</a>
+        <a href="profile.html" id="nav-avatar-header" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-weight: 700;">?</a>
     </header>
 
     <div class="container" style="padding-bottom: 5rem;">
@@ -42,24 +27,24 @@
 
         <div class="subject-grid" id="resources-grid">
             <!-- Previous Year QPs Card -->
-            <div class="subject-card glass" style="cursor: default;">
-                <div class="badge" style="background: rgba(236, 72, 153, 0.2); color: var(--secondary);">COMING SOON</div>
+            <div class="subject-card glass" id="prev-year-card" style="cursor: pointer; transition: transform 0.2s;">
+                <div class="badge" style="background: rgba(236, 72, 153, 0.2); color: var(--secondary);">ACTIVE</div>
                 <i class="fas fa-file-invoice" style="color: var(--secondary);"></i>
                 <h3>Previous Year QPs</h3>
                 <p>Access university question papers from previous years for all subjects.</p>
-                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">
-                    <i class="fas fa-clock"></i> Uploading shortly
+                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--secondary);">
+                    <i class="fas fa-bolt"></i> Click to view all
                 </div>
             </div>
 
             <!-- Important Qns Card -->
-            <div class="subject-card glass" style="cursor: default;">
-                <div class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent);">COMING SOON</div>
+            <div class="subject-card glass" id="important-card" style="cursor: pointer; transition: transform 0.2s;">
+                <div class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent);">ACTIVE</div>
                 <i class="fas fa-question-circle" style="color: var(--accent);"></i>
                 <h3>Important Qns</h3>
                 <p>Hand-picked questions based on frequency and university importance.</p>
-                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">
-                    <i class="fas fa-clock"></i> Uploading shortly
+                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--accent);">
+                    <i class="fas fa-bolt"></i> Click to view all
                 </div>
             </div>
 
@@ -109,9 +94,7 @@
                         const userDoc = await getDoc(doc(fs, "users", user.uid));
                         if (userDoc.exists()) {
                             const data = userDoc.data();
-                            document.getElementById('nav-user-name').textContent = data.name.split(' ')[0];
-                            document.getElementById('nav-avatar').textContent = data.name.charAt(0).toUpperCase();
-                            document.getElementById('mobile-avatar').textContent = data.name.charAt(0).toUpperCase();
+                             document.getElementById('nav-avatar-header').textContent = data.name.charAt(0).toUpperCase();
                             
                             // Role-based UI visibility
                             const adminLinks = document.querySelectorAll('a[href="admin.html"]');
@@ -130,13 +113,17 @@
                 }
             });
 
-            // Filtering Logic for 2-Mark Notes
+            // Filtering Logic
             const marksCard = document.getElementById('2marks-card');
+            const prevYearCard = document.getElementById('prev-year-card');
+            const importantCard = document.getElementById('important-card');
             const filteredSection = document.getElementById('filtered-resources-section');
             const filteredList = document.getElementById('filtered-list');
+            const filteredTitle = document.getElementById('filtered-title');
             const closeBtn = document.getElementById('close-filtered');
             const resourcesGrid = document.getElementById('resources-grid');
 
+            // 2-Mark Filtering
             marksCard.addEventListener('click', () => {
                 const results = [];
                 Object.entries(subjectMaterials).forEach(([key, subject]) => {
@@ -149,12 +136,60 @@
                         }
                     });
                 });
+                renderFilteredList(results, "2-Mark Master List", "fas fa-marker", "var(--primary-light)");
+            });
 
+            // Previous Year Filtering
+            prevYearCard.addEventListener('click', () => {
+                const results = [];
+                Object.entries(subjectMaterials).forEach(([key, subject]) => {
+                    if (subject.previousYearQuestions) {
+                        subject.previousYearQuestions.forEach(m => {
+                            results.push({ name: m.year, file: m.file, subjectKey: key, subjectName: subject.fullName });
+                        });
+                    }
+                });
+                renderFilteredList(results, "Previous Year Papers", "fas fa-history", "var(--accent)");
+            });
+
+            // Important Questions Filtering
+            importantCard.addEventListener('click', () => {
+                // Since Important Questions are units/text, we'll link to subject details for now
+                // Or list subjects that have important questions
+                const subjectsWithImportant = [];
+                Object.entries(subjectMaterials).forEach(([key, subject]) => {
+                    if (subject.importantQuestions && subject.importantQuestions.length > 0) {
+                        subjectsWithImportant.push({ key, name: subject.fullName });
+                    }
+                });
+
+                filteredList.innerHTML = subjectsWithImportant.map(s => `
+                    <div class="resource-card glass" onclick="location.href='subject_details.html?subject=${s.key}'" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-star" style="font-size: 1.5rem; color: #fbbf24;"></i>
+                            <div>
+                                <span style="font-weight: 600; display: block;">${s.name}</span>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">View Important Questions</span>
+                            </div>
+                        </div>
+                        <div class="arrow-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                `).join('');
+                
+                filteredTitle.textContent = "Important Questions (by Subject)";
+                filteredSection.style.display = 'block';
+                resourcesGrid.style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            function renderFilteredList(results, title, iconClass, iconColor) {
                 if (results.length > 0) {
                     filteredList.innerHTML = results.map(m => `
                         <div class="resource-card glass" onclick="location.href='viewer.html?file=${encodeURIComponent(m.file)}&title=${encodeURIComponent(m.name)}&subject=${m.subjectKey}'" style="cursor: pointer;">
                             <div style="display: flex; align-items: center; gap: 1rem;">
-                                <i class="fas fa-marker" style="font-size: 1.5rem; color: var(--primary-light);"></i>
+                                <i class="${iconClass}" style="font-size: 1.5rem; color: ${iconColor};"></i>
                                 <div>
                                     <span style="font-weight: 600; display: block;">${m.name}</span>
                                     <span style="font-size: 0.75rem; color: var(--text-muted);">${m.subjectName}</span>
@@ -166,13 +201,14 @@
                         </div>
                     `).join('');
                 } else {
-                    filteredList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No 2-mark notes found yet.</div>';
+                    filteredList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No resources found yet.</div>';
                 }
 
+                filteredTitle.textContent = title;
                 filteredSection.style.display = 'block';
                 resourcesGrid.style.display = 'none';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+            }
 
             closeBtn.addEventListener('click', () => {
                 filteredSection.style.display = 'none';

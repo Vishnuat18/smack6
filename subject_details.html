@@ -64,6 +64,19 @@
             </div>
         </div>
 
+        <div id="prev-year-section" class="collapsible-section glass" style="display: none;">
+            <div class="collapsible-header" onclick="this.parentElement.classList.toggle('expanded')">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-history" style="color: var(--accent);"></i>
+                    <h2>Previous Year Questions</h2>
+                </div>
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+            <div id="prev-year-list" class="collapsible-content resource-list">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
         <div id="materials-section">
             <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.2rem;">
                 <i class="fas fa-book" style="color: var(--primary-light);"></i>
@@ -185,6 +198,21 @@
                         });
                     } else {
                         importantSection.style.display = 'none';
+                    }
+
+                    // 2b. Render Previous Year Questions
+                    const prevYearSection = document.getElementById('prev-year-section');
+                    const prevYearList = document.getElementById('prev-year-list');
+                    if (subjectData.previousYearQuestions && subjectData.previousYearQuestions.length > 0) {
+                        prevYearSection.style.display = 'block';
+                        prevYearList.innerHTML = '';
+                        subjectData.previousYearQuestions.forEach(item => {
+                            const unit = { name: item.year, file: item.file };
+                            const card = createResourceCard(unit, subject);
+                            prevYearList.appendChild(card);
+                        });
+                    } else {
+                        prevYearSection.style.display = 'none';
                     }
 
                     // 3. Render 2-Mark Notes & Study Materials

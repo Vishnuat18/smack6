@@ -200,11 +200,27 @@
 
         @media (max-width: 768px) {
             .viewer-header {
-                padding: 0.6rem 1rem;
+                padding: 0.6rem 0.8rem;
+                gap: 0.5rem;
+            }
+            .viewer-header div:first-child {
+                gap: 0.6rem !important;
             }
             .viewer-title {
-                max-width: 130px;
-                font-size: 0.9rem;
+                max-width: 110px;
+                font-size: 0.85rem;
+            }
+            .viewer-header img {
+                display: none; /* Hide logo on mobile to save space */
+            }
+            #page-indicator {
+                padding: 0.3rem 0.6rem !important;
+                font-size: 0.7rem !important;
+            }
+            .eye-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 0.85rem;
             }
             #pdf-container {
                 padding: 0.4rem;
@@ -226,6 +242,16 @@
             }
             .thumbnail-item .page-label {
                 font-size: 0.6rem;
+            }
+        }
+
+        /* Extreme small devices */
+        @media (max-width: 380px) {
+            .viewer-title {
+                max-width: 80px;
+            }
+            #full-screen-toggle {
+                display: none; /* Hide fullscreen on very small screens */
             }
         }
     </style>
