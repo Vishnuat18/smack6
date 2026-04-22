@@ -50,8 +50,10 @@
         
         .main-canvas-wrapper {
             position: relative;
-            transition: transform 0.3s ease-out, opacity 0.2s ease-out;
+            transition: transform 0.1s ease-out, opacity 0.2s ease-out;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            transform-origin: center center;
+            touch-action: none; /* Crucial for custom touch handling */
         }
 
         .main-canvas-wrapper.sliding-left {
@@ -322,6 +324,13 @@
             ctx = canvas.getContext('2d'),
             canvasWrapper = document.getElementById('canvas-wrapper');
 
+        // Zoom & Pan State
+        let currentScale = 1;
+        let initialDistance = 0;
+        let isPanning = false;
+        let startX, startY;
+        let translateX = 0, translateY = 0;
+
         // Render the main page
         const renderPage = (num, direction = null) => {
             if (pageIsRendering) {
@@ -362,8 +371,22 @@
                     document.getElementById('page-num').textContent = num;
                     document.getElementById('page-slider').value = num;
                     updateActiveThumbnail(num);
+                    
+                    // Reset zoom on page change
+                    resetZoom();
                 });
             }, direction ? 150 : 0);
+        };
+
+        const resetZoom = () => {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateTransform();
+        };
+
+        const updateTransform = () => {
+            canvasWrapper.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
         };
 
         const updateActiveThumbnail = (num) => {
@@ -477,15 +500,54 @@
                 }
             };
 
-            // Touch events for swipe
+            // Advanced Touch Handling (Pinch & Pan)
             canvasWrapper.addEventListener('touchstart', e => {
-                touchStartX = e.changedTouches[0].screenX;
-            }, { passive: true });
+                if (e.touches.length === 2) {
+                    // Pinch Start
+                    initialDistance = Math.hypot(
+                        e.touches[0].pageX - e.touches[1].pageX,
+                        e.touches[0].pageY - e.touches[1].pageY
+                    );
+                } else if (e.touches.length === 1) {
+                    // Pan Start (only if zoomed)
+                    if (currentScale > 1) {
+                        isPanning = true;
+                        startX = e.touches[0].pageX - translateX;
+                        startY = e.touches[0].pageY - translateY;
+                    }
+                    touchStartX = e.touches[0].screenX;
+                }
+            });
+
+            canvasWrapper.addEventListener('touchmove', e => {
+                if (e.touches.length === 2) {
+                    // Pinching
+                    e.preventDefault();
+                    const currentDistance = Math.hypot(
+                        e.touches[0].pageX - e.touches[1].pageX,
+                        e.touches[0].pageY - e.touches[1].pageY
+                    );
+                    const zoomFactor = currentDistance / initialDistance;
+                    currentScale = Math.min(Math.max(1, currentScale * zoomFactor), 4);
+                    initialDistance = currentDistance;
+                    updateTransform();
+                } else if (e.touches.length === 1 && isPanning) {
+                    // Panning
+                    e.preventDefault();
+                    translateX = e.touches[0].pageX - startX;
+                    translateY = e.touches[0].pageY - startY;
+                    updateTransform();
+                }
+            }, { passive: false });
 
             canvasWrapper.addEventListener('touchend', e => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            }, { passive: true });
+                if (e.touches.length < 2) initialDistance = 0;
+                if (e.touches.length === 0) {
+                    isPanning = false;
+                    touchEndX = e.changedTouches[0].screenX;
+                    if (currentScale === 1) handleSwipe();
+                }
+            });
 
             // Keyboard navigation
             window.addEventListener('keydown', e => {

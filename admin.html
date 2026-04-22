@@ -53,6 +53,20 @@
                 </a>
             </div>
         </div>
+
+        <!-- Feedback Display Section -->
+        <div class="glass" style="padding: 1.5rem; border-radius: var(--radius-lg); margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                <h3 style="margin: 0;"><i class="fas fa-comments" style="color: var(--secondary);"></i> User Feedback</h3>
+                <span id="feedback-count" class="badge" style="background: rgba(236, 72, 153, 0.1); color: var(--secondary);">0 Total</span>
+            </div>
+            <div id="feedback-list" style="display: flex; flex-direction: column; gap: 1rem; max-height: 400px; overflow-y: auto; padding-right: 0.5rem;" class="no-scrollbar">
+                <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                    <p>Loading feedback...</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Admin Mobile Nav -->
@@ -64,7 +78,7 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, fs, doc, getDoc, collection, getDocs } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, collection, getDocs, query, orderBy } from "./firebase-config.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             // Guard Logic: Check Firestore role
@@ -92,9 +106,53 @@
                     // Fetch total users from Firestore
                     const querySnapshot = await getDocs(collection(fs, "users"));
                     statsUsers.textContent = querySnapshot.size;
+
+                    // Fetch and render feedback
+                    syncFeedback();
                 } catch (error) {
                     console.error("Error fetching stats:", error);
                     statsUsers.textContent = "Err";
+                }
+            }
+
+            async function syncFeedback() {
+                const feedbackList = document.getElementById('feedback-list');
+                const feedbackCount = document.getElementById('feedback-count');
+
+                try {
+                    const q = query(collection(fs, "feedback"), orderBy("timestamp", "desc"));
+                    const querySnapshot = await getDocs(q);
+                    
+                    feedbackCount.textContent = `${querySnapshot.size} Total`;
+
+                    if (querySnapshot.empty) {
+                        feedbackList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No feedback received yet.</div>';
+                        return;
+                    }
+
+                    feedbackList.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const fb = doc.data();
+                        const date = fb.timestamp ? new Date(fb.timestamp.toDate()).toLocaleString() : "Recently";
+                        
+                        const fbCard = document.createElement('div');
+                        fbCard.className = 'glass';
+                        fbCard.style.padding = '1rem';
+                        fbCard.style.borderRadius = 'var(--radius-sm)';
+                        fbCard.style.border = '1px solid var(--glass-border)';
+                        fbCard.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                <div style="font-weight: 700; color: var(--primary-light); font-size: 0.9rem;">${fb.userName || 'User'}</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">${date}</div>
+                            </div>
+                            <p style="font-size: 0.9rem; margin: 0; color: var(--text-main); line-height: 1.4;">${fb.message}</p>
+                            <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">${fb.userEmail}</div>
+                        `;
+                        feedbackList.appendChild(fbCard);
+                    });
+                } catch (error) {
+                    console.error("Error fetching feedback:", error);
+                    feedbackList.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;">Error loading feedback.</div>';
                 }
             }
         });

@@ -79,6 +79,18 @@
                     <button class="btn logout-btn">
                         <i class="fas fa-sign-out-alt"></i> Sign Out from SMACK
                     </button>
+                <!-- Feedback Section -->
+                <div class="glass action-card">
+                    <h3><i class="fas fa-comment-dots" style="color: var(--secondary);"></i> Send Feedback</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Have a suggestion or found a bug? Let us know!</p>
+                    <div class="form-group">
+                        <textarea id="feedback-text" rows="3" placeholder="Type your feedback here..." 
+                            style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); color: var(--text-main); font-family: inherit; resize: vertical;"></textarea>
+                    </div>
+                    <button class="btn btn-primary" id="send-feedback-btn" style="background: linear-gradient(to right, var(--secondary), #f472b6);">
+                        <i class="fas fa-paper-plane"></i> Submit Feedback
+                    </button>
+                    <p id="feedback-status" class="status-msg" style="margin-top: 0.8rem;"></p>
                 </div>
             </div>
         </div>
@@ -261,7 +273,7 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, fs, doc, getDoc, setDoc, updateDoc } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, setDoc, updateDoc, collection, addDoc, serverTimestamp } from "./firebase-config.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             const updateBtn = document.getElementById('update-profile-btn');
@@ -384,6 +396,50 @@
                         updateBtn.disabled = false;
                         updateBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
                     }
+                }
+            });
+
+            // Feedback Logic
+            const feedbackBtn = document.getElementById('send-feedback-btn');
+            const feedbackText = document.getElementById('feedback-text');
+            const feedbackStatus = document.getElementById('feedback-status');
+
+            feedbackBtn.addEventListener('click', async () => {
+                const user = auth.currentUser;
+                const text = feedbackText.value.trim();
+
+                if (!text) {
+                    feedbackStatus.textContent = "Please enter some feedback.";
+                    feedbackStatus.style.color = "#ef4444";
+                    feedbackStatus.style.display = "block";
+                    return;
+                }
+
+                feedbackBtn.disabled = true;
+                feedbackBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+                try {
+                    await addDoc(collection(fs, "feedback"), {
+                        userId: user.uid,
+                        userName: displayName.textContent,
+                        userEmail: user.email,
+                        message: text,
+                        timestamp: serverTimestamp()
+                    });
+
+                    feedbackStatus.textContent = "Feedback sent! Thank you.";
+                    feedbackStatus.style.color = "var(--accent)";
+                    feedbackStatus.style.display = "block";
+                    feedbackText.value = "";
+                    setTimeout(() => { feedbackStatus.style.display = "none"; }, 5000);
+                } catch (error) {
+                    console.error("Feedback error:", error);
+                    feedbackStatus.textContent = "Failed to send feedback.";
+                    feedbackStatus.style.color = "#ef4444";
+                    feedbackStatus.style.display = "block";
+                } finally {
+                    feedbackBtn.disabled = false;
+                    feedbackBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Feedback';
                 }
             });
         });
