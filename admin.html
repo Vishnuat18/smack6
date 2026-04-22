@@ -6,6 +6,7 @@
     <title>Admin Dashboard - Sem 6 Notes</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="logo.png">
 </head>
 <body>
     <header class="app-header glass">
@@ -142,11 +143,20 @@
                         fbCard.style.border = '1px solid var(--glass-border)';
                         fbCard.innerHTML = `
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-                                <div style="font-weight: 700; color: var(--primary-light); font-size: 0.9rem;">${fb.userName || 'User'}</div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-user-circle" style="color: var(--primary-light);"></i>
+                                    <div style="font-weight: 700; color: var(--primary-light); font-size: 0.9rem;">${fb.userName || 'User'}</div>
+                                </div>
                                 <div style="font-size: 0.7rem; color: var(--text-muted);">${date}</div>
                             </div>
-                            <p style="font-size: 0.9rem; margin: 0; color: var(--text-main); line-height: 1.4;">${fb.message}</p>
-                            <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">${fb.userEmail}</div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <i class="fas fa-quote-left" style="font-size: 0.7rem; color: var(--secondary); margin-top: 0.3rem;"></i>
+                                <p style="font-size: 0.9rem; margin: 0; color: var(--text-main); line-height: 1.4; flex: 1;">${fb.message}</p>
+                            </div>
+                            <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+                                <i class="fas fa-envelope-open" style="font-size: 0.6rem;"></i>
+                                ${fb.userEmail}
+                            </div>
                         `;
                         feedbackList.appendChild(fbCard);
                     });

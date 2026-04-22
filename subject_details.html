@@ -6,6 +6,7 @@
     <title>Subject Materials - Sem 6 Notes</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="logo.png">
 </head>
 <body>
     <header class="app-header glass">
@@ -160,10 +161,11 @@
                             unitCard.className = 'syllabus-card glass';
                             unitCard.innerHTML = `
                                 <div class="syllabus-header" onclick="this.parentElement.classList.toggle('expanded')">
-                                    <div style="display: flex; align-items: center; gap: 1rem;">
-                                        <span class="unit-badge">${unit.unit}</span>
-                                        <span style="font-weight: 600; font-family: 'Outfit';">${unit.title}</span>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+                                        <i class="fas fa-layer-group" style="color: var(--primary-light); font-size: 0.8rem;"></i>
+                                        <div style="font-weight: 700; color: var(--primary-light); font-size: 0.9rem;">Unit ${unit.unit}</div>
                                     </div>
+                                    <span style="font-weight: 600; font-family: 'Outfit';">${unit.title}</span>
                                     <i class="fas fa-chevron-down toggle-icon"></i>
                                 </div>
                                 <div class="syllabus-content">
@@ -187,7 +189,10 @@
                                 <div style="padding: 1.2rem;">
                                     <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem;">
                                         <span style="font-size: 0.7rem; font-weight: 800; background: rgba(251, 191, 36, 0.2); color: #fbbf24; padding: 2px 8px; border-radius: 4px;">${item.unit.toUpperCase()}</span>
-                                        <h4 style="font-size: 0.95rem; margin: 0;">Key Topics</h4>
+                                        <h4 style="font-size: 0.95rem; margin: 0; display: flex; align-items: center; gap: 0.4rem;">
+                                            <i class="fas fa-lightbulb" style="color: #fbbf24; font-size: 0.8rem;"></i>
+                                            Key Topics
+                                        </h4>
                                     </div>
                                     <ul style="margin: 0; padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem;">
                                         ${item.questions.map(q => `<li style="margin-bottom: 0.4rem;">${q}</li>`).join('')}
