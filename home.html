@@ -160,19 +160,28 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, fs, doc, getDoc, collection, getDocs } from "./firebase-config.js";
+        import { auth, fs, doc, onSnapshot, getDoc, collection, getDocs } from "./firebase-config.js";
         import { subjectMaterials } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Fetch User Data from Firestore
-            auth.onAuthStateChanged(async (user) => {
+            // 1. Fetch User Data from Firestore (Real-time)
+            auth.onAuthStateChanged((user) => {
                 if (user) {
-                    try {
-                        const userDoc = await getDoc(doc(fs, "users", user.uid));
+                    // Use onSnapshot for real-time updates and resilience against slow writes
+                    const userRef = doc(fs, "users", user.uid);
+                    onSnapshot(userRef, (userDoc) => {
                         if (userDoc.exists()) {
                             const data = userDoc.data();
-                            const firstName = data.name.split(' ')[0];
-                             document.getElementById('nav-avatar-header').textContent = data.name.charAt(0).toUpperCase();
+                            const firstName = data.name ? data.name.split(' ')[0] : user.email.split('@')[0];
+                            
+                            // Update UI
+                            const avatarHeader = document.getElementById('nav-avatar-header');
+                            const navAvatar = document.getElementById('nav-avatar');
+                            const navName = document.getElementById('nav-user-name');
+                            
+                            if (avatarHeader) avatarHeader.textContent = firstName.charAt(0).toUpperCase();
+                            if (navAvatar) navAvatar.textContent = firstName.charAt(0).toUpperCase();
+                            if (navName) navName.textContent = firstName;
                              
                              // Time-based greeting
                              const hour = new Date().getHours();
@@ -192,10 +201,15 @@
                              } else {
                                  adminLinks.forEach(link => link.style.display = 'none');
                              }
+                        } else {
+                            // Fallback if doc doesn't exist yet
+                            const fallbackName = user.email.split('@')[0];
+                            const greetingElement = document.getElementById('user-greeting');
+                            if (greetingElement) greetingElement.textContent = `Welcome, ${fallbackName}!`;
                         }
-                    } catch (error) {
-                        console.error("Error loading profile:", error);
-                    }
+                    }, (error) => {
+                        console.error("Profile snapshot error:", error);
+                    });
                 }
             });
 

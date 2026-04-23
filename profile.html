@@ -274,7 +274,7 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, fs, doc, getDoc, setDoc, updateDoc, collection, addDoc, serverTimestamp } from "./firebase-config.js";
+        import { auth, fs, doc, onSnapshot, setDoc, updateDoc, collection, addDoc, serverTimestamp } from "./firebase-config.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             const updateBtn = document.getElementById('update-profile-btn');
@@ -291,7 +291,7 @@
             // Admin Email for fallback
             const ADMIN_EMAIL = 'vishnurajan24766@gmail.com';
 
-            auth.onAuthStateChanged(async (user) => {
+            auth.onAuthStateChanged((user) => {
                 if (user) {
                     displayEmail.textContent = user.email;
                     
@@ -305,16 +305,17 @@
                     const fallbackRole = user.email === ADMIN_EMAIL ? 'admin' : 'student';
                     displayRole.textContent = fallbackRole.charAt(0).toUpperCase() + fallbackRole.slice(1);
 
-                    try {
-                        const userDoc = await getDoc(doc(fs, "users", user.uid));
+                    // Use onSnapshot for real-time updates
+                    const userRef = doc(fs, "users", user.uid);
+                    onSnapshot(userRef, (userDoc) => {
                         if (userDoc.exists()) {
                             const data = userDoc.data();
                             const name = data.name || user.email.split('@')[0];
                             const role = data.role || fallbackRole;
-                            const createdAt = data.createdAt ? new Date(data.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : "Recently";
+                            const createdAt = data.createdAt ? new Date(data.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : "Recently Joined";
                             
                             displayName.textContent = name;
-                            editInput.value = name;
+                            if (document.activeElement !== editInput) editInput.value = name;
                             displayRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
                             displayJoined.textContent = createdAt;
                             avatarChar.textContent = name.charAt(0).toUpperCase();
@@ -332,10 +333,10 @@
                             displayJoined.textContent = "New Member";
                             syncAdminLinks(fallbackRole);
                         }
-                    } catch (error) {
-                        console.error("Error fetching profile:", error);
+                    }, (error) => {
+                        console.error("Profile snapshot error:", error);
                         displayJoined.textContent = "Error loading";
-                    }
+                    });
                 } else {
                     window.location.href = 'index.html';
                 }

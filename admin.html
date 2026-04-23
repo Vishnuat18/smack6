@@ -32,11 +32,11 @@
                 <p style="font-size: 0.8rem; color: var(--text-muted);">Total Users</p>
             </div>
             <div class="stat-card glass" style="padding: 1.5rem; border-radius: var(--radius-md); text-align: center;">
-                <h2 style="font-size: 2rem; color: var(--secondary);">42</h2>
+                <h2 id="stat-materials" style="font-size: 2rem; color: var(--secondary);">...</h2>
                 <p style="font-size: 0.8rem; color: var(--text-muted);">Materials</p>
             </div>
             <div class="stat-card glass" style="padding: 1.5rem; border-radius: var(--radius-md); text-align: center;">
-                <h2 style="font-size: 2rem; color: var(--accent);">6</h2>
+                <h2 id="stat-subjects" style="font-size: 2rem; color: var(--accent);">...</h2>
                 <p style="font-size: 0.8rem; color: var(--text-muted);">Subjects</p>
             </div>
         </div>
@@ -80,6 +80,7 @@
     <script type="module" src="script.js"></script>
     <script type="module">
         import { auth, fs, doc, getDoc, collection, getDocs, query, orderBy } from "./firebase-config.js";
+        import { subjectMaterials } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             // Guard Logic: Check Firestore role
@@ -103,12 +104,25 @@
 
             async function syncDashboard() {
                 const statsUsers = document.getElementById('stat-users');
+                const statsMaterials = document.getElementById('stat-materials');
+                const statsSubjects = document.getElementById('stat-subjects');
+                
                 try {
-                    // Fetch total users from Firestore
+                    // 1. Fetch total users from Firestore
                     const querySnapshot = await getDocs(collection(fs, "users"));
                     statsUsers.textContent = querySnapshot.size;
 
-                    // Fetch and render feedback
+                    // 2. Real Stats from materials.js
+                    const subjectCount = Object.keys(subjectMaterials).length;
+                    let materialCount = 0;
+                    Object.values(subjectMaterials).forEach(sub => {
+                        if (sub.materials) materialCount += sub.materials.length;
+                    });
+
+                    statsSubjects.textContent = subjectCount;
+                    statsMaterials.textContent = materialCount;
+
+                    // 3. Fetch and render feedback
                     syncFeedback();
                 } catch (error) {
                     console.error("Error fetching stats:", error);
