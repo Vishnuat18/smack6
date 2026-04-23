@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 import { getDatabase, ref, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
-import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection, query, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
 
 // Your web app's Firebase configuration
@@ -27,5 +27,6 @@ const analytics = getAnalytics(app);
 export { 
     auth, db, fs, analytics, 
     ref, set, get, child, onValue,
-    doc, getDoc, getDocs, setDoc, updateDoc, collection, query, where
+    doc, getDoc, getDocs, setDoc, updateDoc, collection, query, where,
+    onSnapshot, addDoc, serverTimestamp, orderBy
 };

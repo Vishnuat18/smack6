@@ -103,12 +103,27 @@
 
             async function syncDashboard() {
                 const statsUsers = document.getElementById('stat-users');
+                const statsMaterials = document.querySelectorAll('.stat-card h2')[1];
+                const statsSubjects = document.querySelectorAll('.stat-card h2')[2];
+
                 try {
-                    // Fetch total users from Firestore
+                    // 1. Fetch total users from Firestore
                     const querySnapshot = await getDocs(collection(fs, "users"));
                     statsUsers.textContent = querySnapshot.size;
 
-                    // Fetch and render feedback
+                    // 2. Calculate materials and subjects from materials.js
+                    const subjects = Object.keys(subjectMaterials);
+                    let totalMaterials = 0;
+                    subjects.forEach(sub => {
+                        if (subjectMaterials[sub].materials) {
+                            totalMaterials += subjectMaterials[sub].materials.length;
+                        }
+                    });
+
+                    statsSubjects.textContent = subjects.length;
+                    statsMaterials.textContent = totalMaterials;
+
+                    // 3. Fetch and render feedback
                     syncFeedback();
                 } catch (error) {
                     console.error("Error fetching stats:", error);
