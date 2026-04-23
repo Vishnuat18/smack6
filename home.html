@@ -38,8 +38,24 @@
     <div class="container">
         <!-- Content remains the same -->
         <div class="dashboard-header" style="margin-bottom: 2rem;">
-            <h1>Welcome back, Study Buddy!</h1>
+            <h1 id="user-greeting">Welcome back, Study Buddy!</h1>
             <p style="color: var(--text-muted);">Access your Semester 6 study materials and previous year question papers below.</p>
+        </div>
+
+        <!-- Upcoming Event Section -->
+        <div id="upcoming-event-section" class="glass" style="margin-bottom: 2.5rem; padding: 1.5rem; border-radius: var(--radius-md); border-left: 4px solid var(--secondary); display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; animation: fadeIn 0.8s ease-out;">
+            <div style="display: flex; align-items: center; gap: 1.2rem;">
+                <div style="background: rgba(236, 72, 153, 0.1); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-calendar-alt" style="color: var(--secondary); font-size: 1.5rem;"></i>
+                </div>
+                <div>
+                    <h2 style="font-size: 1.1rem; margin-bottom: 2px;">Upcoming Event</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">28/04/2026: <span style="color: var(--text-main); font-weight: 600;">OOSE Exam</span></p>
+                </div>
+            </div>
+            <div style="text-align: right; display: none;" class="desktop-event-countdown">
+                <span style="font-size: 0.8rem; background: var(--secondary); color: white; padding: 4px 10px; border-radius: 20px; font-weight: 800;">5 DAYS LEFT</span>
+            </div>
         </div>
 
         <!-- Search Bar Section -->
@@ -155,8 +171,20 @@
                         const userDoc = await getDoc(doc(fs, "users", user.uid));
                         if (userDoc.exists()) {
                             const data = userDoc.data();
+                            const firstName = data.name.split(' ')[0];
                              document.getElementById('nav-avatar-header').textContent = data.name.charAt(0).toUpperCase();
                              
+                             // Time-based greeting
+                             const hour = new Date().getHours();
+                             let greeting = "Good Evening";
+                             if (hour >= 5 && hour < 12) greeting = "Good Morning";
+                             else if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
+                             
+                             const greetingElement = document.getElementById('user-greeting');
+                             if (greetingElement) {
+                                 greetingElement.textContent = `${greeting}, ${firstName}!`;
+                             }
+
                              // Role-based UI visibility
                              const adminLinks = document.querySelectorAll('a[href="admin.html"]');
                              if (data.role === 'admin') {

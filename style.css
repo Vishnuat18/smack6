@@ -690,3 +690,8 @@ iframe {
 .collapsible-section.expanded .toggle-icon {
     transform: rotate(180deg);
 }
+@media (min-width: 768px) {
+    .desktop-event-countdown {
+        display: block !important;
+    }
+}
