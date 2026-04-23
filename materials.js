@@ -149,16 +149,86 @@ export const subjectMaterials = {
         ]
     },
     'esia': {
-        fullName: 'Environmental Impact Assessment',
+        fullName: 'Environmental and Social Impact Assessment',
         shortName: 'ESIA',
         courseCode: 'OCE351',
-        icon: 'fas fa-microchip',
+        icon: 'fas fa-leaf',
+        syllabus: [
+            {
+                unit: 'UNIT I',
+                title: 'INTRODUCTION',
+                topics: 'Impacts of Development on Environment – Rio Principles of Sustainable Development Environmental Impact Assessment (EIA) – Objectives – Historical development – EIA Types – EIA in project cycle –EIA Notification and Legal Framework–Stakeholders and their Role in EIA– Selection & Registration Criteria for EIA Consultants'
+            },
+            {
+                unit: 'UNIT II',
+                title: 'ENVIRONMENTAL ASSESSMENT',
+                topics: 'Screening and Scoping in EIA – Drafting of Terms of Reference,Baseline monitoring, Prediction and Assessment of Impact on land, water, air, noise and energy, flora and fauna - Matrices – Networks – Checklist Methods - Mathematical models for Impact prediction – Analysis of alternatives'
+            },
+            {
+                unit: 'UNIT III',
+                title: 'ENVIRONMENTAL MANAGEMENT PLAN',
+                topics: 'Plan for mitigation of adverse impact on water, air and land, water, energy, flora and fauna – Environmental Monitoring Plan – EIA Report Preparation – Review of EIA Reports – Public Hearing-Environmental Clearance Post Project Monitoring'
+            },
+            {
+                unit: 'UNIT IV',
+                title: 'SOCIO ECONOMIC ASSESSMENT',
+                topics: 'Baseline monitoring of Socio economic environment – Identification of Project Affected Personal – Rehabilitation and Resettlement Plan- Economic valuation of Environmental impacts – Cost benefit Analysis'
+            },
+            {
+                unit: 'UNIT V',
+                title: 'CASE STUDIES',
+                topics: 'EIA case studies pertaining to Infrastructure Projects – Real Estate Development - Roads and Bridges – Mass Rapid Transport Systems - Ports and Harbor – Airports - Dams and Irrigation projects - Power plants – CETPs- Waste Processing and Disposal facilities – Mining Projects.'
+            }
+        ],
         materials: [
-            { name: 'ESIA Comprehensive', file: 'esia/ESIA_merged.pdf' },
-            { name: 'Unit 1 & 2 Assessment', file: 'esia/esia_notes.pdf' },
-            { name: 'Unit 3 Monitoring', file: 'esia/esia_u3.pdf' },
-            { name: 'Unit 4 Audit', file: 'esia/esia_u4.pdf' },
-            { name: 'Term Assignment 2', file: 'esia/ESIA Assignment 2.pdf' }
+            { name: 'ESIA Comprehensive', file: 'esia/notes/ESIA_merged.pdf' },
+            { name: 'Unit 1 & 2 Assessment', file: 'esia/notes/esia_notes.pdf' },
+            { name: 'Unit 3 Monitoring', file: 'esia/notes/esia_u3.pdf' },
+            { name: 'Unit 4 Audit', file: 'esia/notes/esia_u4.pdf' },
+            { name: 'Unit 5 Case Studies', file: 'esia/notes/esia_u5.pdf' },
+            { name: '2-Mark Question Bank', file: 'esia/2m/esia_2m.pdf' }
+        ],
+        previousYearQuestions: [],
+        importantQuestions: [
+            { 
+                unit: 'Unit 1', 
+                questions: [
+                    'Rio Principles of Sustainable Development', 
+                    'Environmental Impact Assessment (EIA) concepts', 
+                    'EIA Types'
+                ] 
+            },
+            { 
+                unit: 'Unit 2', 
+                questions: [
+                    'Checklist Method',
+                    'Baseline Monitoring', 
+                    'Prediction and Assessment of impact on: Land, Water, Air, Noise, and Energy'
+                ] 
+            },
+            { 
+                unit: 'Unit 3', 
+                questions: [
+                    'Plan for mitigation/adverse impact on land, water, and air', 
+                    'Environmental Monitoring Plan',
+                    'Cost-Benefit Analysis (CBA)',
+                    'EIA Report Preparation'
+                ] 
+            },
+            { 
+                unit: 'Unit 4', 
+                questions: [
+                    'Cost-Benefit Analysis', 
+                    'Rehabilitation and Resettlement Plan', 
+                    'Economic Valuation of environmental impacts'
+                ] 
+            },
+            { 
+                unit: 'Unit 5', 
+                questions: [
+                    'Case Studies'
+                ] 
+            }
         ]
     },
     'ppl': {
