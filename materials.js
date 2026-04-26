@@ -66,7 +66,7 @@ export const subjectMaterials = {
             { 
                 unit: '1', 
                 firstHalf: [
-                    'Software Process Models (Waterfall, RAD, Spiral)'
+                    'Software Process Models (Waterfall, RAD, Spiral) (or) Perspective Models'
                 ],
                 secondHalf: [
                     'Agile Process Models and Principles',
@@ -80,7 +80,7 @@ export const subjectMaterials = {
                     'Software Requirement Specification (SRS)'
                 ],
                 secondHalf: [
-                    'Object Modelling using UML (Case Study)', 
+                    'Object Modelling using UML (Case Study) (15 Marks)', 
                     'Petrinets'
                 ]
             },
