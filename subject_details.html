@@ -9,6 +9,23 @@
     <link rel="icon" type="image/png" href="logo.png">
 </head>
 <body>
+    <nav class="navbar glass">
+        <div class="logo">
+            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 8px;">
+            <span>SMACK</span>
+        </div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="resources.html">Materials</a>
+            <a href="admin.html" class="admin-only" style="display: none;">Admin Panel</a>
+            <a href="profile.html" class="profile-link" style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-weight: 600;">
+                <div id="nav-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: white;">U</div>
+                <span id="nav-user-name">Profile</span>
+            </a>
+            <a href="index.html" class="logout"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </nav>
+
     <header class="app-header glass">
         <div style="display: flex; align-items: center; gap: 1rem;">
             <a href="home.html" class="back-btn">
@@ -17,7 +34,7 @@
             <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 6px;">
             <div id="subject-title" style="font-family: 'Outfit'; font-weight: 700; font-size: 1.1rem;">SMACK Materials</div>
         </div>
-        <a href="profile.html" id="nav-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none;">U</a>
+        <a href="profile.html" id="nav-avatar-header" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none;">U</a>
     </header>
 
     <div class="container" style="padding-bottom: 5rem;">
@@ -182,25 +199,96 @@
                     if (subjectData.importantQuestions && subjectData.importantQuestions.length > 0) {
                         importantSection.style.display = 'block';
                         importantList.innerHTML = '';
-                        subjectData.importantQuestions.forEach(item => {
-                            const qCard = document.createElement('div');
-                            qCard.className = 'important-card glass';
-                            qCard.innerHTML = `
-                                <div style="padding: 1.2rem;">
-                                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem;">
-                                        <span style="font-size: 0.7rem; font-weight: 800; background: rgba(251, 191, 36, 0.2); color: #fbbf24; padding: 2px 8px; border-radius: 4px;">${item.unit.toUpperCase()}</span>
-                                        <h4 style="font-size: 0.95rem; margin: 0; display: flex; align-items: center; gap: 0.4rem;">
-                                            <i class="fas fa-lightbulb" style="color: #fbbf24; font-size: 0.8rem;"></i>
-                                            Key Topics
-                                        </h4>
-                                    </div>
-                                    <ul style="margin: 0; padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem;">
-                                        ${item.questions.map(q => `<li style="margin-bottom: 0.4rem;">${q}</li>`).join('')}
-                                    </ul>
-                                </div>
+                        
+                        // Check if it uses the new split format
+                        const isSplitFormat = subjectData.importantQuestions[0].hasOwnProperty('firstHalf');
+                        
+                        if (isSplitFormat) {
+                            // Desktop Table
+                            const tableWrapper = document.createElement('div');
+                            tableWrapper.className = 'important-table-wrapper';
+                            tableWrapper.innerHTML = `
+                                <table class="important-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 80px; text-align: center;">Unit</th>
+                                            <th>First Half</th>
+                                            <th>Second Half</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${subjectData.importantQuestions.map(item => `
+                                            <tr>
+                                                <td class="unit-col">${item.unit}</td>
+                                                <td>
+                                                    <ul>
+                                                        ${item.firstHalf.map(q => `<li>${q}</li>`).join('')}
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul>
+                                                        ${item.secondHalf.map(q => `<li>${q}</li>`).join('')}
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
                             `;
-                            importantList.appendChild(qCard);
-                        });
+                            importantList.appendChild(tableWrapper);
+
+                            // Mobile View (Image 1 inspired)
+                            const mobileView = document.createElement('div');
+                            mobileView.className = 'mobile-important-view';
+                            subjectData.importantQuestions.forEach(item => {
+                                const card = document.createElement('div');
+                                card.className = 'unit-split-card';
+                                card.innerHTML = `
+                                    <div class="unit-number-side">${item.unit}</div>
+                                    <div class="unit-content-side">
+                                        <div class="half-box">
+                                            <span class="half-title">First Half</span>
+                                            <ul class="half-list">
+                                                ${item.firstHalf.map(q => `<li>${q}</li>`).join('')}
+                                            </ul>
+                                        </div>
+                                        <div class="half-box">
+                                            <span class="half-title">Second Half</span>
+                                            <ul class="half-list">
+                                                ${item.secondHalf.map(q => `<li>${q}</li>`).join('')}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                `;
+                                mobileView.appendChild(card);
+                            });
+                            importantList.appendChild(mobileView);
+                            
+                            // Adjust layout class
+                            importantList.classList.remove('important-questions-grid');
+                        } else {
+                            // Fallback to grid for old format
+                            importantList.classList.add('important-questions-grid');
+                            subjectData.importantQuestions.forEach(item => {
+                                const qCard = document.createElement('div');
+                                qCard.className = 'important-card glass';
+                                qCard.innerHTML = `
+                                    <div style="padding: 1.2rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem;">
+                                            <span style="font-size: 0.7rem; font-weight: 800; background: rgba(251, 191, 36, 0.2); color: #fbbf24; padding: 2px 8px; border-radius: 4px;">${item.unit.toUpperCase()}</span>
+                                            <h4 style="font-size: 0.95rem; margin: 0; display: flex; align-items: center; gap: 0.4rem;">
+                                                <i class="fas fa-lightbulb" style="color: #fbbf24; font-size: 0.8rem;"></i>
+                                                Key Topics
+                                            </h4>
+                                        </div>
+                                        <ul style="margin: 0; padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem;">
+                                            ${item.questions.map(q => `<li style="margin-bottom: 0.4rem;">${q}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                `;
+                                importantList.appendChild(qCard);
+                            });
+                        }
                     } else {
                         importantSection.style.display = 'none';
                     }

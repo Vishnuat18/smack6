@@ -1,0 +1,554 @@
+================================================================
+   SMACK PORTAL — CHATBOT TRAINING DATASET
+   Website: Vishnuat18.github.io
+   Version: 1.0 | Prepared for Chatbot Integration
+================================================================
+
+This dataset contains structured Q&A pairs, factual knowledge,
+navigation guides, and contextual information to train or power
+a chatbot for the SMACK Semester 6 Student Portal.
+
+================================================================
+SECTION 1: ABOUT THE PORTAL
+================================================================
+
+Q: What is SMACK?
+A: SMACK stands for "Semester 6 Students' Academic Knowledge." It is a web portal designed specifically for Semester 6 students to access study materials, previous year question papers, important questions, and 2-mark notes for all six subjects.
+
+Q: What does SMACK stand for?
+A: SMACK is an acronym for "Semester 6 Students' Academic Knowledge."
+
+Q: Who built SMACK?
+A: SMACK was built and is maintained by Vishnu Rajan (admin email: vishnurajan24766@gmail.com), a Semester 6 student.
+
+Q: What is the purpose of this portal?
+A: The SMACK portal helps Semester 6 students access organized study materials including unit-wise notes, 2-mark question banks, previous year university question papers, important questions, and subject syllabi — all in one place.
+
+Q: Where can I access SMACK?
+A: You can access SMACK at: https://Vishnuat18.github.io/home.html
+
+Q: Is SMACK free to use?
+A: Yes, SMACK is free to use for all registered students.
+
+Q: Is SMACK a mobile-friendly website?
+A: Yes, SMACK has a responsive design that works well on both mobile and desktop devices. On mobile, a bottom navigation bar replaces the desktop navbar for easier access.
+
+================================================================
+SECTION 2: AUTHENTICATION
+================================================================
+
+Q: How do I create an account on SMACK?
+A: On the login page (index.html), click "Create one" under the login form. Fill in your Full Name, Email, Password, Confirm Password, and solve the CAPTCHA verification. Then click "Sign Up."
+
+Q: How do I log in?
+A: Go to the SMACK login page, enter your registered email and password, and click "Login."
+
+Q: What happens if I enter the wrong CAPTCHA?
+A: You will see an "Incorrect Captcha!" alert and a new CAPTCHA will be generated automatically.
+
+Q: Can I refresh the CAPTCHA?
+A: Yes, there is a refresh button next to the CAPTCHA display on the sign-up form.
+
+Q: What should I do if my passwords don't match during sign-up?
+A: You will see a "Passwords do not match!" alert. Re-enter both password fields to match.
+
+Q: How do I log out?
+A: Click the logout icon (sign-out arrow) in the navigation bar, or use the "Sign Out from SMACK" button on your Profile page.
+
+Q: I forgot my password. What do I do?
+A: Currently, the portal uses Firebase Authentication. You can use the Firebase password reset flow. Contact the admin at vishnurajan24766@gmail.com for assistance.
+
+Q: Can anyone sign up or is it restricted?
+A: Anyone with an email address can sign up. However, admin access is restricted to the portal admin only.
+
+================================================================
+SECTION 3: NAVIGATION & PAGES
+================================================================
+
+Q: What pages does SMACK have?
+A: SMACK has the following pages:
+   - index.html — Login / Sign-up page
+   - home.html — Main dashboard with subject cards
+   - subject_details.html — Individual subject materials page
+   - viewer.html — In-browser PDF viewer
+   - resources.html — Special resources (Previous Year QPs, Important Qns, 2-Mark Notes)
+   - profile.html — User profile, edit name, send feedback
+   - admin.html — Admin dashboard (admin only)
+   - admin_users.html — User management (admin only)
+   - admin_upload.html — Upload new materials (admin only)
+
+Q: What is on the Home page?
+A: The Home page shows a greeting, an upcoming event countdown, a search bar, and cards for all 6 subjects. Clicking a subject card takes you to that subject's materials page.
+
+Q: How do I go back to the Home page from any page?
+A: Click the left arrow (back button) in the top header, or click "Home" in the navigation bar, or press the Home icon in the mobile bottom navigation.
+
+Q: What does the upcoming event section show?
+A: It shows the next important academic event (e.g., an upcoming exam) with the date and subject name. For example: "28/04/2026: OOSE Exam."
+
+Q: How does the search bar work?
+A: Type at least 2 characters in the search bar on the Home page. It searches across all subjects and materials by name. Matching PDF files appear inline below the search bar. Click any result to open it in the viewer.
+
+Q: What is the Resources page?
+A: The Resources page (resources.html) provides quick access to three special categories:
+   1. Previous Year Question Papers — Past university exam papers
+   2. Important Questions — Hand-picked exam-relevant questions by subject
+   3. 2-Mark Notes — Concise notes for Part-A short-answer questions
+
+================================================================
+SECTION 4: SUBJECTS & MATERIALS
+================================================================
+
+Q: How many subjects are covered in SMACK?
+A: SMACK covers 6 Semester 6 subjects.
+
+Q: What are the 6 subjects available on SMACK?
+A: The six subjects are:
+   1. Business Analytics (BA) — Course Code: CCW331
+   2. Object Oriented Software Engineering (OOSE) — Course Code: CCS356
+   3. Ethical Hacking (EH) — Course Code: CCS344
+   4. Environmental and Social Impact Assessment (ESIA) — Course Code: OCE351
+   5. Programming Languages (PPL) — Course Code: CCS358
+   6. Video Creation and Editing (VCE) — Course Code: CCS371
+
+Q: What is the course code for Business Analytics?
+A: Business Analytics course code is CCW331.
+
+Q: What is the course code for OOSE?
+A: Object Oriented Software Engineering course code is CCS356.
+
+Q: What is the course code for Ethical Hacking?
+A: Ethical Hacking course code is CCS344.
+
+Q: What is the course code for ESIA?
+A: Environmental and Social Impact Assessment course code is OCE351.
+
+Q: What is the course code for PPL?
+A: Programming Languages (Principles of Programming Languages) course code is CCS358.
+
+Q: What is the course code for VCE?
+A: Video Creation and Editing course code is CCS371.
+
+------- BUSINESS ANALYTICS (BA / CCW331) -------
+
+Q: What materials are available for Business Analytics?
+A: Business Analytics has 7 files:
+   1. Unit 1 & 2 Notes (Ba_notes.pdf)
+   2. Full Lecture Notes (CCW331-Business-Analytics-Lecture-Notes-2.pdf)
+   3. Unit 3 Notes (BA_u3.pdf)
+   4. Unit 4 Notes (BA_u4.pdf)
+   5. Unit 5 Notes (BA_u5.pdf)
+   6. 2-Mark Questions (BA_2m.pdf)
+   7. Additional Notes (Ba_notes (2).pdf)
+
+Q: Does Business Analytics have 2-mark notes?
+A: Yes, the file is called "2-Mark Questions" (BA_2m.pdf).
+
+Q: How many files are there for BA?
+A: There are 7 files available for Business Analytics.
+
+------- OBJECT ORIENTED SOFTWARE ENGINEERING (OOSE / CCS356) -------
+
+Q: What materials are available for OOSE?
+A: OOSE has the following materials:
+   - Unit 1: Software Process & Agile (oose_u1.pdf)
+   - Unit 2: Requirements Analysis (oose_u2.pdf)
+   - Unit 3: Software Design (oose_u3.pdf)
+   - Unit 4: Testing & Maintenance (oose_u4.pdf)
+   - Unit 5: Project Management (oose_u5.pdf)
+   - 2-Mark Question Bank (oose_2m.pdf)
+   - Previous Year QP: Apr/May 2024
+
+Q: Does OOSE have previous year question papers?
+A: Yes, the Apr/May 2024 university question paper is available for OOSE.
+
+Q: What are the units covered in OOSE?
+A: OOSE has 5 units:
+   Unit 1: Software Process and Agile Development — Covers Waterfall, RAD, Spiral models, Agility, XP Process.
+   Unit 2: Requirements Analysis and Specification — UML, Use Case, Class diagrams, Data Flow Diagrams.
+   Unit 3: Software Design — Coupling, Cohesion, Design Patterns (MVC, Observer, Proxy, Facade), Architectural Styles.
+   Unit 4: Software Testing and Maintenance — Unit testing, Black-box, White-box, Integration, Regression testing, Debugging.
+   Unit 5: Project Management — SPM, Software Configuration Management, DevOps, Cloud Platform, Deployment Pipeline.
+
+Q: What are the important questions for OOSE Unit 1?
+A: Important questions for OOSE Unit 1 are:
+   - Software Process Models (Waterfall, RAD, Spiral)
+   - Agile Process Models and Principles
+   - Extreme Programming (XP) Process
+
+Q: What are the important questions for OOSE Unit 2?
+A: Important questions for OOSE Unit 2 are:
+   - Software Requirement Analysis and Gathering
+   - Software Requirement Specification (SRS)
+   - Object Modelling using UML (Case study)
+   - Petri nets
+
+Q: What are the important questions for OOSE Unit 3?
+A: Important questions for OOSE Unit 3 are:
+   - Software Design Principles: Coupling and Cohesion
+   - Architectural Styles (Layered, Client-Server, Pipe and Filter)
+   - Design Patterns: MVC, Observer, Proxy, and Facade
+
+Q: What are the important questions for OOSE Unit 4?
+A: Important questions for OOSE Unit 4 are:
+   - Compare Black-box and White-box Testing
+   - Levels of Testing: Unit, Integration, and System Testing
+   - Regression Testing and its Importance
+   - Debugging Process and Techniques
+
+Q: What are the important questions for OOSE Unit 5?
+A: Important questions for OOSE Unit 5 are:
+   - Software Project Management (SPM)
+   - Project Scheduling
+   - DevOps: Motivation and Deployment Architecture
+   - Cloud as a Platform (Case study)
+
+------- ETHICAL HACKING (EH / CCS344) -------
+
+Q: What materials are available for Ethical Hacking?
+A: Ethical Hacking has 5 files:
+   1. Ethical Hacking Full (Eh_notes.pdf)
+   2. Unit 1 Intro (eh_unit1.pdf)
+   3. Unit 2 Footprinting (eh_unit2.pdf)
+   4. Unit 3 Scanning (eh_unit3.pdf)
+   5. Advanced EH-16 (EH-16.pdf)
+
+Q: What are the units in Ethical Hacking?
+A: Ethical Hacking has 5 units:
+   Unit 1: Introduction — Overview of ethical hacking, TCP/IP, network attacks, malware.
+   Unit 2: Footprinting, Reconnaissance and Scanning Networks — Footprinting concepts, search engines, scanning techniques, tools.
+   Unit 3: Enumeration and Vulnerability Analysis — NetBIOS, SNMP, LDAP, NTP, Windows/Linux OS vulnerabilities.
+   Unit 4: System Hacking — Web server hacking, wireless networks, web application vulnerabilities.
+   Unit 5: Network Protection Systems — Firewalls, ACL, IDS/IPS, Honeypots, Web Filtering.
+
+Q: How many files does EH have?
+A: Ethical Hacking has 5 study files.
+
+------- ENVIRONMENTAL AND SOCIAL IMPACT ASSESSMENT (ESIA / OCE351) -------
+
+Q: What materials are available for ESIA?
+A: ESIA has 6 files:
+   1. ESIA Comprehensive (ESIA_merged.pdf)
+   2. Unit 1 & 2 Assessment (esia_notes.pdf)
+   3. Unit 3 Monitoring (esia_u3.pdf)
+   4. Unit 4 Audit (esia_u4.pdf)
+   5. Unit 5 Case Studies (esia_u5.pdf)
+   6. 2-Mark Question Bank (esia_2m.pdf)
+
+Q: What are the units in ESIA?
+A: ESIA has 5 units:
+   Unit 1: Introduction — Impacts of Development, Rio Principles, EIA objectives, EIA types, legal framework.
+   Unit 2: Environmental Assessment — Screening, Scoping, Baseline Monitoring, Impact prediction on land/water/air/noise, Matrices, Networks.
+   Unit 3: Environmental Management Plan — Mitigation plans, EIA Report Preparation, Public Hearing, Environmental Clearance.
+   Unit 4: Socio-Economic Assessment — Socio-economic baseline, Rehabilitation and Resettlement Plan, Cost-Benefit Analysis.
+   Unit 5: Case Studies — EIA for infrastructure projects, roads, dams, airports, power plants, mining.
+
+Q: What are the important questions for ESIA?
+A: Important questions for ESIA include:
+   Unit 1: Rio Principles of Sustainable Development, EIA concepts, EIA Types.
+   Unit 2: Checklist Method, Baseline Monitoring, Impact prediction on land/water/air/noise/energy.
+   Unit 3: Mitigation plans for land/water/air, Environmental Monitoring Plan, EIA Report Preparation, Cost-Benefit Analysis.
+   Unit 4: Cost-Benefit Analysis, Rehabilitation and Resettlement Plan, Economic Valuation of environmental impacts.
+   Unit 5: Case Studies.
+
+Q: Does ESIA have 2-mark notes?
+A: Yes, the 2-Mark Question Bank (esia_2m.pdf) is available for ESIA.
+
+------- PROGRAMMING LANGUAGES (PPL / CCS358) -------
+
+Q: What materials are available for PPL?
+A: Programming Languages has 9 files:
+   1. Principles of PL Full (PPL.pdf)
+   2. Unit 1 Overview (ppl_unit 1.pdf)
+   3. Unit 2 Data Types (ppl_unit 2.pdf)
+   4. Unit 3 Subprograms (ppl_unit 3.pdf)
+   5. Unit 4 Object Orientation (ppl_u4.pdf)
+   6. Unit 5 Exception Handling (ppl_u5.pdf)
+   7. Cheat Sheet (ppl_cs.pdf)
+   8. PPL Full Draft (ppl_full.pdf)
+   9. Full Lecture Notes 1 (CCS358-Principles-of-Programming-Languages-Lecture-Notes-1.pdf)
+
+Q: How many files are available for PPL?
+A: Programming Languages has 9 study files — the most of any subject.
+
+Q: Does PPL have a cheat sheet?
+A: Yes, there is a "Cheat Sheet" file (ppl_cs.pdf) available for PPL.
+
+------- VIDEO CREATION AND EDITING (VCE / CCS371) -------
+
+Q: What materials are available for VCE?
+A: Video Creation and Editing has 9 files:
+   1. Video Creation Guide (CCS371-Video Creation and Editing.pdf)
+   2. Unit 1 Pre-production (vce_unit1.pdf)
+   3. Unit 2 Production (vce_unit2.pdf)
+   4. Unit 3 Post-production (VCE_U3.pdf)
+   5. Unit 4 Effects (VCE_U4.pdf)
+   6. Unit 5 Distribution (VCE_U5.pdf)
+   7. 2-Mark Questions (vce_2m.pdf)
+   8. 2-Mark Detailed (CCS371-Video Creation and Editing 2 Marks.pdf)
+   9. Unit 2 Specifics (CCS371 VCE Unit-2.pdf)
+
+Q: What are the units in Video Creation and Editing?
+A: VCE has 5 units:
+   Unit 1: Fundamentals — Evolution of filmmaking, linear editing, non-linear digital video, risks of altering reality.
+   Unit 2: Storytelling — Jump cuts, L-cuts, match cuts, cutaways, dissolves, NLE systems, media management.
+   Unit 3: Using Audio and Video — Capturing digital/analog video, importing audio, exporting to tape, CDs and VCDs.
+   Unit 4: Working with Final Cut Pro — Clips, Viewer, Timeline, Basic Editing, Audio, Advanced techniques.
+   Unit 5: Working with Avid Xpress DV 4 — Project Window, logging, recording, bins, Timeline, Trim Mode, Audio, Output.
+
+Q: Does VCE have 2-mark notes?
+A: Yes, VCE has two 2-mark files: "2-Mark Questions" (vce_2m.pdf) and "2-Mark Detailed" (CCS371-Video Creation and Editing 2 Marks.pdf).
+
+Q: How many files are available for VCE?
+A: Video Creation and Editing has 9 study files (including 2 dedicated 2-mark files and 1 unit-2 specific file).
+
+================================================================
+SECTION 5: SPECIAL RESOURCES PAGE
+================================================================
+
+Q: What is the Resources page for?
+A: The Resources page provides quick-access filtered views for:
+   1. Previous Year Question Papers (past university exam papers)
+   2. Important Questions (curated exam questions by subject)
+   3. 2-Mark Notes (all 2-mark question banks in one place)
+
+Q: Where can I find all 2-mark notes in one place?
+A: Go to Resources (resources.html) and click the "2-Mark Notes" card. It will list all 2-mark files across every subject.
+
+Q: Where can I find previous year question papers?
+A: On the Resources page, click "Previous Year QPs." Currently, the OOSE Apr/May 2024 paper is available.
+
+Q: Which subjects have previous year question papers?
+A: Currently only OOSE (CCS356) has a previous year paper available (Apr/May 2024). More may be added over time.
+
+Q: How do I view important questions for a subject?
+A: On the Resources page click "Important Qns," then click the subject you want. You can also click a subject card from the Home page and expand the "Important Questions" section on the subject details page.
+
+================================================================
+SECTION 6: PDF VIEWER
+================================================================
+
+Q: How do I open and read a PDF?
+A: Click on any study material card from the subject details page or search results. The PDF will open in SMACK's built-in viewer.
+
+Q: What features does the PDF viewer have?
+A: The PDF viewer (viewer.html) has the following features:
+   - Page navigation using a slider at the bottom
+   - Swipe left/right to change pages on mobile
+   - Keyboard arrow keys (← →) to navigate pages on desktop
+   - Pinch-to-zoom on mobile
+   - Page thumbnails for quick navigation
+   - Download button to save the PDF
+   - Full-screen toggle
+   - Page number indicator (current / total)
+
+Q: How do I go to the next page in the viewer?
+A: Swipe left on mobile, press the right arrow key on keyboard, use the bottom slider, or click on the next thumbnail.
+
+Q: Can I download a PDF from the viewer?
+A: Yes, click the download icon (arrow pointing down) in the top-right of the viewer header.
+
+Q: Can I zoom into a PDF?
+A: Yes, use a pinch gesture on mobile to zoom in or out. The view resets when you change pages.
+
+Q: How do I go back from the viewer?
+A: Click the left arrow (back button) in the viewer header to return to the subject's materials page.
+
+================================================================
+SECTION 7: PROFILE PAGE
+================================================================
+
+Q: What can I do on my profile page?
+A: On the Profile page (profile.html) you can:
+   - View your name, email, role (Student/Admin), and join date
+   - Edit and update your display name
+   - Send feedback to the admin
+   - Sign out from SMACK
+
+Q: How do I change my name on SMACK?
+A: Go to Profile → "Edit Profile" section → update your name in the text field → click "Save Changes."
+
+Q: How do I send feedback?
+A: Go to Profile page → scroll to "Send Feedback" → type your message → click "Submit Feedback."
+
+Q: What roles exist in SMACK?
+A: There are two roles:
+   - Student: Can view all materials, edit their profile, and send feedback.
+   - Admin: Has all student permissions plus access to the Admin Panel (manage users, upload materials, view feedback).
+
+Q: How do I know if I'm an admin?
+A: Your profile will display "Admin" as your role badge. Admin users also see an "Admin Panel" link in the navigation.
+
+================================================================
+SECTION 8: ADMIN PANEL
+================================================================
+
+Q: How do I access the Admin Panel?
+A: The Admin Panel is only visible to admin users. It appears in the navigation bar as "Admin Panel." Non-admin users are automatically redirected to the Home page.
+
+Q: What can the admin do?
+A: The admin can:
+   - View real-time portal statistics (total users, materials count, subject count)
+   - Manage registered users (view name, email, role)
+   - Upload new study materials to the portal
+   - Read all user feedback submissions
+
+Q: How many materials and subjects does the admin dashboard show?
+A: The Admin dashboard dynamically calculates and shows: total registered users (from Firestore), total number of materials across all subjects, and the total number of subjects (6).
+
+Q: How does the admin upload new materials?
+A: Admin goes to Admin Panel → "Upload New" → fills in Material Title, Subject, selects a PDF file, adds a description → clicks "Publish to Portal."
+
+Q: Can I edit a user's role?
+A: The admin can view users in admin_users.html. Full user role editing is planned but not yet fully implemented (currently shows an alert when the Edit button is clicked).
+
+================================================================
+SECTION 9: TECHNICAL & FIREBASE BACKEND
+================================================================
+
+Q: What technology powers SMACK?
+A: SMACK is a static web app built with HTML, CSS, and JavaScript. It uses Firebase for:
+   - Firebase Authentication — User login and sign-up
+   - Firebase Firestore — User profiles, feedback storage, subject data
+   - Firebase Realtime Database — Supplementary data
+   - Firebase Analytics — Usage tracking
+
+Q: Is my data safe on SMACK?
+A: SMACK uses Firebase Firestore Security Rules:
+   - Users can only read/write their own profile data.
+   - Only admins can write study materials or read all feedback.
+   - Any authenticated user can submit feedback.
+   - All other documents are denied by default.
+
+Q: What happens when I sign up — how is my account created?
+A: When you sign up, Firebase Authentication creates your account and Firestore saves your profile (name, email, role, creation date). The admin email (vishnurajan24766@gmail.com) is automatically assigned the "admin" role.
+
+Q: Does SMACK use any external libraries?
+A: Yes, SMACK uses:
+   - Font Awesome 6.4.0 — Icons
+   - Google Fonts (Outfit, Plus Jakarta Sans) — Typography
+   - PDF.js 3.4.120 — In-browser PDF rendering
+   - Firebase 12.11.0 — Backend services
+
+================================================================
+SECTION 10: COMMON QUESTIONS & TROUBLESHOOTING
+================================================================
+
+Q: I can't log in. What should I do?
+A: Check your email and password are correct. Make sure Caps Lock is off. If you forgot your password, contact the admin at vishnurajan24766@gmail.com.
+
+Q: A PDF is not loading. What do I do?
+A: Try refreshing the page. Check your internet connection. If the issue persists, the file may not be uploaded yet. Contact the admin.
+
+Q: I can't see the Admin Panel. Why?
+A: The Admin Panel is only visible to users with the admin role. If you are a regular student, you will not see this option.
+
+Q: The search bar is not showing results. What's wrong?
+A: Make sure you have typed at least 2 characters. Try searching by subject name (like "OOSE" or "BA") or a specific unit name. The search works across material names and subject names.
+
+Q: How do I go from the Home page to a specific subject?
+A: Click on the subject card on the Home page (e.g., the "Business Analytics" card or the "OOSE" card). This opens the subject's materials page.
+
+Q: Can I access SMACK offline?
+A: No, SMACK requires an internet connection to load Firebase data, authenticate users, and display PDFs.
+
+Q: How many total files are available on SMACK?
+A: The total number of study files across all subjects is approximately:
+   BA: 7 files
+   OOSE: 6 files + 1 previous year paper
+   EH: 5 files
+   ESIA: 6 files
+   PPL: 9 files (including cheat sheet)
+   VCE: 9 files
+   Total: ~43 files
+
+Q: Is there a way to see all files for all subjects?
+A: Yes, use the search bar on the Home page with a broad term, or browse each subject's materials page. The Resources page also aggregates special categories (2-marks, previous papers, important questions) across subjects.
+
+Q: What is the upcoming exam shown on the home page?
+A: The currently listed upcoming event is: 28/04/2026 — OOSE Exam (Object Oriented Software Engineering).
+
+Q: How do I report a bug or give a suggestion?
+A: Go to Profile page → Send Feedback section → type your message and click Submit. The admin will receive it on the Admin Panel.
+
+================================================================
+SECTION 11: QUICK REFERENCE — SUBJECT SHORT NAMES
+================================================================
+
+BA   → Business Analytics (CCW331)
+OOSE → Object Oriented Software Engineering (CCS356)
+EH   → Ethical Hacking (CCS344)
+ESIA → Environmental and Social Impact Assessment (OCE351)
+PPL  → Principles of Programming Languages (CCS358)
+VCE  → Video Creation and Editing (CCS371)
+
+================================================================
+SECTION 12: QUICK REFERENCE — SITE MAP
+================================================================
+
+index.html         → Login / Sign-up
+home.html          → Dashboard (Subject cards, search, events)
+subject_details.html?subject=ba    → Business Analytics materials
+subject_details.html?subject=oose  → OOSE materials
+subject_details.html?subject=eh    → Ethical Hacking materials
+subject_details.html?subject=esia  → ESIA materials
+subject_details.html?subject=ppl   → PPL materials
+subject_details.html?subject=vce   → VCE materials
+resources.html     → Special resources (Previous Year, Important Qns, 2-Marks)
+viewer.html        → PDF Viewer (loads any file via URL parameter)
+profile.html       → User profile, feedback, sign out
+admin.html         → Admin dashboard (admin only)
+admin_users.html   → User list (admin only)
+admin_upload.html  → Upload materials (admin only)
+
+================================================================
+SECTION 13: SAMPLE CHATBOT CONVERSATION FLOWS
+================================================================
+
+--- Flow 1: Finding a file ---
+User: "Where can I find OOSE unit 3 notes?"
+Bot: "OOSE Unit 3 (Software Design) notes are available on the OOSE subject page. Go to Home → click Object Oriented Software Engineering → scroll to Study Materials and click 'Unit 3: Software Design'. The file will open in the PDF viewer."
+
+--- Flow 2: 2-mark notes ---
+User: "I need 2-mark notes for all subjects"
+Bot: "You can find all 2-mark notes in one place! Go to Resources (in the navigation bar) and click the '2-Mark Notes' card. It will list the 2-mark files for BA, ESIA, OOSE, and VCE. You can also find them individually on each subject's page."
+
+--- Flow 3: Previous year papers ---
+User: "Are there any previous year question papers?"
+Bot: "Yes! You can find previous year question papers on the Resources page. Click 'Previous Year QPs'. Currently, the OOSE Apr/May 2024 paper is available. More may be added later."
+
+--- Flow 4: Sign-up help ---
+User: "How do I create an account?"
+Bot: "To create an account on SMACK: Go to the login page, click 'Create one', fill in your Full Name, Email, Password, and Confirm Password, solve the CAPTCHA verification, and click Sign Up. You'll be taken to the home page automatically after registration."
+
+--- Flow 5: Admin access ---
+User: "How do I access the admin panel?"
+Bot: "The Admin Panel is only available to authorized admins. If you are the admin, you'll see 'Admin Panel' in the navigation bar after logging in. Regular student accounts do not have access to admin features."
+
+--- Flow 6: Subject query ---
+User: "What subjects are in Semester 6?"
+Bot: "Semester 6 has 6 subjects on SMACK:
+1. Business Analytics (BA) - CCW331
+2. Object Oriented Software Engineering (OOSE) - CCS356
+3. Ethical Hacking (EH) - CCS344
+4. Environmental and Social Impact Assessment (ESIA) - OCE351
+5. Programming Languages (PPL) - CCS358
+6. Video Creation and Editing (VCE) - CCS371
+Click any subject on the Home page to access its materials."
+
+--- Flow 7: PDF viewer help ---
+User: "How do I navigate pages in the PDF viewer?"
+Bot: "In the SMACK PDF viewer you can navigate pages in multiple ways: swipe left/right on mobile, use the left/right arrow keys on your keyboard, drag the slider at the bottom, or click on the thumbnail previews. You can also pinch to zoom on touch screens."
+
+--- Flow 8: Feedback ---
+User: "I want to report a bug"
+Bot: "You can send feedback or report bugs by going to your Profile page and scrolling to the 'Send Feedback' section. Type your message and click 'Submit Feedback'. The admin will review it from the Admin Panel."
+
+================================================================
+END OF DATASET
+================================================================
+Total Q&A Pairs: ~100+
+Subjects Covered: 6
+Pages Documented: 13
+Last Updated: April 2026
+================================================================

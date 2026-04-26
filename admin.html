@@ -9,6 +9,23 @@
     <link rel="icon" type="image/png" href="logo.png">
 </head>
 <body>
+    <nav class="navbar glass">
+        <div class="logo">
+            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 8px;">
+            <span>SMACK</span>
+        </div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="resources.html">Materials</a>
+            <a href="admin.html" class="active">Admin Panel</a>
+            <a href="profile.html" class="profile-link" style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-weight: 600;">
+                <div id="nav-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: white;">U</div>
+                <span id="nav-user-name">Profile</span>
+            </a>
+            <a href="index.html" class="logout"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </nav>
+
     <header class="app-header glass">
         <div style="display: flex; align-items: center; gap: 1rem;">
             <a href="home.html" class="back-btn">

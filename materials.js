@@ -64,47 +64,57 @@ export const subjectMaterials = {
         ],
         importantQuestions: [
             { 
-                unit: 'Unit 1', 
-                questions: [
-                    'Software Process Models (Waterfall, RAD, Spiral)', 
-                    'Agile Process Models and Principles', 
-                    'Extreme Programming (XP) Process', 
-                ] 
+                unit: '1', 
+                firstHalf: [
+                    'Software Process Models (Waterfall, RAD, Spiral)'
+                ],
+                secondHalf: [
+                    'Agile Process Models and Principles',
+                    'Extreme Programming (XP) Process'
+                ]
             },
             { 
-                unit: 'Unit 2', 
-                questions: [
+                unit: '2', 
+                firstHalf: [
                     'Software Requirement Analysis and Gathering', 
-                    'Software Requirement Specification(SRS)', 
-                    'Object Modelling using UML(Case study)', 
+                    'Software Requirement Specification (SRS)'
+                ],
+                secondHalf: [
+                    'Object Modelling using UML (Case Study)', 
                     'Petrinets'
-                ] 
+                ]
             },
             { 
-                unit: 'Unit 3', 
-                questions: [
-                    'Software Design Principles: Coupling and Cohesion', 
+                unit: '3', 
+                firstHalf: [
+                    'Software Design Principles: Coupling and Cohesion'
+                ],
+                secondHalf: [
                     'Architectural Styles (Layered, Client-Server, Pipe and Filter)', 
-                    'Design Patterns: MVC, Observer, Proxy, and Facade', 
-                ] 
+                    'Design Patterns: MVC, Observer, Proxy, Facade'
+                ]
             },
             { 
-                unit: 'Unit 4', 
-                questions: [
+                unit: '4', 
+                firstHalf: [
                     'Compare Black-box and White-box Testing', 
-                    'Levels of Testing: Unit, Integration, and System Testing', 
+                    'Levels of Testing: Unit, Integration, and System Testing'
+                ],
+                secondHalf: [
                     'Regression Testing and its Importance', 
                     'Debugging Process and Techniques'
-                ] 
+                ]
             },
             { 
-                unit: 'Unit 5', 
-                questions: [
-                    'Software Project Management (SPM)',
-                    'Project Scheduling', 
+                unit: '5', 
+                firstHalf: [
+                    'Software Project Management (SPM)', 
+                    'Project Scheduling'
+                ],
+                secondHalf: [
                     'DevOps: Motivation and Deployment Architecture', 
-                    'Cloud as a Platform(Case study)'
-                ] 
+                    'Cloud as a Platform (Case Study)'
+                ]
             }
         ]
     },
