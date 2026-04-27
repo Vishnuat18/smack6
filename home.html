@@ -106,7 +106,7 @@
 
             <!-- ESIA Card -->
             <div class="subject-card glass" onclick="location.href='subject_details.html?subject=esia'">
-                <div class="badge">OCE351</div>
+                <div class="badge badge-abs">OCE351</div>
                 <i class="fas fa-microchip"></i>
                 <h3>Environmental Impact Assessment</h3>
                 <p>Course Code: OCE351</p>
@@ -117,7 +117,7 @@
 
             <!-- PPL Card -->
             <div class="subject-card glass" onclick="location.href='subject_details.html?subject=ppl'">
-                <div class="badge">CCS358</div>
+                <div class="badge badge-abs">CCS358</div>
                 <i class="fas fa-terminal"></i>
                 <h3>Programming Languages</h3>
                 <p>Course Code: CCS358</p>
@@ -128,7 +128,7 @@
 
             <!-- VCE Card -->
             <div class="subject-card glass" onclick="location.href='subject_details.html?subject=vce'">
-                <div class="badge">CCS371</div>
+                <div class="badge badge-abs">CCS371</div>
                 <i class="fas fa-video"></i>
                 <h3>Video Creation and Editing</h3>
                 <p>Course Code: CCS371</p>
@@ -212,7 +212,7 @@
             function renderGrid(subjects) {
                 mainGrid.innerHTML = subjects.map(sub => `
                     <div class="subject-card glass" onclick="location.href='subject_details.html?subject=${sub.id}'">
-                        <div class="badge">${sub.courseCode || 'N/A'}</div>
+                        <div class="badge badge-abs">${sub.courseCode || 'N/A'}</div>
                         <i class="${sub.icon || 'fas fa-book'}"></i>
                         <h3>${sub.fullName || sub.name}</h3>
                         <p>Course Code: ${sub.courseCode || 'N/A'}</p>

@@ -82,8 +82,8 @@
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     try {
-                        const userDoc = await getDoc(doc(fs, "users", user.uid));
-                        if (userDoc.exists() && userDoc.data().role === 'admin') {
+                        const isAdmin = user.email === 'vishnurajan24766@gmail.com';
+                        if (isAdmin) {
                             // Authorized admin
                         } else {
                             location.href = "home.html";
