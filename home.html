@@ -42,20 +42,10 @@
             <p style="color: var(--text-muted);">Access your Semester 6 study materials and previous year question papers below.</p>
         </div>
 
-        <!-- Upcoming Event Section -->
-        <div id="upcoming-event-section" class="glass" style="margin-bottom: 2.5rem; padding: 1.5rem; border-radius: var(--radius-md); border-left: 4px solid var(--secondary); display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; animation: fadeIn 0.8s ease-out;">
-            <div style="display: flex; align-items: center; gap: 1.2rem;">
-                <div style="background: rgba(236, 72, 153, 0.1); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-calendar-alt" style="color: var(--secondary); font-size: 1.5rem;"></i>
-                </div>
-                <div>
-                    <h2 style="font-size: 1.1rem; margin-bottom: 2px;">Upcoming Event</h2>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">28/04/2026: <span style="color: var(--text-main); font-weight: 600;">OOSE Exam</span></p>
-                </div>
-            </div>
-            <div style="text-align: right; display: none;" class="desktop-event-countdown">
-                <span style="font-size: 0.8rem; background: var(--secondary); color: white; padding: 4px 10px; border-radius: 20px; font-weight: 800;">5 DAYS LEFT</span>
-            </div>
+        <!-- Dynamic Event Card Stack -->
+        <div id="event-stack" class="event-stack">
+            <!-- Event cards will be injected here -->
+            <div id="swipe-hint" class="swipe-hint"><i class="fas fa-chevron-up"></i> Swipe up for next event</div>
         </div>
 
         <!-- Search Bar Section -->
@@ -150,6 +140,7 @@
 
         <!-- Subject Grid stays similar -->
 
+
     <!-- Mobile Nav Foot -->
     <div class="mobile-nav">
         <a href="home.html" class="back-btn" style="background: var(--primary);"><i class="fas fa-home"></i></a>
@@ -161,7 +152,7 @@
     <script type="module" src="script.js"></script>
     <script type="module">
         import { auth, fs, doc, getDoc, collection, getDocs } from "./firebase-config.js";
-        import { subjectMaterials } from "./materials.js";
+        import { subjectMaterials, examEvents } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             // 1. Fetch User Data from Firestore
@@ -294,6 +285,265 @@
                     inlineResults.innerHTML = '<div style="grid-column: 1/-1; padding: 3rem; text-align: center; color: var(--text-muted);">No matching files found. Check your spelling or try another subject.</div>';
                 }
             });
+
+            // 4. Events & Swipe Logic
+            const eventStack = document.getElementById('event-stack');
+            let currentEventIndex = 0;
+            let activeEvents = [];
+
+            function initEvents() {
+                const now = new Date();
+                const dismissedEvents = JSON.parse(localStorage.getItem('dismissedEvents') || '[]');
+                
+                activeEvents = examEvents.filter(event => {
+                    const eventDate = new Date(event.date);
+                    // If event is in the past and not yet particle-ized
+                    if (eventDate < now && !dismissedEvents.includes(event.id)) {
+                        return true; // Keep it to show animation
+                    }
+                    return eventDate >= now;
+                });
+
+                renderEventCards();
+                checkExpiredEvents();
+            }
+
+            function renderEventCards() {
+                if (activeEvents.length === 0) {
+                    eventStack.style.display = 'none';
+                    return;
+                }
+
+                eventStack.innerHTML = activeEvents.map((event, index) => {
+                    const eventDate = new Date(event.date);
+                    const isExpired = eventDate < new Date();
+                    const stateClass = index === 0 ? '' : (index === 1 ? 'next' : 'hidden');
+                    const dateStr = eventDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    
+                    return `
+                        <div class="event-card ${stateClass}" id="card-${event.id}" data-id="${event.id}" style="border-left: 4px solid ${event.color};">
+                            <div style="display: flex; align-items: center; gap: 1.2rem;">
+                                <div style="background: ${event.color}20; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-calendar-alt" style="color: ${event.color}; font-size: 1.5rem;"></i>
+                                </div>
+                                <div>
+                                    <h2 style="font-size: 1.1rem; margin-bottom: 2px;">${event.name}</h2>
+                                    <p class="event-info" id="info-${event.id}" style="color: var(--text-muted); font-size: 0.9rem;">${dateStr}</p>
+                                </div>
+                            </div>
+                            ${isExpired ? '<div class="badge" style="background: #ef4444; color: white;">OVER</div>' : ''}
+                        </div>
+                    `;
+                }).join('') + '<div id="swipe-hint" class="swipe-hint"><i class="fas fa-arrows-alt-v"></i> Swipe up/down for next event</div>';
+
+                setupSwipeListeners();
+                updateCountdowns();
+            }
+
+            function updateCountdowns() {
+                const now = new Date();
+                activeEvents.forEach(event => {
+                    const infoElement = document.getElementById(`info-${event.id}`);
+                    if (!infoElement) return;
+
+                    const eventDate = new Date(event.date);
+                    const diff = eventDate - now;
+
+                    if (diff > 0 && diff <= 24 * 60 * 60 * 1000) {
+                        // Show countdown HH:MM:SS
+                        const hours = Math.floor(diff / (1000 * 60 * 60));
+                        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                        
+                        infoElement.innerHTML = `<span style="color: var(--secondary); font-weight: 800; font-family: monospace;">${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}</span> <span style="font-size: 0.7rem; color: var(--secondary);">LEFT</span>`;
+                    }
+                });
+            }
+
+            // Update countdowns every second
+            setInterval(updateCountdowns, 1000);
+
+            function setupSwipeListeners() {
+                const cards = document.querySelectorAll('.event-card');
+                if (cards.length === 0) return;
+
+                let startY = 0;
+                let isSwiping = false;
+                const firstCard = cards[0];
+
+                firstCard.addEventListener('touchstart', (e) => {
+                    startY = e.touches[0].clientY;
+                    isSwiping = true;
+                }, { passive: false });
+
+                firstCard.addEventListener('touchmove', (e) => {
+                    if (!isSwiping) return;
+                    const currentY = e.touches[0].clientY;
+                    const diffY = startY - currentY;
+                    
+                    // Allow small movement for feel, but prevent page scroll
+                    if (Math.abs(diffY) > 10) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+
+                firstCard.addEventListener('touchend', (e) => {
+                    if (!isSwiping) return;
+                    const endY = e.changedTouches[0].clientY;
+                    const diffY = startY - endY;
+                    
+                    if (Math.abs(diffY) > 50) { 
+                        nextEvent();
+                    }
+                    isSwiping = false;
+                }, { passive: true });
+
+                // Click fallback for desktop
+                firstCard.addEventListener('click', (e) => {
+                    if (!isSwiping) nextEvent();
+                });
+            }
+
+            function nextEvent() {
+                if (activeEvents.length <= 1) return;
+                
+                const currentCard = document.querySelector('.event-card:not(.next):not(.hidden)');
+                const nextCard = document.querySelector('.event-card.next');
+                
+                if (currentCard && nextCard) {
+                    currentCard.classList.add('hidden');
+                    nextCard.classList.remove('next');
+                    
+                    setTimeout(() => {
+                        activeEvents.shift();
+                        renderEventCards();
+                    }, 500);
+                }
+            }
+
+            function checkExpiredEvents() {
+                const now = new Date();
+                const dismissedEvents = JSON.parse(localStorage.getItem('dismissedEvents') || '[]');
+                
+                activeEvents.forEach(event => {
+                    const eventDate = new Date(event.date);
+                    if (eventDate < now && !dismissedEvents.includes(event.id)) {
+                        // Wait for everything to be ready
+                        setTimeout(() => {
+                            createParticles(event.id);
+                        }, 1200);
+                    }
+                });
+            }
+
+            function createParticles(eventId) {
+                const card = document.getElementById(`card-${eventId}`);
+                if (!card) return;
+
+                const rect = card.getBoundingClientRect();
+                const color = examEvents.find(e => e.id === eventId)?.color || '#6366f1';
+                
+                // 1. Create a super high-level container
+                const container = document.createElement('div');
+                Object.assign(container.style, {
+                    position: 'fixed',
+                    top: '0',
+                    left: '0',
+                    width: '100vw',
+                    height: '100vh',
+                    pointerEvents: 'none',
+                    zIndex: '100000', // Even higher
+                    overflow: 'hidden'
+                });
+                document.body.appendChild(container);
+
+                const particleCount = 250; 
+                const particles = [];
+
+                for (let i = 0; i < particleCount; i++) {
+                    const p = document.createElement('div');
+                    const size = Math.random() * 4 + 1.5;
+                    
+                    Object.assign(p.style, {
+                        position: 'absolute',
+                        width: size + 'px',
+                        height: size + 'px',
+                        backgroundColor: color,
+                        borderRadius: Math.random() > 0.5 ? '50%' : '2px', // Mix of circles and dust
+                        left: (rect.left + Math.random() * rect.width) + 'px',
+                        top: (rect.top + Math.random() * rect.height) + 'px',
+                        boxShadow: `0 0 8px ${color}`, // Brighter glow
+                        opacity: '1',
+                        transform: `rotate(${Math.random() * 360}deg)`
+                    });
+                    
+                    container.appendChild(p);
+                    
+                    particles.push({
+                        el: p,
+                        x: parseFloat(p.style.left),
+                        y: parseFloat(p.style.top),
+                        vx: (Math.random() - 0.5) * 6, 
+                        vy: (Math.random() - 0.5) * 6,
+                        rot: Math.random() * 5,
+                        delay: Math.random() * 400
+                    });
+                }
+
+                // 2. Animate card away with "Snap" effect
+                card.style.transition = 'all 0.9s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+                card.style.transform = 'translateY(-150px) scale(0) rotate(15deg)';
+                card.style.opacity = '0';
+                card.style.filter = 'blur(30px) brightness(2)';
+
+                // 3. Animation Loop
+                const destX = window.innerWidth * 1.1; // Off screen
+                const destY = -100;
+                let startTime = null;
+
+                const animate = (timestamp) => {
+                    if (!startTime) startTime = timestamp;
+                    const elapsed = timestamp - startTime;
+
+                    particles.forEach((p) => {
+                        if (elapsed < p.delay) return;
+
+                        const pElapsed = elapsed - p.delay;
+                        const progress = Math.min(pElapsed / 1400, 1);
+                        
+                        const t = Math.pow(progress, 1.5); // Smoother acceleration
+                        
+                        const currentX = p.x + (destX - p.x) * t + p.vx * (1-progress) * 30;
+                        const currentY = p.y + (destY - p.y) * t + p.vy * (1-progress) * 30;
+                        
+                        p.el.style.left = currentX + 'px';
+                        p.el.style.top = currentY + 'px';
+                        p.el.style.opacity = 1 - progress;
+                        p.el.style.transform = `scale(${1 - progress * 0.8}) rotate(${pElapsed * p.rot}deg)`;
+                    });
+
+                    if (elapsed < 2500) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        container.remove();
+                    }
+                };
+                requestAnimationFrame(animate);
+
+                // 4. Cleanup
+                setTimeout(() => {
+                    card.remove();
+                    const dismissedEvents = JSON.parse(localStorage.getItem('dismissedEvents') || '[]');
+                    if (!dismissedEvents.includes(eventId)) {
+                        dismissedEvents.push(eventId);
+                        localStorage.setItem('dismissedEvents', JSON.stringify(dismissedEvents));
+                    }
+                    activeEvents = activeEvents.filter(e => e.id !== eventId);
+                    renderEventCards();
+                }, 900);
+            }
+
+            initEvents();
         });
     </script>
 </body>
