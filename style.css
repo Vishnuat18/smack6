@@ -814,15 +814,14 @@ iframe {
     height: 100%;
     padding: 1.5rem;
     border-radius: var(--radius-md);
-    background: #1e293b; /* Solid background matching the user's dashboard style */
+    background: #1e293b;
     border: 1px solid var(--glass-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.3s ease;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s ease;
     cursor: grab;
     user-select: none;
-    z-index: 10;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
@@ -830,41 +829,30 @@ iframe {
     cursor: grabbing;
 }
 
+.event-card.current {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    z-index: 10;
+}
+
 .event-card.next {
-    transform: translateY(10px) scale(0.95);
-    opacity: 0.5;
+    transform: translateY(20px) scale(0.95);
+    opacity: 0.6;
     z-index: 5;
     pointer-events: none;
 }
 
-.event-card.hidden {
-    transform: translateY(100px) scale(0.8);
+.event-card.prev {
+    transform: translateY(-40px) scale(1.05);
     opacity: 0;
     pointer-events: none;
+    z-index: 15;
 }
 
-.swipe-hint {
-    position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
-    40% {transform: translateX(-50%) translateY(-5px);}
-    60% {transform: translateX(-50%) translateY(-3px);}
-}
-
-/* Particle Styles */
-.particle {
-    position: fixed;
+.event-card.hidden {
+    transform: translateY(40px) scale(0.9);
+    opacity: 0;
     pointer-events: none;
-    border-radius: 50%;
-    z-index: 3000;
 }
 
 

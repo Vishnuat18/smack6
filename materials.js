@@ -305,7 +305,6 @@ export const subjectMaterials = {
 };
 
 export const examEvents = [
-    { id: 'test-event-8am', name: 'Test Disappear', date: '2026-04-27T08:00:00', color: '#10b981' },
     { id: 'oose-exam', name: 'OOSE Exam', date: '2026-04-28T01:00:00', color: '#6366f1' },
     { id: 'vce-exam', name: 'VCE Exam', date: '2026-05-02T01:00:00', color: '#ec4899' },
     { id: 'esia-exam', name: 'ESIA Exam', date: '2026-05-07T01:00:00', color: '#10b981' },
