@@ -242,7 +242,7 @@ export const subjectMaterials = {
         ]
     },
     'ppl': {
-        fullName: 'Programming Languages',
+        fullName: 'Principles of Programming Languages',
         shortName: 'PPL',
         courseCode: 'CCS358',
         icon: 'fas fa-terminal',
@@ -291,15 +291,76 @@ export const subjectMaterials = {
             }
         ],
         materials: [
-            { name: 'Video Creation Guide', file: 'vce/CCS371-Video Creation and Editing.pdf' },
-            { name: 'Unit 1 Pre-production', file: 'vce/vce_unit1.pdf' },
-            { name: 'Unit 2 Production', file: 'vce/vce_unit2.pdf' },
-            { name: 'Unit 3 Post-production', file: 'vce/VCE_U3.pdf' },
-            { name: 'Unit 4 Effects', file: 'vce/VCE_U4.pdf' },
-            { name: 'Unit 5 Distribution', file: 'vce/VCE_U5.pdf' },
-            { name: '2-Mark Questions', file: 'vce/vce_2m.pdf' },
-            { name: '2-Mark Detailed', file: 'vce/CCS371-Video Creation and Editing 2 Marks.pdf' },
-            { name: 'Unit 2 Specifics', file: 'vce/CCS371 VCE Unit-2.pdf' }
+            { name: 'Unit 1: Fundamentals', file: 'vce/vce_unit1.pdf' },
+            { name: 'Unit 2: Storytelling', file: 'vce/vce_unit2.pdf' },
+            { name: 'Unit 3: Using Audio and Video', file: 'vce/VCE_U3.pdf' },
+            { name: 'Unit 4: Working with Final Cut Pro', file: 'vce/VCE_U4.pdf' },
+            { name: 'Unit 5: Working with Avid Xpress DV4', file: 'vce/VCE_U5.pdf' },
+            { name: '2-Mark Question Bank', file: 'vce/vce_2m.pdf' }
+        ],
+        previousYearQuestions: [
+            { year: 'Apr/May 2024', file: 'vce/qn papers/April May 2024.pdf' },
+            { year: 'Nov/Dec 2024', file: 'vce/qn papers/Nov Dec 2024.pdf' },
+            { year: 'Apr/May 2025', file: 'vce/qn papers/April May 2025.pdf' }
+        ],
+        importantQuestions: [
+            { 
+                unit: '1', 
+                firstHalf: [
+                    'Evolution of Film Making', 
+                    'Economy of expression'
+                ],
+                secondHalf: [
+                    'Video Editing Process', 
+                    'Linear and Non-Linear Editing (Comparison also)'
+                ]
+            },
+            { 
+                unit: '2', 
+                firstHalf: [
+                    'Storytelling Techniques', 
+                    'Various Cuts in Video Editing (jump cuts, L-cuts, match cuts, cutaways, dissolves, split edits)'
+                ],
+                secondHalf: [
+                    'Storyboard in Digital Video Editing', 
+                    'Digitizing Images', 
+                    'Media Management'
+                ]
+            },
+            { 
+                unit: '3', 
+                firstHalf: [
+                    'Capture Digital Video and Analog Video'
+                ],
+                secondHalf: [
+                    'Audio and Video Compression Techniques', 
+                    'Video Storage Devices', 
+                    'Storing Files in CD and VCD'
+                ]
+            },
+            { 
+                unit: '4', 
+                firstHalf: [
+                    'Steps to Use Final Cut Pro, Tools Used in Final Cut Pro', 
+                    'Working with Clips and Viewer', 
+                    'Working with Sequence, Timeline & Canvas'
+                ],
+                secondHalf: [
+                    'Advanced Editing and Trimming Techniques'
+                ]
+            },
+            { 
+                unit: '5', 
+                firstHalf: [
+                    'Working with Project Window, basic tools and logging in Avid Xpress Dv 4', 
+                    'Organizing / Importing Files'
+                ],
+                secondHalf: [
+                    'Using Timeline and Working in Trim Mode', 
+                    'Viewing and Making Footage', 
+                    'Compare Adobe Premiere Pro and Final Cut Pro'
+                ]
+            }
         ]
     }
 };
