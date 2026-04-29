@@ -4,21 +4,6 @@
  */
 
 export const subjectMaterials = {
-    'ba': {
-        fullName: 'Business Analytics',
-        shortName: 'BA',
-        courseCode: 'CCW331',
-        icon: 'fas fa-chart-line',
-        materials: [
-            { name: 'Unit 1 & 2 Notes', file: 'ba/Ba_notes.pdf' },
-            { name: 'Full Lecture Notes', file: 'ba/CCW331-Business-Analytics-Lecture-Notes-2.pdf' },
-            { name: 'Unit 3 Notes', file: 'ba/BA_u3.pdf' },
-            { name: 'Unit 4 Notes', file: 'ba/BA_u4.pdf' },
-            { name: 'Unit 5 Notes', file: 'ba/BA_u5.pdf' },
-            { name: '2-Mark Questions', file: 'ba/BA_2m.pdf' },
-            { name: 'Additional Notes (2)', file: 'ba/Ba_notes (2).pdf' }
-        ]
-    },
     'oose': {
         fullName: 'Object Oriented Software Engineering',
         shortName: 'OOSE',
@@ -116,146 +101,6 @@ export const subjectMaterials = {
                     'Cloud as a Platform (Case Study)'
                 ]
             }
-        ]
-    },
-    'eh': {
-        fullName: 'Ethical Hacking',
-        shortName: 'EH',
-        courseCode: 'CCS344',
-        icon: 'fas fa-user-secret',
-        syllabus: [
-            {
-                unit: 'UNIT I',
-                title: 'INTRODUCTION',
-                topics: 'Ethical Hacking Overview - Role of Security and Penetration Testers .- Penetration-Testing Methodologies- Laws of the Land - Overview of TCP/IP- The Application Layer - The Transport Layer - The Internet Layer - IP Addressing .- Network and Computer Attacks - Malware - Protecting Against Malware Attacks.- Intruder Attacks - Addressing Physical Security'
-            },
-            {
-                unit: 'UNIT II',
-                title: 'FOOT PRINTING, RECONNAISSANCE AND SCANNING NETWORKS',
-                topics: 'Footprinting Concepts - Footprinting through Search Engines, Web Services, Social Networking Sites, Website, Email - Competitive Intelligence - Footprinting through Social Engineering - Footprinting Tools - Network Scanning Concepts - Port-Scanning Tools - Scanning Techniques - Scanning Beyond IDS and Firewall'
-            },
-            {
-                unit: 'UNIT III',
-                title: 'ENUMERATION AND VULNERABILITY ANALYSIS',
-                topics: 'Enumeration Concepts - NetBIOS Enumeration – SNMP, LDAP, NTP, SMTP and DNS Enumeration - Vulnerability Assessment Concepts - Desktop and Server OS Vulnerabilities - Windows OS Vulnerabilities - Tools for Identifying Vulnerabilities in Windows- Linux OS Vulnerabilities- Vulnerabilities of Embedded Oss'
-            },
-            {
-                unit: 'UNIT IV',
-                title: 'SYSTEM HACKING',
-                topics: 'Hacking Web Servers - Web Application Components- Vulnerabilities - Tools for Web Attackers and Security Testers Hacking Wireless Networks - Components of a Wireless Network – Wardriving- Wireless Hacking - Tools of the Trade -'
-            },
-            {
-                unit: 'UNIT V',
-                title: 'NETWORK PROTECTION SYSTEMS',
-                topics: 'Access Control Lists. - Cisco Adaptive Security Appliance Firewall - Configuration and Risk Analysis Tools for Firewalls and Routers - Intrusion Detection and Prevention Systems - Network-Based and Host-Based IDSs and IPSs - Web Filtering - Security Incident Response Teams – Honeypots.'
-            }
-        ],
-        materials: [
-            { name: 'Ethical Hacking Full', file: 'eh/Eh_notes.pdf' },
-            { name: 'Unit 1 Intro', file: 'eh/eh_unit1.pdf' },
-            { name: 'Unit 2 Footprinting', file: 'eh/eh_unit2.pdf' },
-            { name: 'Unit 3 Scanning', file: 'eh/eh_unit3.pdf' },
-            { name: 'Advanced EH-16', file: 'eh/EH-16.pdf' }
-        ]
-    },
-    'esia': {
-        fullName: 'Environmental and Social Impact Assessment',
-        shortName: 'ESIA',
-        courseCode: 'OCE351',
-        icon: 'fas fa-leaf',
-        syllabus: [
-            {
-                unit: 'UNIT I',
-                title: 'INTRODUCTION',
-                topics: 'Impacts of Development on Environment – Rio Principles of Sustainable Development Environmental Impact Assessment (EIA) – Objectives – Historical development – EIA Types – EIA in project cycle –EIA Notification and Legal Framework–Stakeholders and their Role in EIA– Selection & Registration Criteria for EIA Consultants'
-            },
-            {
-                unit: 'UNIT II',
-                title: 'ENVIRONMENTAL ASSESSMENT',
-                topics: 'Screening and Scoping in EIA – Drafting of Terms of Reference,Baseline monitoring, Prediction and Assessment of Impact on land, water, air, noise and energy, flora and fauna - Matrices – Networks – Checklist Methods - Mathematical models for Impact prediction – Analysis of alternatives'
-            },
-            {
-                unit: 'UNIT III',
-                title: 'ENVIRONMENTAL MANAGEMENT PLAN',
-                topics: 'Plan for mitigation of adverse impact on water, air and land, water, energy, flora and fauna – Environmental Monitoring Plan – EIA Report Preparation – Review of EIA Reports – Public Hearing-Environmental Clearance Post Project Monitoring'
-            },
-            {
-                unit: 'UNIT IV',
-                title: 'SOCIO ECONOMIC ASSESSMENT',
-                topics: 'Baseline monitoring of Socio economic environment – Identification of Project Affected Personal – Rehabilitation and Resettlement Plan- Economic valuation of Environmental impacts – Cost benefit Analysis'
-            },
-            {
-                unit: 'UNIT V',
-                title: 'CASE STUDIES',
-                topics: 'EIA case studies pertaining to Infrastructure Projects – Real Estate Development - Roads and Bridges – Mass Rapid Transport Systems - Ports and Harbor – Airports - Dams and Irrigation projects - Power plants – CETPs- Waste Processing and Disposal facilities – Mining Projects.'
-            }
-        ],
-        materials: [
-            { name: 'ESIA Comprehensive', file: 'esia/notes/ESIA_merged.pdf' },
-            { name: 'Unit 1 & 2 Assessment', file: 'esia/notes/esia_notes.pdf' },
-            { name: 'Unit 3 Monitoring', file: 'esia/notes/esia_u3.pdf' },
-            { name: 'Unit 4 Audit', file: 'esia/notes/esia_u4.pdf' },
-            { name: 'Unit 5 Case Studies', file: 'esia/notes/esia_u5.pdf' },
-            { name: '2-Mark Question Bank', file: 'esia/2m/esia_2m.pdf' }
-        ],
-        previousYearQuestions: [],
-        importantQuestions: [
-            { 
-                unit: 'Unit 1', 
-                questions: [
-                    'Rio Principles of Sustainable Development', 
-                    'Environmental Impact Assessment (EIA) concepts', 
-                    'EIA Types'
-                ] 
-            },
-            { 
-                unit: 'Unit 2', 
-                questions: [
-                    'Checklist Method',
-                    'Baseline Monitoring', 
-                    'Prediction and Assessment of impact on: Land, Water, Air, Noise, and Energy'
-                ] 
-            },
-            { 
-                unit: 'Unit 3', 
-                questions: [
-                    'Plan for mitigation/adverse impact on land, water, and air', 
-                    'Environmental Monitoring Plan',
-                    'Cost-Benefit Analysis (CBA)',
-                    'EIA Report Preparation'
-                ] 
-            },
-            { 
-                unit: 'Unit 4', 
-                questions: [
-                    'Cost-Benefit Analysis', 
-                    'Rehabilitation and Resettlement Plan', 
-                    'Economic Valuation of environmental impacts'
-                ] 
-            },
-            { 
-                unit: 'Unit 5', 
-                questions: [
-                    'Case Studies'
-                ] 
-            }
-        ]
-    },
-    'ppl': {
-        fullName: 'Principles of Programming Languages',
-        shortName: 'PPL',
-        courseCode: 'CCS358',
-        icon: 'fas fa-terminal',
-        materials: [
-            { name: 'Principles of PL Full', file: 'ppl/PPL.pdf' },
-            { name: 'Unit 1 Overview', file: 'ppl/ppl_unit 1.pdf' },
-            { name: 'Unit 2 Data Types', file: 'ppl/ppl_unit 2.pdf' },
-            { name: 'Unit 3 Subprograms', file: 'ppl/ppl_unit 3.pdf' },
-            { name: 'Unit 4 Object Orientation', file: 'ppl/ppl_u4.pdf' },
-            { name: 'Unit 5 Exception Handling', file: 'ppl/ppl_u5.pdf' },
-            { name: 'Cheat Sheet', file: 'ppl/ppl_cs.pdf' },
-            { name: 'PPL Full Draft', file: 'ppl/ppl_full.pdf' },
-            { name: 'Full Lecture Notes 1', file: 'ppl/CCS358-Principles-of-Programming-Languages-Lecture-Notes-1.pdf' }
         ]
     },
     'vce': {
@@ -361,6 +206,161 @@ export const subjectMaterials = {
                     'Compare Adobe Premiere Pro and Final Cut Pro'
                 ]
             }
+        ]
+    },
+    'esia': {
+        fullName: 'Environmental and Social Impact Assessment',
+        shortName: 'ESIA',
+        courseCode: 'OCE351',
+        icon: 'fas fa-leaf',
+        syllabus: [
+            {
+                unit: 'UNIT I',
+                title: 'INTRODUCTION',
+                topics: 'Impacts of Development on Environment – Rio Principles of Sustainable Development Environmental Impact Assessment (EIA) – Objectives – Historical development – EIA Types – EIA in project cycle –EIA Notification and Legal Framework–Stakeholders and their Role in EIA– Selection & Registration Criteria for EIA Consultants'
+            },
+            {
+                unit: 'UNIT II',
+                title: 'ENVIRONMENTAL ASSESSMENT',
+                topics: 'Screening and Scoping in EIA – Drafting of Terms of Reference,Baseline monitoring, Prediction and Assessment of Impact on land, water, air, noise and energy, flora and fauna - Matrices – Networks – Checklist Methods - Mathematical models for Impact prediction – Analysis of alternatives'
+            },
+            {
+                unit: 'UNIT III',
+                title: 'ENVIRONMENTAL MANAGEMENT PLAN',
+                topics: 'Plan for mitigation of adverse impact on water, air and land, water, energy, flora and fauna – Environmental Monitoring Plan – EIA Report Preparation – Review of EIA Reports – Public Hearing-Environmental Clearance Post Project Monitoring'
+            },
+            {
+                unit: 'UNIT IV',
+                title: 'SOCIO ECONOMIC ASSESSMENT',
+                topics: 'Baseline monitoring of Socio economic environment – Identification of Project Affected Personal – Rehabilitation and Resettlement Plan- Economic valuation of Environmental impacts – Cost benefit Analysis'
+            },
+            {
+                unit: 'UNIT V',
+                title: 'CASE STUDIES',
+                topics: 'EIA case studies pertaining to Infrastructure Projects – Real Estate Development - Roads and Bridges – Mass Rapid Transport Systems - Ports and Harbor – Airports - Dams and Irrigation projects - Power plants – CETPs- Waste Processing and Disposal facilities – Mining Projects.'
+            }
+        ],
+        materials: [
+            { name: 'ESIA Comprehensive', file: 'esia/notes/ESIA_merged.pdf' },
+            { name: 'Unit 1 & 2 Assessment', file: 'esia/notes/esia_notes.pdf' },
+            { name: 'Unit 3 Monitoring', file: 'esia/notes/esia_u3.pdf' },
+            { name: 'Unit 4 Audit', file: 'esia/notes/esia_u4.pdf' },
+            { name: 'Unit 5 Case Studies', file: 'esia/notes/esia_u5.pdf' },
+            { name: '2-Mark Question Bank', file: 'esia/2m/esia_2m.pdf' }
+        ],
+        previousYearQuestions: [],
+        importantQuestions: [
+            { 
+                unit: 'Unit 1', 
+                questions: [
+                    'Rio Principles of Sustainable Development', 
+                    'Environmental Impact Assessment (EIA) concepts', 
+                    'EIA Types'
+                ] 
+            },
+            { 
+                unit: 'Unit 2', 
+                questions: [
+                    'Checklist Method',
+                    'Baseline Monitoring', 
+                    'Prediction and Assessment of impact on: Land, Water, Air, Noise, and Energy'
+                ] 
+            },
+            { 
+                unit: 'Unit 3', 
+                questions: [
+                    'Plan for mitigation/adverse impact on land, water, and air', 
+                    'Environmental Monitoring Plan',
+                    'Cost-Benefit Analysis (CBA)',
+                    'EIA Report Preparation'
+                ] 
+            },
+            { 
+                unit: 'Unit 4', 
+                questions: [
+                    'Cost-Benefit Analysis', 
+                    'Rehabilitation and Resettlement Plan', 
+                    'Economic Valuation of environmental impacts'
+                ] 
+            },
+            { 
+                unit: 'Unit 5', 
+                questions: [
+                    'Case Studies'
+                ] 
+            }
+        ]
+    },
+    'ppl': {
+        fullName: 'Principles of Programming Languages',
+        shortName: 'PPL',
+        courseCode: 'CCS358',
+        icon: 'fas fa-terminal',
+        materials: [
+            { name: 'Principles of PL Full', file: 'ppl/PPL.pdf' },
+            { name: 'Unit 1 Overview', file: 'ppl/ppl_unit 1.pdf' },
+            { name: 'Unit 2 Data Types', file: 'ppl/ppl_unit 2.pdf' },
+            { name: 'Unit 3 Subprograms', file: 'ppl/ppl_unit 3.pdf' },
+            { name: 'Unit 4 Object Orientation', file: 'ppl/ppl_u4.pdf' },
+            { name: 'Unit 5 Exception Handling', file: 'ppl/ppl_u5.pdf' },
+            { name: 'Cheat Sheet', file: 'ppl/ppl_cs.pdf' },
+            { name: 'PPL Full Draft', file: 'ppl/ppl_full.pdf' },
+            { name: 'Full Lecture Notes 1', file: 'ppl/CCS358-Principles-of-Programming-Languages-Lecture-Notes-1.pdf' }
+        ]
+    },
+    'ba': {
+        fullName: 'Business Analytics',
+        shortName: 'BA',
+        courseCode: 'CCW331',
+        icon: 'fas fa-chart-line',
+        materials: [
+            { name: 'Unit 1 & 2 Notes', file: 'ba/Ba_notes.pdf' },
+            { name: 'Full Lecture Notes', file: 'ba/CCW331-Business-Analytics-Lecture-Notes-2.pdf' },
+            { name: 'Unit 3 Notes', file: 'ba/BA_u3.pdf' },
+            { name: 'Unit 4 Notes', file: 'ba/BA_u4.pdf' },
+            { name: 'Unit 5 Notes', file: 'ba/BA_u5.pdf' },
+            { name: '2-Mark Questions', file: 'ba/BA_2m.pdf' },
+            { name: 'Additional Notes (2)', file: 'ba/Ba_notes (2).pdf' }
+        ]
+    },
+    'eh': {
+        fullName: 'Ethical Hacking',
+        shortName: 'EH',
+        courseCode: 'CCS344',
+        icon: 'fas fa-user-secret',
+        syllabus: [
+            {
+                unit: 'UNIT I',
+                title: 'INTRODUCTION',
+                topics: 'Ethical Hacking Overview - Role of Security and Penetration Testers .- Penetration-Testing Methodologies- Laws of the Land - Overview of TCP/IP- The Application Layer - The Transport Layer - The Internet Layer - IP Addressing .- Network and Computer Attacks - Malware - Protecting Against Malware Attacks.- Intruder Attacks - Addressing Physical Security'
+            },
+            {
+                unit: 'UNIT II',
+                title: 'FOOT PRINTING, RECONNAISSANCE AND SCANNING NETWORKS',
+                topics: 'Footprinting Concepts - Footprinting through Search Engines, Web Services, Social Networking Sites, Website, Email - Competitive Intelligence - Footprinting through Social Engineering - Footprinting Tools - Network Scanning Concepts - Port-Scanning Tools - Scanning Techniques - Scanning Beyond IDS and Firewall'
+            },
+            {
+                unit: 'UNIT III',
+                title: 'ENUMERATION AND VULNERABILITY ANALYSIS',
+                topics: 'Enumeration Concepts - NetBIOS Enumeration – SNMP, LDAP, NTP, SMTP and DNS Enumeration - Vulnerability Assessment Concepts - Desktop and Server OS Vulnerabilities - Windows OS Vulnerabilities - Tools for Identifying Vulnerabilities in Windows- Linux OS Vulnerabilities- Vulnerabilities of Embedded Oss'
+            },
+            {
+                unit: 'UNIT IV',
+                title: 'SYSTEM HACKING',
+                topics: 'Hacking Web Servers - Web Application Components- Vulnerabilities - Tools for Web Attackers and Security Testers Hacking Wireless Networks - Components of a Wireless Network – Wardriving- Wireless Hacking - Tools of the Trade -'
+            },
+            {
+                unit: 'UNIT V',
+                title: 'NETWORK PROTECTION SYSTEMS',
+                topics: 'Access Control Lists. - Cisco Adaptive Security Appliance Firewall - Configuration and Risk Analysis Tools for Firewalls and Routers - Intrusion Detection and Prevention Systems - Network-Based and Host-Based IDSs and IPSs - Web Filtering - Security Incident Response Teams – Honeypots.'
+            }
+        ],
+        materials: [
+            { name: 'Ethical Hacking Full', file: 'eh/Eh_notes.pdf' },
+            { name: 'Unit 1 Intro', file: 'eh/eh_unit1.pdf' },
+            { name: 'Unit 2 Footprinting', file: 'eh/eh_unit2.pdf' },
+            { name: 'Unit 3 Scanning', file: 'eh/eh_unit3.pdf' },
+            { name: 'Advanced EH-16', file: 'eh/EH-16.pdf' }
         ]
     }
 };
