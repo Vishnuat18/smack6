@@ -208,18 +208,72 @@
             z-index: 10;
         }
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .s6-loader {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
         }
 
-        @keyframes spin {
+        .s6-loader-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-top-color: var(--primary);
+            animation: s6-spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+
+        .s6-loader-ring-inner {
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-bottom-color: var(--secondary);
+            animation: s6-spin-reverse 1s linear infinite;
+        }
+
+        .s6-loader-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 1.4rem;
+            color: white;
+            text-shadow: 0 0 15px var(--primary);
+            z-index: 2;
+            letter-spacing: -1px;
+        }
+
+        @keyframes s6-spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        @keyframes s6-spin-reverse {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+
+        .loading-text {
+            font-family: 'Outfit';
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            background: linear-gradient(to right, #fff, var(--primary-light), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 2s linear infinite;
+            background-size: 200% 100%;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
 
         .eye-btn {
@@ -324,8 +378,12 @@
 
     <div id="pdf-container" class="no-scrollbar">
         <div id="loading-overlay" class="loading-overlay">
-            <div class="spinner"></div>
-            <p>Loading PDF...</p>
+            <div class="s6-loader">
+                <div class="s6-loader-ring"></div>
+                <div class="s6-loader-ring-inner"></div>
+                <div class="s6-loader-text">S6</div>
+            </div>
+            <p id="loading-status" class="loading-text">Initializing S6 Engine...</p>
         </div>
         <div id="canvas-wrapper" class="main-canvas-wrapper">
             <canvas id="pdf-canvas"></canvas>
@@ -504,18 +562,57 @@
                 downloadLink.href = url;
                 if (subject) backLink.href = `subject_details.html?subject=${subject}`;
 
+                const loadingStatus = document.getElementById('loading-status');
+                const startTime = Date.now();
+                const minLoadingTime = 3000; // 3 seconds minimum
+
+                // Handle '#' or Uploaded soon
+                if (url === '#' || (title && title.toLowerCase().includes('uploaded soon'))) {
+                    setTimeout(() => {
+                        loadingOverlay.innerHTML = `
+                            <div style="text-align: center; animation: fadeIn 0.5s ease-out;">
+                                <i class="fas fa-clock" style="font-size: 3rem; color: var(--primary-light); margin-bottom: 1.5rem; display: block;"></i>
+                                <h2 style="font-family: 'Outfit'; font-weight: 700; font-size: 1.8rem; margin-bottom: 0.5rem; color: white;">Upload soon...</h2>
+                                <p style="color: var(--text-muted);">This resource is being prepared by our team.</p>
+                                <a href="subject_details.html?subject=${subject}" class="glass" style="display: inline-block; margin-top: 2rem; padding: 0.8rem 1.5rem; border-radius: 12px; color: white; text-decoration: none; font-weight: 600;">
+                                    <i class="fas fa-arrow-left"></i> Go Back
+                                </a>
+                            </div>
+                        `;
+                    }, minLoadingTime);
+                    return;
+                }
+
+                loadingStatus.textContent = "Fetching S6 Material...";
+
                 pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
-                    pdfDoc = pdfDoc_;
-                    document.getElementById('page-count').textContent = pdfDoc.numPages;
-                    document.getElementById('max-page-label').textContent = pdfDoc.numPages;
-                    pageSlider.max = pdfDoc.numPages;
-                    
-                    loadingOverlay.style.display = 'none';
-                    renderPage(pageNum);
-                    renderThumbnails();
+                    const elapsed = Date.now() - startTime;
+                    const remaining = Math.max(0, minLoadingTime - elapsed);
+
+                    setTimeout(() => {
+                        pdfDoc = pdfDoc_;
+                        document.getElementById('page-count').textContent = pdfDoc.numPages;
+                        document.getElementById('max-page-label').textContent = pdfDoc.numPages;
+                        pageSlider.max = pdfDoc.numPages;
+                        
+                        loadingOverlay.style.display = 'none';
+                        renderPage(pageNum);
+                        renderThumbnails();
+                    }, remaining);
                 }).catch(err => {
                     console.error('Error loading PDF:', err);
-                    loadingOverlay.innerHTML = `<p style="color: #ef4444;">Error loading PDF.</p>`;
+                    const elapsed = Date.now() - startTime;
+                    const remaining = Math.max(0, minLoadingTime - elapsed);
+
+                    setTimeout(() => {
+                        loadingOverlay.innerHTML = `
+                            <div style="text-align: center; color: #ef4444;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <p style="font-weight: 600;">Error loading S6 Material.</p>
+                                <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-muted);">Please check your connection or try again later.</p>
+                            </div>
+                        `;
+                    }, remaining);
                 });
             }
 
