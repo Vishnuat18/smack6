@@ -136,12 +136,12 @@ export const subjectMaterials = {
             }
         ],
         materials: [
-            { name: 'Unit 1: Fundamentals', file: 'vce/vce_unit1.pdf' },
-            { name: 'Unit 2: Storytelling', file: 'vce/vce_unit2.pdf' },
-            { name: 'Unit 3: Using Audio and Video', file: 'vce/VCE_U3.pdf' },
-            { name: 'Unit 4: Working with Final Cut Pro', file: 'vce/VCE_U4.pdf' },
-            { name: 'Unit 5: Working with Avid Xpress DV4', file: 'vce/VCE_U5.pdf' },
-            { name: '2-Mark Question Bank', file: 'vce/vce_2m.pdf' }
+            { name: 'Unit 1: Introduction', file: 'vce/notes/VCE_U1.pdf' },
+            { name: 'Unit 2: Storytelling', file: 'vce/notes/VCE_U2.pdf' },
+            { name: 'Unit 3: Using Audio and Video', file: 'vce/notes/VCE_U3.pdf' },
+            { name: 'Unit 4: Working with Final Cut Pro', file: 'vce/notes/VCE_U4.pdf' },
+            { name: 'Unit 5: Working with Avid Xpress DV4', file: 'vce/notes/VCE_U5.pdf' },
+            { name: '2-Mark Question Bank (Uploaded soon)', file: '#' }
         ],
         previousYearQuestions: [
             { year: 'Apr/May 2024', file: 'vce/qn papers/April May 2024.pdf' },
@@ -153,11 +153,12 @@ export const subjectMaterials = {
                 unit: '1', 
                 firstHalf: [
                     'Evolution of Film Making', 
-                    'Economy of expression'
+                    'Linear Editing',
+                    'Non-Linear Editing'
                 ],
                 secondHalf: [
                     'Video Editing Process', 
-                    'Linear and Non-Linear Editing (Comparison also)'
+                    'Economy of expression'
                 ]
             },
             { 
@@ -175,12 +176,14 @@ export const subjectMaterials = {
             { 
                 unit: '3', 
                 firstHalf: [
-                    'Capture Digital Video and Analog Video'
+                    'Capture Digital Video and Analog Video',
+                    'Importing Audio'
                 ],
                 secondHalf: [
-                    'Audio and Video Compression Techniques', 
-                    'Video Storage Devices', 
-                    'Storing Files in CD and VCD'
+                    'Exporting Digital video to tape', 
+                    'Recording Techniques in CD and VCD ',
+                    'Storing Files in CD and VCD / Process of Burning DVDs'
+
                 ]
             },
             { 
@@ -191,7 +194,8 @@ export const subjectMaterials = {
                     'Working with Sequence, Timeline & Canvas'
                 ],
                 secondHalf: [
-                    'Advanced Editing and Trimming Techniques'
+                    'Advanced Editing and Trimming Techniques',
+                    'Working with audio'
                 ]
             },
             { 
@@ -202,8 +206,7 @@ export const subjectMaterials = {
                 ],
                 secondHalf: [
                     'Using Timeline and Working in Trim Mode', 
-                    'Viewing and Making Footage', 
-                    'Compare Adobe Premiere Pro and Final Cut Pro'
+                    'Viewing and Making Footage'
                 ]
             }
         ]
