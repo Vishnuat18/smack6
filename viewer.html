@@ -66,7 +66,7 @@
         
         .main-canvas-wrapper {
             position: relative;
-            transition: transform 0.1s ease-out, opacity 0.2s ease-out;
+            transition: transform 0.1s ease-out, opacity 0.3s ease-out;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             transform-origin: center center;
             touch-action: none;
@@ -78,6 +78,8 @@
             background: white;
             border-radius: 12px;
             overflow: hidden;
+            opacity: 0; /* Hidden initially */
+            pointer-events: none;
         }
 
         .main-canvas-wrapper.sliding-left {
@@ -596,6 +598,8 @@
                         pageSlider.max = pdfDoc.numPages;
                         
                         loadingOverlay.style.display = 'none';
+                        canvasWrapper.style.opacity = '1';
+                        canvasWrapper.style.pointerEvents = 'auto';
                         renderPage(pageNum);
                         renderThumbnails();
                     }, remaining);
