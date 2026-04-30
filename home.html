@@ -4,12 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S6 Notes</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
 </head>
 
 <body>
+    <!-- Post-Exam Review Modal -->
+    <div id="exam-review-modal" class="glass" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem;">
+        <div class="glass" style="max-width: 400px; width: 100%; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid rgba(251, 191, 36, 0.3); text-align: center; position: relative;">
+            <i class="fas fa-graduation-cap" style="font-size: 3rem; color: #fbbf24; margin-bottom: 1rem;"></i>
+            <h2 id="review-exam-title" style="font-family: 'Outfit'; font-size: 1.5rem; margin-bottom: 0.5rem; color: white;">Exam Name</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">How was the exam? Be honest! 🤫</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                <button class="review-btn glass" data-answer="Rombo easy… but time dha illa 😭" style="padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); color: white; cursor: pointer; text-align: left; transition: var(--transition);">
+                    Rombo easy… but time dha illa 😭
+                </button>
+                <button class="review-btn glass" data-answer="Easy dha… but enaku therla 🥲" style="padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); color: white; cursor: pointer; text-align: left; transition: var(--transition);">
+                    Easy dha… but enaku therla 🥲
+                </button>
+                <button class="review-btn glass" data-answer="Konjam kastam dha… but manage panniten 😅" style="padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); color: white; cursor: pointer; text-align: left; transition: var(--transition);">
+                    Konjam kastam dha… but manage panniten 😅
+                </button>
+                <button class="review-btn glass" data-answer="Ellam theriyum… aana marandhupochen 😵" style="padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); color: white; cursor: pointer; text-align: left; transition: var(--transition);">
+                    Ellam theriyum… aana marandhupochen 😵
+                </button>
+                <button class="review-btn glass" data-answer="Pass aana podhum 🙏" style="padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); color: white; cursor: pointer; text-align: left; transition: var(--transition);">
+                    Pass aana podhum 🙏
+                </button>
+            </div>
+            <p id="review-saving-text" style="display: none; color: var(--primary-light); margin-top: 1rem; font-size: 0.9rem;">Saving response...</p>
+        </div>
+        <style>
+            .review-btn:hover { background: rgba(99, 102, 241, 0.2) !important; border-color: var(--primary-light) !important; transform: translateX(5px); }
+        </style>
+    </div>
+
     <nav class="navbar glass">
         <div class="logo">
             <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 8px;">
@@ -151,7 +183,7 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, fs, doc, getDoc, collection, getDocs } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, setDoc, collection, getDocs } from "./firebase-config.js";
         import { subjectMaterials, examEvents } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -183,12 +215,97 @@
                              } else {
                                  adminLinks.forEach(link => link.style.display = 'none');
                              }
+
+                             // Trigger Exam Review Logic
+                             checkExamReview(user.uid, data.name);
                         }
                     } catch (error) {
                         console.error("Error loading profile:", error);
                     }
                 }
             });
+
+            // Post-Exam Review Logic
+            async function checkExamReview(userId, userName) {
+                const now = new Date();
+                
+                // Find all past exams
+                const pastExams = examEvents.filter(e => new Date(e.date) < now);
+                if (pastExams.length === 0) return;
+
+                // Check the most recently passed exam
+                // Ensure it's sorted by date descending to get the most recent past one
+                pastExams.sort((a, b) => new Date(b.date) - new Date(a.date));
+                const latestPastExam = pastExams[0];
+
+                try {
+                    // Check if user already submitted a review for this exam
+                    const reviewDocRef = doc(fs, "exam_reviews", `${userId}_${latestPastExam.id}`);
+                    const reviewDoc = await getDoc(reviewDocRef);
+
+                    if (!reviewDoc.exists()) {
+                        showReviewModal(userId, userName, latestPastExam);
+                    }
+                } catch (err) {
+                    console.error("Error checking exam review status:", err);
+                }
+            }
+
+            function showReviewModal(userId, userName, exam) {
+                const modal = document.getElementById('exam-review-modal');
+                const title = document.getElementById('review-exam-title');
+                const savingText = document.getElementById('review-saving-text');
+                const buttons = document.querySelectorAll('.review-btn');
+                
+                title.textContent = exam.name;
+                modal.style.display = 'flex';
+
+                buttons.forEach(btn => {
+                    // Remove old listeners to avoid duplicates if called multiple times
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+                    
+                    newBtn.addEventListener('click', async (e) => {
+                        const answer = e.target.getAttribute('data-answer');
+                        
+                        // Disable buttons
+                        document.querySelectorAll('.review-btn').forEach(b => {
+                            b.style.pointerEvents = 'none';
+                            b.style.opacity = '0.5';
+                        });
+                        e.target.style.background = 'rgba(99, 102, 241, 0.4)';
+                        e.target.style.opacity = '1';
+                        
+                        savingText.style.display = 'block';
+
+                        try {
+                            await setDoc(doc(fs, "exam_reviews", `${userId}_${exam.id}`), {
+                                userId: userId,
+                                userName: userName,
+                                examId: exam.id,
+                                examName: exam.name,
+                                answer: answer,
+                                timestamp: new Date().toISOString()
+                            });
+                            
+                            // Success animation
+                            savingText.style.color = '#10b981';
+                            savingText.textContent = "Response recorded! 🎉";
+                            
+                            setTimeout(() => {
+                                modal.style.opacity = '0';
+                                modal.style.transition = 'opacity 0.5s ease';
+                                setTimeout(() => modal.style.display = 'none', 500);
+                            }, 1500);
+                        } catch (err) {
+                            console.error("Error saving review:", err);
+                            savingText.style.color = '#ef4444';
+                            savingText.textContent = "Failed to save response. Try again later.";
+                            setTimeout(() => { modal.style.display = 'none'; }, 2000);
+                        }
+                    });
+                });
+            }
 
             // 2. Dynamic Subject Grid
             const mainGrid = document.getElementById('main-subject-grid');

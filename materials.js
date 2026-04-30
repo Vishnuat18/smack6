@@ -136,12 +136,12 @@ export const subjectMaterials = {
             }
         ],
         materials: [
-            { name: 'Unit 1: Introduction', file: 'vce/notes/VCE_U1.pdf' },
+            { name: 'Unit 1: Fundamentals', file: 'vce/notes/VCE_U1.pdf' },
             { name: 'Unit 2: Storytelling', file: 'vce/notes/VCE_U2.pdf' },
             { name: 'Unit 3: Using Audio and Video', file: 'vce/notes/VCE_U3.pdf' },
             { name: 'Unit 4: Working with Final Cut Pro', file: 'vce/notes/VCE_U4.pdf' },
             { name: 'Unit 5: Working with Avid Xpress DV4', file: 'vce/notes/VCE_U5.pdf' },
-            { name: '2-Mark Question Bank (Uploaded soon)', file: '#' }
+            { name: '2-Mark Question Bank', file: 'vce/2m/VCE_2M.pdf' }
         ],
         previousYearQuestions: [
             { year: 'Apr/May 2024', file: 'vce/qn papers/April May 2024.pdf' },

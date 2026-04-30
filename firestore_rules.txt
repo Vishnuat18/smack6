@@ -32,6 +32,17 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // Rules for exam reviews collection
+    match /exam_reviews/{reviewId} {
+      // Any authenticated user can submit a review
+      allow create: if request.auth != null;
+      
+      // A user can read their own reviews to prevent re-submitting, Admins can read all
+      allow read: if request.auth != null && (request.auth.uid == resource.data.userId || isAdmin());
+      
+      allow update, delete: if isAdmin();
+    }
+
     // Default deny
     match /{document=**} {
       allow read, write: if false;

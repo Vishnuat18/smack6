@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Sem 6 Notes</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
@@ -85,6 +86,20 @@
                 </div>
             </div>
         </div>
+
+        <!-- Exam Reviews Section -->
+        <div class="glass" style="padding: 1.5rem; border-radius: var(--radius-lg); margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                <h3 style="margin: 0;"><i class="fas fa-graduation-cap" style="color: #fbbf24;"></i> Post-Exam Reviews</h3>
+                <span id="exam-reviews-count" class="badge" style="background: rgba(251, 191, 36, 0.1); color: #fbbf24;">0 Total</span>
+            </div>
+            <div id="exam-reviews-list" style="display: flex; flex-direction: column; gap: 1rem; max-height: 400px; overflow-y: auto; padding-right: 0.5rem;" class="no-scrollbar">
+                <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                    <p>Loading reviews...</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Admin Mobile Nav -->
@@ -144,6 +159,9 @@
 
                     // 3. Fetch and render feedback
                     syncFeedback();
+
+                    // 4. Fetch and render exam reviews
+                    syncExamReviews();
                 } catch (error) {
                     console.error("Error fetching stats:", error);
                     statsUsers.textContent = "0";
@@ -199,6 +217,62 @@
                 } catch (error) {
                     console.error("Error fetching feedback:", error);
                     feedbackList.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;">Error loading feedback.</div>';
+                }
+            }
+
+            async function syncExamReviews() {
+                const reviewsList = document.getElementById('exam-reviews-list');
+                const reviewsCount = document.getElementById('exam-reviews-count');
+
+                try {
+                    const q = query(collection(fs, "exam_reviews"), orderBy("timestamp", "desc"));
+                    const querySnapshot = await getDocs(q);
+                    
+                    reviewsCount.textContent = `${querySnapshot.size} Total`;
+
+                    if (querySnapshot.empty) {
+                        reviewsList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No exam reviews yet.</div>';
+                        return;
+                    }
+
+                    reviewsList.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const review = doc.data();
+                        const date = review.timestamp ? new Date(review.timestamp).toLocaleString() : "Recently";
+                        
+                        const rCard = document.createElement('div');
+                        rCard.className = 'glass';
+                        rCard.style.padding = '1rem';
+                        rCard.style.borderRadius = 'var(--radius-sm)';
+                        rCard.style.border = '1px solid var(--glass-border)';
+                        
+                        // Set border color based on the funny answer vibe (optional)
+                        let borderColor = 'var(--glass-border)';
+                        if (review.answer.includes('easy')) borderColor = 'rgba(16, 185, 129, 0.5)';
+                        else if (review.answer.includes('kastam')) borderColor = 'rgba(236, 72, 153, 0.5)';
+                        else if (review.answer.includes('Pass')) borderColor = 'rgba(251, 191, 36, 0.5)';
+                        
+                        rCard.style.borderLeft = `4px solid ${borderColor}`;
+
+                        rCard.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <div style="font-weight: 700; color: #fbbf24; font-size: 1rem; margin-bottom: 2px;">${review.examName}</div>
+                                    <div style="display: flex; align-items: center; gap: 0.4rem; color: var(--text-muted); font-size: 0.8rem;">
+                                        <i class="fas fa-user"></i> ${review.userName}
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">${date}</div>
+                            </div>
+                            <div style="margin-top: 0.8rem; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px;">
+                                <p style="font-size: 0.95rem; margin: 0; color: var(--text-main); font-weight: 600;">"${review.answer}"</p>
+                            </div>
+                        `;
+                        reviewsList.appendChild(rCard);
+                    });
+                } catch (error) {
+                    console.error("Error fetching exam reviews:", error);
+                    reviewsList.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;">Error loading reviews.</div>';
                 }
             }
         });
