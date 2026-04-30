@@ -708,6 +708,15 @@ iframe {
     z-index: 1000;
 }
 
+@media (min-width: 769px) {
+    .navbar ~ .app-header {
+        display: none !important;
+    }
+    .navbar ~ .container {
+        margin-top: 0;
+    }
+}
+
 @media (max-width: 768px) {
     .mobile-nav {
         display: flex;
