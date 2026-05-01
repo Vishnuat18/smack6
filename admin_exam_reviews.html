@@ -21,9 +21,14 @@
     </header>
 
     <div class="container" style="padding-top: 1rem; padding-bottom: 5rem;">
-        <div class="dashboard-header" style="margin-bottom: 1.5rem;">
-            <h1 id="page-heading">Loading Reviews...</h1>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">View all student responses for this exam.</p>
+        <div class="dashboard-header" style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 id="page-heading">Loading Reviews...</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">View all student responses for this exam.</p>
+            </div>
+            <button id="clear-vce-btn" class="btn" style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; display: none; cursor: pointer;">
+                <i class="fas fa-trash"></i> Clear VCE Reviews
+            </button>
         </div>
 
         <div id="reviews-container" style="display: flex; flex-direction: column; gap: 1rem;">
@@ -43,7 +48,7 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, fs, collection, getDocs, query, where, orderBy } from "./firebase-config.js";
+        import { auth, fs, collection, getDocs, query, where, orderBy, deleteDoc, doc } from "./firebase-config.js";
 
         document.addEventListener('DOMContentLoaded', () => {
             const reviewsContainer = document.getElementById('reviews-container');
@@ -56,6 +61,34 @@
             if (examName) {
                 pageHeading.textContent = examName;
                 examTitle.textContent = examName;
+
+                if (examName === 'VCE Exam') {
+                    const clearBtn = document.getElementById('clear-vce-btn');
+                    clearBtn.style.display = 'block';
+                    clearBtn.addEventListener('click', async () => {
+                        if (confirm("Are you sure you want to permanently delete all VCE Exam reviews?")) {
+                            clearBtn.disabled = true;
+                            clearBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+                            try {
+                                const q = query(collection(fs, "exam_reviews"), where("examName", "==", "VCE Exam"));
+                                const querySnapshot = await getDocs(q);
+                                const deletePromises = [];
+                                querySnapshot.forEach((docSnapshot) => {
+                                    deletePromises.push(deleteDoc(doc(fs, "exam_reviews", docSnapshot.id)));
+                                });
+                                await Promise.all(deletePromises);
+                                alert("VCE Reviews cleared successfully.");
+                                loadReviews();
+                            } catch (e) {
+                                console.error("Error clearing reviews: ", e);
+                                alert("Failed to clear reviews. Check permissions.");
+                            } finally {
+                                clearBtn.disabled = false;
+                                clearBtn.innerHTML = '<i class="fas fa-trash"></i> Clear VCE Reviews';
+                            }
+                        }
+                    });
+                }
             } else {
                 pageHeading.textContent = "Unknown Exam";
                 reviewsContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: #ef4444;">No exam specified.</div>';

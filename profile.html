@@ -297,6 +297,7 @@
             // Admin Email for fallback
             const ADMIN_EMAIL = 'vishnurajan24766@gmail.com';
             let profileUnsubscribe = null;
+            let currentUserGender = 'boy';
 
             auth.onAuthStateChanged(async (user) => {
                 if (profileUnsubscribe) profileUnsubscribe();
@@ -320,10 +321,11 @@
                             const role = data.role || fallbackRole;
                             const createdAt = data.createdAt ? new Date(data.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : "Recently";
                             
-                            const isGirl = girlEmails.includes(user.email);
-                            const genderBadge = isGirl ? 
-                                '<span class="badge" title="Women" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.2); margin-left: 0.5rem; padding: 2px 6px;">W</span>' : 
-                                '<span class="badge" title="Men" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); margin-left: 0.5rem; padding: 2px 6px;">M</span>';
+                            const isGirlList = girlEmails.includes(user.email);
+                            currentUserGender = data.gender ? data.gender : (isGirlList ? 'girl' : 'boy');
+                            const genderBadge = currentUserGender === 'girl' ? 
+                                '<span class="badge" title="Women" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.2); margin-left: 0.5rem; padding: 2px 6px;"><i class="fas fa-venus"></i></span>' : 
+                                '<span class="badge" title="Men" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); margin-left: 0.5rem; padding: 2px 6px;"><i class="fas fa-mars"></i></span>';
 
                             displayName.innerHTML = `${name} ${genderBadge}`;
                             editInput.value = name;
@@ -392,10 +394,9 @@
                         updateStatus.style.display = "block";
                         
                         // Update UI
-                        const isGirl = girlEmails.includes(user.email);
-                        const genderBadge = isGirl ? 
-                            '<span class="badge" title="Women" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.2); margin-left: 0.5rem; padding: 2px 6px;">W</span>' : 
-                            '<span class="badge" title="Men" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); margin-left: 0.5rem; padding: 2px 6px;">M</span>';
+                        const genderBadge = currentUserGender === 'girl' ? 
+                            '<span class="badge" title="Women" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.2); margin-left: 0.5rem; padding: 2px 6px;"><i class="fas fa-venus"></i></span>' : 
+                            '<span class="badge" title="Men" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); margin-left: 0.5rem; padding: 2px 6px;"><i class="fas fa-mars"></i></span>';
 
                         displayName.innerHTML = `${newName} ${genderBadge}`;
                         avatarChar.textContent = newName.charAt(0).toUpperCase();

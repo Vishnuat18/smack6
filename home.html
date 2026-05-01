@@ -217,8 +217,12 @@
                                  adminLinks.forEach(link => link.style.display = 'none');
                              }
 
+                             // Resolve Gender
+                             const isGirlList = girlEmails.includes(user.email);
+                             const userGender = data.gender ? data.gender : (isGirlList ? 'girl' : 'boy');
+
                              // Trigger Exam Review Logic
-                             checkExamReview(user.uid, data.name, data.role, user.email);
+                             checkExamReview(user.uid, data.name, data.role, user.email, userGender);
                         }
                     } catch (error) {
                         console.error("Error loading profile:", error);
@@ -227,17 +231,17 @@
             });
 
             // Post-Exam Review Logic
-            async function checkExamReview(userId, userName, role, userEmail) {
+            async function checkExamReview(userId, userName, role, userEmail, userGender) {
                 const now = new Date();
                 
                 // Find all past exams eligible for review
                 const pastExams = examEvents.filter(e => {
                     let reviewTime = e.reviewDate ? new Date(e.reviewDate) : new Date(e.date);
                     
-                    // For testing only: if specific admin email, show VCE review after 2:45 AM
-                    if (userEmail === 'vishnuasvichu14@gmail.com' && e.id === 'vce-exam') {
+                    // For testing only: if specific admin emails, show VCE review after 2:55 AM
+                    if ((userEmail === 'vishnuasvichu14@gmail.com' || userEmail === 'vishnurajan24766@gmail.com') && e.id === 'vce-exam') {
                         const testTime = new Date(e.date);
-                        testTime.setHours(2, 45, 0, 0);
+                        testTime.setHours(2, 55, 0, 0);
                         reviewTime = testTime;
                     }
 
@@ -256,7 +260,7 @@
                     const reviewDoc = await getDoc(reviewDocRef);
 
                     if (!reviewDoc.exists()) {
-                        showReviewModal(userId, userName, latestPastExam, userEmail);
+                        showReviewModal(userId, userName, latestPastExam, userGender);
                     }
                 } catch (err) {
                     console.error("Error checking exam review status:", err);
@@ -265,7 +269,7 @@
 
             let originalReviewHTML = null;
 
-            function showReviewModal(userId, userName, exam, userEmail) {
+            function showReviewModal(userId, userName, exam, userGender) {
                 const modal = document.getElementById('exam-review-modal');
                 const title = document.getElementById('review-exam-title');
                 const savingText = document.getElementById('review-saving-text');
@@ -276,7 +280,7 @@
                 }
 
                 if (exam.id === 'vce-exam') {
-                    const isGirl = girlEmails.includes(userEmail);
+                    const isGirl = userGender === 'girl';
 
                     if (isGirl) {
                         optionsContainer.innerHTML = `

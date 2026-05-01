@@ -40,7 +40,7 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, fs, doc, getDoc, collection, getDocs } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, collection, getDocs, updateDoc } from "./firebase-config.js";
         import { girlEmails } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -72,9 +72,18 @@
                 const badgeColor = userRole === 'admin' ? '#10b981' : 'var(--primary)';
                 const badgeBg = userRole === 'admin' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(99, 102, 241, 0.1)';
 
+                const isGirlList = girlEmails.includes(u.email);
+                const userGender = u.gender ? u.gender : (isGirlList ? 'girl' : 'boy');
+                
+                const genderIcon = userGender === 'girl' 
+                    ? '<i class="fas fa-venus" title="Girl" style="color: #ec4899; background: rgba(236, 72, 153, 0.1); padding: 4px; border-radius: 4px; width: 24px; text-align: center;"></i>' 
+                    : '<i class="fas fa-mars" title="Boy" style="color: #3b82f6; background: rgba(59, 130, 246, 0.1); padding: 4px; border-radius: 4px; width: 24px; text-align: center;"></i>';
+
                 return `
                     <tr style="border-bottom: 1px solid var(--glass-border);">
-                        <td style="padding: 1rem; font-weight: 600;">${u.name || 'Anonymous'}</td>
+                        <td style="padding: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.8rem;">
+                            ${genderIcon} ${u.name || 'Anonymous'}
+                        </td>
                         <td style="padding: 1rem; color: var(--text-muted);">${u.email}</td>
                         <td style="padding: 1rem;">
                             <div class="role-badge" style="background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}40;">
@@ -82,12 +91,17 @@
                             </div>
                         </td>
                         <td style="padding: 1rem; font-size: 0.85rem; color: var(--text-muted);">${joinedDate}</td>
-                        <td style="padding: 1rem;"><button class="btn glass" onclick="alert('User editing not yet enabled')" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; width: auto;">Edit</button></td>
+                        <td style="padding: 1rem;">
+                            <select class="gender-select glass" data-uid="${u.id}" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 4px; padding: 0.4rem; cursor: pointer;">
+                                <option value="boy" ${userGender === 'boy' ? 'selected' : ''} style="color: black;">Boy</option>
+                                <option value="girl" ${userGender === 'girl' ? 'selected' : ''} style="color: black;">Girl</option>
+                            </select>
+                        </td>
                     </tr>
                 `;
             }
 
-            function generateTableHTML(title, users, color) {
+            function generateTableHTML(title, users, color, id, isVisible) {
                 let rows = '';
                 if (users.length > 0) {
                     users.forEach(u => { rows += renderUserRow(u); });
@@ -96,7 +110,7 @@
                 }
 
                 return `
-                    <div class="glass" style="border-radius: var(--radius-lg); overflow-x: auto; padding: 1rem; margin-bottom: 2rem;">
+                    <div id="${id}" class="glass" style="border-radius: var(--radius-lg); overflow-x: auto; padding: 1rem; margin-bottom: 2rem; display: ${isVisible ? 'block' : 'none'};">
                         <h2 style="padding: 1rem; margin: 0; color: ${color}; font-family: 'Outfit';">${title} (${users.length})</h2>
                         <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
                             <thead style="border-bottom: 1px solid var(--glass-border);">
@@ -123,18 +137,83 @@
                         const boys = [];
                         const girls = [];
                         
-                        querySnapshot.forEach((doc) => {
-                            const u = doc.data();
-                            if (girlEmails.includes(u.email)) {
+                        querySnapshot.forEach((docSnap) => {
+                            const u = docSnap.data();
+                            u.id = docSnap.id; // Store ID for update
+
+                            const isGirlList = girlEmails.includes(u.email);
+                            const userGender = u.gender ? u.gender : (isGirlList ? 'girl' : 'boy');
+
+                            if (userGender === 'girl') {
                                 girls.push(u);
                             } else {
                                 boys.push(u);
                             }
                         });
 
-                        tablesContainer.innerHTML = 
-                            generateTableHTML('Girls', girls, '#ec4899') + 
-                            generateTableHTML('Boys', boys, '#3b82f6');
+                        tablesContainer.innerHTML = `
+                            <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem;">
+                                <button id="toggle-boys" class="btn" style="background: #3b82f6; border-radius: 50px; padding: 0.5rem 2.5rem; color: white; border: none; font-weight: 600; cursor: pointer; transition: var(--transition);">Boys</button>
+                                <button id="toggle-girls" class="btn glass" style="border-radius: 50px; padding: 0.5rem 2.5rem; color: var(--text-main); font-weight: 600; cursor: pointer; transition: var(--transition);">Girls</button>
+                            </div>
+                        ` + 
+                        generateTableHTML('Boys', boys, '#3b82f6', 'table-boys', true) +
+                        generateTableHTML('Girls', girls, '#ec4899', 'table-girls', false);
+
+                        const toggleBoys = document.getElementById('toggle-boys');
+                        const toggleGirls = document.getElementById('toggle-girls');
+                        const tableBoys = document.getElementById('table-boys');
+                        const tableGirls = document.getElementById('table-girls');
+
+                        toggleBoys.addEventListener('click', () => {
+                            tableBoys.style.display = 'block';
+                            tableGirls.style.display = 'none';
+                            
+                            toggleBoys.className = 'btn';
+                            toggleBoys.style.background = '#3b82f6';
+                            toggleBoys.style.color = 'white';
+                            toggleBoys.style.border = 'none';
+                            
+                            toggleGirls.className = 'btn glass';
+                            toggleGirls.style.background = 'transparent';
+                            toggleGirls.style.color = 'var(--text-main)';
+                        });
+
+                        toggleGirls.addEventListener('click', () => {
+                            tableGirls.style.display = 'block';
+                            tableBoys.style.display = 'none';
+                            
+                            toggleGirls.className = 'btn';
+                            toggleGirls.style.background = '#ec4899';
+                            toggleGirls.style.color = 'white';
+                            toggleGirls.style.border = 'none';
+                            
+                            toggleBoys.className = 'btn glass';
+                            toggleBoys.style.background = 'transparent';
+                            toggleBoys.style.color = 'var(--text-main)';
+                        });
+
+                        // Gender Select Event Listeners
+                        const genderSelects = document.querySelectorAll('.gender-select');
+                        genderSelects.forEach(select => {
+                            select.addEventListener('change', async (e) => {
+                                const newGender = e.target.value;
+                                const uid = e.target.getAttribute('data-uid');
+                                e.target.disabled = true;
+                                try {
+                                    await updateDoc(doc(fs, "users", uid), {
+                                        gender: newGender
+                                    });
+                                    // Refresh list completely to reflect proper placement
+                                    syncUsersList();
+                                } catch (err) {
+                                    console.error("Error updating gender:", err);
+                                    alert("Failed to update gender. Ensure you have admin permissions.");
+                                    e.target.disabled = false;
+                                }
+                            });
+                        });
+
                     } else {
                         tablesContainer.innerHTML = '<div style="text-align: center; padding: 3rem;">No users found.</div>';
                     }
