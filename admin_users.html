@@ -64,7 +64,18 @@
                 }
             });
 
-            function renderUserRow(u) {
+            window.assignGender = async function(uid, gender) {
+                try {
+                    await updateDoc(doc(fs, "users", uid), { gender: gender });
+                    alert(`Assigned user as ${gender.toUpperCase()}!`);
+                    syncUsersList();
+                } catch (error) {
+                    console.error("Error assigning gender:", error);
+                    alert("Failed to assign gender.");
+                }
+            };
+
+            function renderUserRow(u, isNew) {
                 const joinedDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '---';
                 
                 // Strictly enforce role display: Only one specific email is admin
@@ -72,18 +83,17 @@
                 const badgeColor = userRole === 'admin' ? '#10b981' : 'var(--primary)';
                 const badgeBg = userRole === 'admin' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(99, 102, 241, 0.1)';
 
-                const isGirlList = girlEmails.includes(u.email);
-                const userGender = u.gender ? u.gender : (isGirlList ? 'girl' : 'boy');
-                
-                const genderIcon = userGender === 'girl' 
-                    ? '<i class="fas fa-venus" title="Girl" style="color: #ec4899; background: rgba(236, 72, 153, 0.1); padding: 4px; border-radius: 4px; width: 24px; text-align: center;"></i>' 
-                    : '<i class="fas fa-mars" title="Boy" style="color: #3b82f6; background: rgba(59, 130, 246, 0.1); padding: 4px; border-radius: 4px; width: 24px; text-align: center;"></i>';
+                let actionBtn = `<button class="btn glass" onclick="alert('User editing not yet enabled')" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; width: auto;">Edit</button>`;
+                if (isNew) {
+                    actionBtn = `
+                        <button class="btn" onclick="window.assignGender('${u.uid}', 'boy')" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: #3b82f6; border: none; color: white;">Boy</button>
+                        <button class="btn" onclick="window.assignGender('${u.uid}', 'girl')" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: #ec4899; border: none; color: white; margin-left: 0.5rem;">Girl</button>
+                    `;
+                }
 
                 return `
                     <tr style="border-bottom: 1px solid var(--glass-border);">
-                        <td style="padding: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.8rem;">
-                            ${genderIcon} ${u.name || 'Anonymous'}
-                        </td>
+                        <td style="padding: 1rem; font-weight: 600;">${u.name || 'Anonymous'}</td>
                         <td style="padding: 1rem; color: var(--text-muted);">${u.email}</td>
                         <td style="padding: 1rem;">
                             <div class="role-badge" style="background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}40;">
@@ -91,20 +101,15 @@
                             </div>
                         </td>
                         <td style="padding: 1rem; font-size: 0.85rem; color: var(--text-muted);">${joinedDate}</td>
-                        <td style="padding: 1rem;">
-                            <select class="gender-select glass" data-uid="${u.id}" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 4px; padding: 0.4rem; cursor: pointer;">
-                                <option value="boy" ${userGender === 'boy' ? 'selected' : ''} style="color: black;">Boy</option>
-                                <option value="girl" ${userGender === 'girl' ? 'selected' : ''} style="color: black;">Girl</option>
-                            </select>
-                        </td>
+                        <td style="padding: 1rem; display: flex; align-items: center; gap: 0.5rem;">${actionBtn}</td>
                     </tr>
                 `;
             }
 
-            function generateTableHTML(title, users, color, id, isVisible) {
+            function generateTableHTML(title, users, color, id, isVisible, isNew) {
                 let rows = '';
                 if (users.length > 0) {
-                    users.forEach(u => { rows += renderUserRow(u); });
+                    users.forEach(u => { rows += renderUserRow(u, isNew); });
                 } else {
                     rows = `<tr><td colspan="5" style="text-align: center; padding: 2rem;">No users found in this category.</td></tr>`;
                 }
@@ -136,15 +141,15 @@
                     if (!querySnapshot.empty) {
                         const boys = [];
                         const girls = [];
+                        const newUsers = [];
                         
-                        querySnapshot.forEach((docSnap) => {
-                            const u = docSnap.data();
-                            u.id = docSnap.id; // Store ID for update
-
-                            const isGirlList = girlEmails.includes(u.email);
-                            const userGender = u.gender ? u.gender : (isGirlList ? 'girl' : 'boy');
-
-                            if (userGender === 'girl') {
+                        querySnapshot.forEach((doc) => {
+                            const u = doc.data();
+                            u.uid = doc.id;
+                            
+                            if (u.gender === 'unassigned') {
+                                newUsers.push(u);
+                            } else if (u.gender === 'girl' || (!u.gender && girlEmails.includes(u.email))) {
                                 girls.push(u);
                             } else {
                                 boys.push(u);
@@ -152,66 +157,69 @@
                         });
 
                         tablesContainer.innerHTML = `
-                            <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem;">
+                            <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
                                 <button id="toggle-boys" class="btn" style="background: #3b82f6; border-radius: 50px; padding: 0.5rem 2.5rem; color: white; border: none; font-weight: 600; cursor: pointer; transition: var(--transition);">Boys</button>
                                 <button id="toggle-girls" class="btn glass" style="border-radius: 50px; padding: 0.5rem 2.5rem; color: var(--text-main); font-weight: 600; cursor: pointer; transition: var(--transition);">Girls</button>
+                                <button id="toggle-new" class="btn glass" style="border-radius: 50px; padding: 0.5rem 2.5rem; color: var(--text-main); font-weight: 600; cursor: pointer; transition: var(--transition); position: relative;">
+                                    New Users 
+                                    ${newUsers.length > 0 ? `<span style="background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; position: absolute; top: -5px; right: -5px;">${newUsers.length}</span>` : ''}
+                                </button>
                             </div>
                         ` + 
-                        generateTableHTML('Boys', boys, '#3b82f6', 'table-boys', true) +
-                        generateTableHTML('Girls', girls, '#ec4899', 'table-girls', false);
+                        generateTableHTML('Boys', boys, '#3b82f6', 'table-boys', true, false) +
+                        generateTableHTML('Girls', girls, '#ec4899', 'table-girls', false, false) +
+                        generateTableHTML('New Users', newUsers, '#10b981', 'table-new', false, true);
 
                         const toggleBoys = document.getElementById('toggle-boys');
                         const toggleGirls = document.getElementById('toggle-girls');
+                        const toggleNew = document.getElementById('toggle-new');
                         const tableBoys = document.getElementById('table-boys');
                         const tableGirls = document.getElementById('table-girls');
+                        const tableNew = document.getElementById('table-new');
 
-                        toggleBoys.addEventListener('click', () => {
-                            tableBoys.style.display = 'block';
-                            tableGirls.style.display = 'none';
-                            
-                            toggleBoys.className = 'btn';
-                            toggleBoys.style.background = '#3b82f6';
-                            toggleBoys.style.color = 'white';
-                            toggleBoys.style.border = 'none';
+                        function resetToggles() {
+                            toggleBoys.className = 'btn glass';
+                            toggleBoys.style.background = 'transparent';
+                            toggleBoys.style.color = 'var(--text-main)';
                             
                             toggleGirls.className = 'btn glass';
                             toggleGirls.style.background = 'transparent';
                             toggleGirls.style.color = 'var(--text-main)';
+                            
+                            toggleNew.className = 'btn glass';
+                            toggleNew.style.background = 'transparent';
+                            toggleNew.style.color = 'var(--text-main)';
+                            
+                            tableBoys.style.display = 'none';
+                            tableGirls.style.display = 'none';
+                            tableNew.style.display = 'none';
+                        }
+
+                        toggleBoys.addEventListener('click', () => {
+                            resetToggles();
+                            tableBoys.style.display = 'block';
+                            toggleBoys.className = 'btn';
+                            toggleBoys.style.background = '#3b82f6';
+                            toggleBoys.style.color = 'white';
+                            toggleBoys.style.border = 'none';
                         });
 
                         toggleGirls.addEventListener('click', () => {
+                            resetToggles();
                             tableGirls.style.display = 'block';
-                            tableBoys.style.display = 'none';
-                            
                             toggleGirls.className = 'btn';
                             toggleGirls.style.background = '#ec4899';
                             toggleGirls.style.color = 'white';
                             toggleGirls.style.border = 'none';
-                            
-                            toggleBoys.className = 'btn glass';
-                            toggleBoys.style.background = 'transparent';
-                            toggleBoys.style.color = 'var(--text-main)';
                         });
 
-                        // Gender Select Event Listeners
-                        const genderSelects = document.querySelectorAll('.gender-select');
-                        genderSelects.forEach(select => {
-                            select.addEventListener('change', async (e) => {
-                                const newGender = e.target.value;
-                                const uid = e.target.getAttribute('data-uid');
-                                e.target.disabled = true;
-                                try {
-                                    await updateDoc(doc(fs, "users", uid), {
-                                        gender: newGender
-                                    });
-                                    // Refresh list completely to reflect proper placement
-                                    syncUsersList();
-                                } catch (err) {
-                                    console.error("Error updating gender:", err);
-                                    alert("Failed to update gender. Ensure you have admin permissions.");
-                                    e.target.disabled = false;
-                                }
-                            });
+                        toggleNew.addEventListener('click', () => {
+                            resetToggles();
+                            tableNew.style.display = 'block';
+                            toggleNew.className = 'btn';
+                            toggleNew.style.background = '#10b981';
+                            toggleNew.style.color = 'white';
+                            toggleNew.style.border = 'none';
                         });
 
                     } else {

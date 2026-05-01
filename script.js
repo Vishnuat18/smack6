@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         name: user.displayName || user.email.split('@')[0],
                         email: user.email,
                         role: user.email === 'vishnurajan24766@gmail.com' ? 'admin' : 'student',
+                        gender: 'unassigned',
                         createdAt: new Date().toISOString()
                     });
                 }
@@ -122,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: name,
                     email: email,
                     role: email === 'vishnurajan24766@gmail.com' ? 'admin' : 'student',
+                    gender: 'unassigned',
                     createdAt: new Date().toISOString()
                 });
 

@@ -297,7 +297,6 @@
             // Admin Email for fallback
             const ADMIN_EMAIL = 'vishnurajan24766@gmail.com';
             let profileUnsubscribe = null;
-            let currentUserGender = 'boy';
 
             auth.onAuthStateChanged(async (user) => {
                 if (profileUnsubscribe) profileUnsubscribe();
@@ -321,13 +320,23 @@
                             const role = data.role || fallbackRole;
                             const createdAt = data.createdAt ? new Date(data.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : "Recently";
                             
-                            const isGirlList = girlEmails.includes(user.email);
-                            currentUserGender = data.gender ? data.gender : (isGirlList ? 'girl' : 'boy');
-                            const genderBadge = currentUserGender === 'girl' ? 
-                                '<span class="badge" title="Women" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.2); margin-left: 0.5rem; padding: 2px 6px;"><i class="fas fa-venus"></i></span>' : 
-                                '<span class="badge" title="Men" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); margin-left: 0.5rem; padding: 2px 6px;"><i class="fas fa-mars"></i></span>';
+                            let isGirl = false;
+                            if (data.gender) {
+                                isGirl = data.gender === 'girl';
+                            } else {
+                                isGirl = girlEmails.includes(user.email);
+                            }
 
-                            displayName.innerHTML = `${name} ${genderBadge}`;
+                            let badgeHTML = '';
+                            if (data.gender === 'unassigned') {
+                                badgeHTML = '<i class="fas fa-user" style="color: var(--text-muted); margin-right: 0.5rem;" title="Unassigned"></i>';
+                            } else {
+                                badgeHTML = isGirl ? 
+                                    '<i class="fas fa-venus" style="color: #ec4899; margin-right: 0.5rem;" title="Female"></i>' : 
+                                    '<i class="fas fa-mars" style="color: #3b82f6; margin-right: 0.5rem;" title="Male"></i>';
+                            }
+
+                            displayName.innerHTML = `${badgeHTML}${name}`;
                             editInput.value = name;
                             displayRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
                             displayJoined.textContent = createdAt;
@@ -394,11 +403,15 @@
                         updateStatus.style.display = "block";
                         
                         // Update UI
-                        const genderBadge = currentUserGender === 'girl' ? 
-                            '<span class="badge" title="Women" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.2); margin-left: 0.5rem; padding: 2px 6px;"><i class="fas fa-venus"></i></span>' : 
-                            '<span class="badge" title="Men" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); margin-left: 0.5rem; padding: 2px 6px;"><i class="fas fa-mars"></i></span>';
-
-                        displayName.innerHTML = `${newName} ${genderBadge}`;
+                        // The profile update only changes the name locally until refresh, but we need to re-evaluate gender if needed.
+                        // Actually, we don't have user.gender in this scope, so we just use the onSnapshot listener above to handle UI updates.
+                        // However, since the listener is active, it will auto-update the UI. But if we want to manually do it here:
+                        // We can just rely on the listener, or do a minimal update.
+                        
+                        // We don't have access to the full data object here (like gender). The snapshot listener will trigger anyway.
+                        // So I will just leave this minimal or let the snapshot handle it.
+                        // Actually, the snapshot listener WILL trigger when setDoc happens! So we don't even need to manually update `displayName` here.
+                        // I will just update the input and avatar.
                         avatarChar.textContent = newName.charAt(0).toUpperCase();
                         if (navAvatar) navAvatar.textContent = newName.charAt(0).toUpperCase();
                         const navHeaderAvatar = document.getElementById('nav-avatar-header');
