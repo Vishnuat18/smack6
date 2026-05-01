@@ -184,7 +184,7 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, fs, doc, getDoc, setDoc, collection, getDocs } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "./firebase-config.js";
         import { subjectMaterials, examEvents } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -234,10 +234,10 @@
                 const pastExams = examEvents.filter(e => {
                     let reviewTime = e.reviewDate ? new Date(e.reviewDate) : new Date(e.date);
                     
-                    // For testing only: if admin, show VCE review after 2:20 AM
+                    // For testing only: if admin, show VCE review after 2:24 AM
                     if (role === 'admin' && e.id === 'vce-exam') {
                         const testTime = new Date(e.date);
-                        testTime.setHours(2, 20, 0, 0);
+                        testTime.setHours(2, 24, 0, 0);
                         reviewTime = testTime;
                     }
 
@@ -253,6 +253,12 @@
                 try {
                     // Check if user already submitted a review for this exam
                     const reviewDocRef = doc(fs, "exam_reviews", `${userId}_${latestPastExam.id}`);
+                    
+                    // For testing only: if admin, delete previous VCE review to force the modal to show again
+                    if (role === 'admin' && latestPastExam.id === 'vce-exam') {
+                        await deleteDoc(reviewDocRef);
+                    }
+
                     const reviewDoc = await getDoc(reviewDocRef);
 
                     if (!reviewDoc.exists()) {
