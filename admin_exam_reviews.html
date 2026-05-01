@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Reviews - Admin Console</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="logo.png">
+</head>
+<body>
+    <header class="app-header glass">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="admin.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <img src="logo.png" alt="SMACK" style="width: 32px; height: 32px; border-radius: 6px;">
+            <div id="exam-title" style="font-family: 'Outfit'; font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">Exam Reviews</div>
+        </div>
+        <div class="badge" style="background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2);">Student Feedback</div>
+    </header>
+
+    <div class="container" style="padding-top: 1rem; padding-bottom: 5rem;">
+        <div class="dashboard-header" style="margin-bottom: 1.5rem;">
+            <h1 id="page-heading">Loading Reviews...</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">View all student responses for this exam.</p>
+        </div>
+
+        <div id="reviews-container" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="text-align: center; padding: 3rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-light); margin-bottom: 1rem;"></i>
+                <p>Loading reviews...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Mobile Nav -->
+    <div class="mobile-nav">
+        <a href="admin.html" class="back-btn" style="background: var(--primary);"><i class="fas fa-chart-pie"></i></a>
+        <a href="admin_users.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-users"></i></a>
+        <a href="admin_upload.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-cloud-upload"></i></a>
+    </div>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { auth, fs, collection, getDocs, query, where, orderBy } from "./firebase-config.js";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const reviewsContainer = document.getElementById('reviews-container');
+            const pageHeading = document.getElementById('page-heading');
+            const examTitle = document.getElementById('exam-title');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const examName = urlParams.get('examName');
+
+            if (examName) {
+                pageHeading.textContent = examName;
+                examTitle.textContent = examName;
+            } else {
+                pageHeading.textContent = "Unknown Exam";
+                reviewsContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: #ef4444;">No exam specified.</div>';
+                return;
+            }
+
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    try {
+                        const isAdmin = user.email === 'vishnurajan24766@gmail.com';
+                        if (isAdmin) {
+                            loadReviews();
+                        } else {
+                            location.href = "home.html";
+                        }
+                    } catch (error) {
+                        console.error("Admin check error:", error);
+                        location.href = "home.html";
+                    }
+                } else {
+                    location.href = "index.html";
+                }
+            });
+
+            async function loadReviews() {
+                try {
+                    // Query specifically for this examName
+                    const q = query(collection(fs, "exam_reviews"), where("examName", "==", examName));
+                    const querySnapshot = await getDocs(q);
+                    
+                    if (querySnapshot.empty) {
+                        reviewsContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--text-muted); background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md);">No reviews found for this exam.</div>';
+                        return;
+                    }
+
+                    const reviews = [];
+                    querySnapshot.forEach((doc) => {
+                        reviews.push(doc.data());
+                    });
+
+                    // Sort reviews by timestamp desc client-side since compound indexing might be needed if orderBy is used with where
+                    reviews.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                    reviewsContainer.innerHTML = '';
+
+                    reviews.forEach(review => {
+                        const date = review.timestamp ? new Date(review.timestamp).toLocaleString() : "Recently";
+                        const rCard = document.createElement('div');
+                        rCard.className = 'glass';
+                        rCard.style.padding = '1.2rem';
+                        rCard.style.borderRadius = 'var(--radius-md)';
+                        rCard.style.border = '1px solid var(--glass-border)';
+                        
+                        let borderColor = 'var(--glass-border)';
+                        if (review.answer.includes('easy')) borderColor = 'rgba(16, 185, 129, 0.5)'; // Green
+                        else if (review.answer.includes('kastam')) borderColor = 'rgba(236, 72, 153, 0.5)'; // Pink
+                        else if (review.answer.includes('Pass')) borderColor = 'rgba(251, 191, 36, 0.5)'; // Yellow
+                        else if (review.answer.includes('therla')) borderColor = 'rgba(99, 102, 241, 0.5)'; // Indigo
+                        rCard.style.borderLeft = `4px solid ${borderColor}`;
+
+                        rCard.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem;">
+                                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary-light);">
+                                        ${review.userName ? review.userName.charAt(0).toUpperCase() : 'U'}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 700; color: white; font-size: 0.95rem;">${review.userName || 'Unknown User'}</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">${date}</div>
+                            </div>
+                            <div style="background: rgba(15, 23, 42, 0.4); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.05);">
+                                <p style="font-size: 1rem; margin: 0; color: var(--text-main); font-weight: 500;">"${review.answer}"</p>
+                            </div>
+                        `;
+                        reviewsContainer.appendChild(rCard);
+                    });
+
+                } catch (error) {
+                    console.error("Error fetching exam reviews:", error);
+                    reviewsContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: #ef4444;">Error loading reviews. Check Firestore permissions.</div>';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

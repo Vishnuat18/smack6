@@ -248,88 +248,42 @@
 
                     reviewsList.innerHTML = '';
                     
-                    // Render grouped UI
+                    // Render grouped UI (Clickable cards to separate pages)
                     Object.keys(examsMap).forEach(examName => {
                         const reviews = examsMap[examName];
-                        // Sort reviews by timestamp desc client-side
-                        reviews.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                         
-                        const groupContainer = document.createElement('div');
-                        groupContainer.className = 'glass';
-                        groupContainer.style.marginBottom = '1rem';
-                        groupContainer.style.borderRadius = 'var(--radius-md)';
-                        groupContainer.style.overflow = 'hidden';
+                        const examCard = document.createElement('div');
+                        examCard.className = 'glass';
+                        examCard.style.marginBottom = '1rem';
+                        examCard.style.borderRadius = 'var(--radius-md)';
+                        examCard.style.padding = '1rem 1.2rem';
+                        examCard.style.display = 'flex';
+                        examCard.style.justifyContent = 'space-between';
+                        examCard.style.alignItems = 'center';
+                        examCard.style.cursor = 'pointer';
+                        examCard.style.background = 'rgba(255, 255, 255, 0.05)';
+                        examCard.style.transition = 'transform 0.2s ease, border-color 0.2s ease';
+                        
+                        // Add hover effect
+                        examCard.onmouseover = () => { examCard.style.borderColor = 'rgba(251, 191, 36, 0.5)'; };
+                        examCard.onmouseout = () => { examCard.style.borderColor = 'var(--glass-border)'; };
 
-                        // Header (Clickable)
-                        const header = document.createElement('div');
-                        header.style.padding = '1rem 1.2rem';
-                        header.style.display = 'flex';
-                        header.style.justifyContent = 'space-between';
-                        header.style.alignItems = 'center';
-                        header.style.cursor = 'pointer';
-                        header.style.background = 'rgba(255, 255, 255, 0.05)';
-                        header.innerHTML = `
+                        examCard.onclick = () => {
+                            location.href = `admin_exam_reviews.html?examName=${encodeURIComponent(examName)}`;
+                        };
+
+                        examCard.innerHTML = `
                             <div style="display: flex; align-items: center; gap: 0.8rem;">
                                 <i class="fas fa-graduation-cap" style="color: #fbbf24; font-size: 1.2rem;"></i>
                                 <span style="font-weight: 700; color: white;">${examName}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 1rem;">
                                 <span class="badge" style="background: rgba(251, 191, 36, 0.2); color: #fbbf24;">${reviews.length} Reviews</span>
-                                <i class="fas fa-chevron-down toggle-icon" style="color: var(--text-muted); transition: transform 0.3s;"></i>
+                                <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
                             </div>
                         `;
 
-                        // Content (Hidden by default)
-                        const content = document.createElement('div');
-                        content.style.display = 'none';
-                        content.style.padding = '1rem';
-                        content.style.borderTop = '1px solid var(--glass-border)';
-                        content.style.display = 'flex';
-                        content.style.flexDirection = 'column';
-                        content.style.gap = '0.8rem';
-                        
-                        // Populate reviews for this exam
-                        reviews.forEach(review => {
-                            const date = review.timestamp ? new Date(review.timestamp).toLocaleString() : "Recently";
-                            const rCard = document.createElement('div');
-                            rCard.style.padding = '0.8rem';
-                            rCard.style.borderRadius = 'var(--radius-sm)';
-                            rCard.style.background = 'rgba(15, 23, 42, 0.4)';
-                            rCard.style.border = '1px solid var(--glass-border)';
-                            
-                            let borderColor = 'var(--glass-border)';
-                            if (review.answer.includes('easy')) borderColor = 'rgba(16, 185, 129, 0.5)';
-                            else if (review.answer.includes('kastam')) borderColor = 'rgba(236, 72, 153, 0.5)';
-                            else if (review.answer.includes('Pass')) borderColor = 'rgba(251, 191, 36, 0.5)';
-                            rCard.style.borderLeft = `3px solid ${borderColor}`;
-
-                            rCard.innerHTML = `
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
-                                    <div style="display: flex; align-items: center; gap: 0.4rem; color: var(--primary-light); font-size: 0.85rem; font-weight: 600;">
-                                        <i class="fas fa-user"></i> ${review.userName}
-                                    </div>
-                                    <div style="font-size: 0.65rem; color: var(--text-muted);">${date}</div>
-                                </div>
-                                <p style="font-size: 0.9rem; margin: 0; color: var(--text-main);">"${review.answer}"</p>
-                            `;
-                            content.appendChild(rCard);
-                        });
-
-                        // Toggle logic
-                        let isOpen = false;
-                        header.addEventListener('click', () => {
-                            isOpen = !isOpen;
-                            content.style.display = isOpen ? 'flex' : 'none';
-                            header.querySelector('.toggle-icon').style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-                        });
-
-                        // Initially hide content, it's already display: none, but we need to reset it 
-                        // Wait, I set it to flex above, then immediately want it hidden. Let's fix that.
-                        content.style.display = 'none';
-
-                        groupContainer.appendChild(header);
-                        groupContainer.appendChild(content);
-                        reviewsList.appendChild(groupContainer);
+                        reviewsList.appendChild(examCard);
                     });
                 } catch (error) {
                     console.error("Error fetching exam reviews:", error);
