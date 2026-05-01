@@ -18,7 +18,7 @@
             <h2 id="review-exam-title" style="font-family: 'Outfit'; font-size: 1.5rem; margin-bottom: 0.5rem; color: white;">Exam Name</h2>
             <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Exam eppadi irundhuchu?</p>
             
-            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+            <div id="review-options-container" style="display: flex; flex-direction: column; gap: 0.8rem;">
                 <button class="review-btn glass" data-answer="Rombo easy… but time dha illa 😭" style="padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); color: white; cursor: pointer; text-align: left; transition: var(--transition);">
                     Rombo easy… but time dha illa 😭
                 </button>
@@ -39,6 +39,7 @@
         </div>
         <style>
             .review-btn:hover { background: rgba(99, 102, 241, 0.2) !important; border-color: var(--primary-light) !important; transform: translateX(5px); }
+            .vce-review-img:hover { transform: scale(1.02); border-color: var(--primary-light) !important; }
         </style>
     </div>
 
@@ -217,7 +218,7 @@
                              }
 
                              // Trigger Exam Review Logic
-                             checkExamReview(user.uid, data.name);
+                             checkExamReview(user.uid, data.name, data.role);
                         }
                     } catch (error) {
                         console.error("Error loading profile:", error);
@@ -226,12 +227,20 @@
             });
 
             // Post-Exam Review Logic
-            async function checkExamReview(userId, userName) {
+            async function checkExamReview(userId, userName, role) {
                 const now = new Date();
                 
                 // Find all past exams eligible for review
                 const pastExams = examEvents.filter(e => {
-                    const reviewTime = e.reviewDate ? new Date(e.reviewDate) : new Date(e.date);
+                    let reviewTime = e.reviewDate ? new Date(e.reviewDate) : new Date(e.date);
+                    
+                    // For testing only: if admin, show VCE review after 2:20 AM
+                    if (role === 'admin' && e.id === 'vce-exam') {
+                        const testTime = new Date(e.date);
+                        testTime.setHours(2, 20, 0, 0);
+                        reviewTime = testTime;
+                    }
+
                     return reviewTime < now;
                 });
                 if (pastExams.length === 0) return;
@@ -254,30 +263,47 @@
                 }
             }
 
+            let originalReviewHTML = null;
+
             function showReviewModal(userId, userName, exam) {
                 const modal = document.getElementById('exam-review-modal');
                 const title = document.getElementById('review-exam-title');
                 const savingText = document.getElementById('review-saving-text');
-                const buttons = document.querySelectorAll('.review-btn');
+                const optionsContainer = document.getElementById('review-options-container');
                 
+                if (!originalReviewHTML) {
+                    originalReviewHTML = optionsContainer.innerHTML;
+                }
+
+                // Always use standard text buttons as per request (images only in admin panel)
+                optionsContainer.innerHTML = originalReviewHTML;
+
                 title.textContent = exam.name;
                 modal.style.display = 'flex';
 
+                const buttons = document.querySelectorAll('.review-btn');
                 buttons.forEach(btn => {
                     // Remove old listeners to avoid duplicates if called multiple times
                     const newBtn = btn.cloneNode(true);
                     btn.parentNode.replaceChild(newBtn, btn);
                     
                     newBtn.addEventListener('click', async (e) => {
-                        const answer = e.target.getAttribute('data-answer');
+                        let targetElement = e.target;
+                        // If they clicked the image inside the div, bubble up to the div
+                        if (targetElement.tagName === 'IMG') {
+                            targetElement = targetElement.parentElement;
+                        }
+                        
+                        const answer = targetElement.getAttribute('data-answer');
                         
                         // Disable buttons
                         document.querySelectorAll('.review-btn').forEach(b => {
                             b.style.pointerEvents = 'none';
                             b.style.opacity = '0.5';
                         });
-                        e.target.style.background = 'rgba(99, 102, 241, 0.4)';
-                        e.target.style.opacity = '1';
+                        
+                        targetElement.style.background = 'rgba(99, 102, 241, 0.4)';
+                        targetElement.style.opacity = '1';
                         
                         savingText.style.display = 'block';
 
