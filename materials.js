@@ -369,10 +369,10 @@ export const subjectMaterials = {
 };
 
 export const examEvents = [
-    { id: 'oose-exam', name: 'OOSE Exam', date: '2026-04-28T01:00:00', color: '#6366f1' },
-    { id: 'vce-exam', name: 'VCE Exam', date: '2026-05-02T01:00:00', color: '#ec4899' },
-    { id: 'esia-exam', name: 'ESIA Exam', date: '2026-05-07T01:00:00', color: '#10b981' },
-    { id: 'ppl-exam', name: 'PPL Exam', date: '2026-05-11T05:00:00', color: '#fbbf24' },
-    { id: 'ba-exam', name: 'BA Exam', date: '2026-05-14T01:00:00', color: '#8b5cf6' },
-    { id: 'eh-exam', name: 'EH Exam', date: '2026-05-19T01:00:00', color: '#f43f5e' }
+    { id: 'oose-exam', name: 'OOSE Exam', date: '2026-04-28T13:00:00', color: '#6366f1' },
+    { id: 'vce-exam', name: 'VCE Exam', date: '2026-05-02T13:00:00', color: '#ec4899' },
+    { id: 'esia-exam', name: 'ESIA Exam', date: '2026-05-07T13:00:00', color: '#10b981' },
+    { id: 'ppl-exam', name: 'PPL Exam', date: '2026-05-11T17:00:00', color: '#fbbf24' },
+    { id: 'ba-exam', name: 'BA Exam', date: '2026-05-14T13:00:00', color: '#8b5cf6' },
+    { id: 'eh-exam', name: 'EH Exam', date: '2026-05-19T13:00:00', color: '#f43f5e' }
 ];
