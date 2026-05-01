@@ -376,3 +376,12 @@ export const examEvents = [
     { id: 'ba-exam', name: 'BA Exam', date: '2026-05-14T10:00:00', reviewDate: '2026-05-14T13:00:00', color: '#8b5cf6' },
     { id: 'eh-exam', name: 'EH Exam', date: '2026-05-19T10:00:00', reviewDate: '2026-05-19T13:00:00', color: '#f43f5e' }
 ];
+
+export const girlEmails = [
+    "mahesviswa22@gmail.com", "bhavanapriya878@gmail.com", "harinimitra31@gmail.com", 
+    "ranjani107107@gmail.com", "priyapriya26591@gmail.com", "sanjurenuka8296@gmail.com", 
+    "kowsalyark28@gmail.com", "nikithaelangovan22@gmail.com", "sanjanameenagp@gmail.com", 
+    "sandhiya.sandhu2911@gmail.com", "ran9342583446@gmail.com", "priyaanitha458@gmail.com", 
+    "ksowmi2023@gmail.com", "sarumathy1108@gmail.com", "hemamalini653k@gmail.com",
+    "vishnuasvichu14@gmail.com"
+];

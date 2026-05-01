@@ -110,29 +110,15 @@
                         rCard.style.border = '1px solid var(--glass-border)';
                         
                         let borderColor = 'var(--glass-border)';
-                        let answerIndex = 1;
-                        if (review.answer.includes('Easy dha')) { borderColor = 'rgba(16, 185, 129, 0.5)'; answerIndex = 2; }
-                        else if (review.answer.includes('kastam')) { borderColor = 'rgba(236, 72, 153, 0.5)'; answerIndex = 3; }
-                        else if (review.answer.includes('marandhupochen')) { borderColor = 'rgba(99, 102, 241, 0.5)'; answerIndex = 4; }
-                        else if (review.answer.includes('Pass')) { borderColor = 'rgba(251, 191, 36, 0.5)'; answerIndex = 5; }
+                        if (review.answer.includes('easy')) borderColor = 'rgba(16, 185, 129, 0.5)'; // Green
+                        else if (review.answer.includes('kastam')) borderColor = 'rgba(236, 72, 153, 0.5)'; // Pink
+                        else if (review.answer.includes('Pass')) borderColor = 'rgba(251, 191, 36, 0.5)'; // Yellow
+                        else if (review.answer.includes('therla')) borderColor = 'rgba(99, 102, 241, 0.5)'; // Indigo
                         rCard.style.borderLeft = `4px solid ${borderColor}`;
 
-                        let gender = 'boys';
-                        let pfx = 'b';
-                        if (review.userName) {
-                            const firstName = review.userName.split(' ')[0].toLowerCase();
-                            if (firstName.endsWith('a') || firstName.endsWith('i') || firstName.endsWith('y') || firstName.endsWith('shka') || firstName.endsWith('ini')) {
-                                gender = 'girls';
-                                pfx = 'g';
-                            }
-                        }
-
-                        let reviewDisplay = `<p style="font-size: 1rem; margin: 0; color: var(--text-main); font-weight: 500;">"${review.answer}"</p>`;
-                        if (examName === "VCE Exam" || examName === "vce-exam") {
-                            reviewDisplay = `
-                                <p style="font-size: 0.9rem; margin: 0 0 10px 0; color: var(--text-muted); font-weight: 500;">"${review.answer}"</p>
-                                <img src="vce/options/${gender}/${pfx}${answerIndex}.png" style="width: 100%; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);" alt="Selected Option">
-                            `;
+                        let answerContent = `"${review.answer}"`;
+                        if (review.answer.includes('.png')) {
+                            answerContent = `<img src="vce/options/${review.answer}" style="width: 100%; border-radius: 8px; display: block; margin: 0 auto;">`;
                         }
 
                         rCard.innerHTML = `
@@ -148,7 +134,7 @@
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">${date}</div>
                             </div>
                             <div style="background: rgba(15, 23, 42, 0.4); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.05);">
-                                ${reviewDisplay}
+                                <div style="font-size: 1rem; margin: 0; color: var(--text-main); font-weight: 500; text-align: center;">${answerContent}</div>
                             </div>
                         `;
                         reviewsContainer.appendChild(rCard);

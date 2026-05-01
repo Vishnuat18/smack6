@@ -26,21 +26,8 @@
             <p style="color: var(--text-muted); font-size: 0.9rem;">View and manage portal students and administrators.</p>
         </div>
 
-        <div class="glass" style="border-radius: var(--radius-lg); overflow-x: auto; padding: 1rem;">
-            <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
-                <thead style="border-bottom: 1px solid var(--glass-border);">
-                    <tr>
-                        <th style="padding: 1rem; text-align: left; color: var(--primary-light);">Name</th>
-                        <th style="padding: 1rem; text-align: left; color: var(--primary-light);">Email</th>
-                        <th style="padding: 1rem; text-align: left; color: var(--primary-light);">Role</th>
-                        <th style="padding: 1rem; text-align: left; color: var(--primary-light);">Joined</th>
-                        <th style="padding: 1rem; text-align: left; color: var(--primary-light);">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="user-list-body">
-                    <tr><td colspan="4" style="text-align: center; padding: 3rem;">Loading Users Info...</td></tr>
-                </tbody>
-            </table>
+        <div id="tables-container">
+            <div style="text-align: center; padding: 3rem;">Loading Users Info...</div>
         </div>
     </div>
 
@@ -54,9 +41,10 @@
     <script type="module" src="script.js"></script>
     <script type="module">
         import { auth, fs, doc, getDoc, collection, getDocs } from "./firebase-config.js";
+        import { girlEmails } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
-            const userListBody = document.getElementById('user-list-body');
+            const tablesContainer = document.getElementById('tables-container');
 
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
@@ -76,41 +64,83 @@
                 }
             });
 
+            function renderUserRow(u) {
+                const joinedDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '---';
+                
+                // Strictly enforce role display: Only one specific email is admin
+                const userRole = u.email === 'vishnurajan24766@gmail.com' ? 'admin' : 'student';
+                const badgeColor = userRole === 'admin' ? '#10b981' : 'var(--primary)';
+                const badgeBg = userRole === 'admin' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(99, 102, 241, 0.1)';
+
+                return `
+                    <tr style="border-bottom: 1px solid var(--glass-border);">
+                        <td style="padding: 1rem; font-weight: 600;">${u.name || 'Anonymous'}</td>
+                        <td style="padding: 1rem; color: var(--text-muted);">${u.email}</td>
+                        <td style="padding: 1rem;">
+                            <div class="role-badge" style="background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}40;">
+                                ${userRole.toUpperCase()}
+                            </div>
+                        </td>
+                        <td style="padding: 1rem; font-size: 0.85rem; color: var(--text-muted);">${joinedDate}</td>
+                        <td style="padding: 1rem;"><button class="btn glass" onclick="alert('User editing not yet enabled')" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; width: auto;">Edit</button></td>
+                    </tr>
+                `;
+            }
+
+            function generateTableHTML(title, users, color) {
+                let rows = '';
+                if (users.length > 0) {
+                    users.forEach(u => { rows += renderUserRow(u); });
+                } else {
+                    rows = `<tr><td colspan="5" style="text-align: center; padding: 2rem;">No users found in this category.</td></tr>`;
+                }
+
+                return `
+                    <div class="glass" style="border-radius: var(--radius-lg); overflow-x: auto; padding: 1rem; margin-bottom: 2rem;">
+                        <h2 style="padding: 1rem; margin: 0; color: ${color}; font-family: 'Outfit';">${title} (${users.length})</h2>
+                        <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                            <thead style="border-bottom: 1px solid var(--glass-border);">
+                                <tr>
+                                    <th style="padding: 1rem; text-align: left; color: var(--text-muted);">Name</th>
+                                    <th style="padding: 1rem; text-align: left; color: var(--text-muted);">Email</th>
+                                    <th style="padding: 1rem; text-align: left; color: var(--text-muted);">Role</th>
+                                    <th style="padding: 1rem; text-align: left; color: var(--text-muted);">Joined</th>
+                                    <th style="padding: 1rem; text-align: left; color: var(--text-muted);">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
             async function syncUsersList() {
                 try {
                     const querySnapshot = await getDocs(collection(fs, "users"));
                     if (!querySnapshot.empty) {
-                        userListBody.innerHTML = '';
+                        const boys = [];
+                        const girls = [];
+                        
                         querySnapshot.forEach((doc) => {
                             const u = doc.data();
-                            const joinedDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '---';
-                            
-                            // Strictly enforce role display: Only one specific email is admin
-                            const userRole = u.email === 'vishnurajan24766@gmail.com' ? 'admin' : 'student';
-                            const badgeColor = userRole === 'admin' ? '#10b981' : 'var(--primary)';
-                            const badgeBg = userRole === 'admin' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(99, 102, 241, 0.1)';
-
-                            const row = `
-                                <tr style="border-bottom: 1px solid var(--glass-border);">
-                                    <td style="padding: 1rem; font-weight: 600;">${u.name || 'Anonymous'}</td>
-                                    <td style="padding: 1rem; color: var(--text-muted);">${u.email}</td>
-                                    <td style="padding: 1rem;">
-                                        <div class="role-badge" style="background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}40;">
-                                            ${userRole.toUpperCase()}
-                                        </div>
-                                    </td>
-                                    <td style="padding: 1rem; font-size: 0.85rem; color: var(--text-muted);">${joinedDate}</td>
-                                    <td style="padding: 1rem;"><button class="btn glass" onclick="alert('User editing not yet enabled')" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; width: auto;">Edit</button></td>
-                                </tr>
-                            `;
-                            userListBody.innerHTML += row;
+                            if (girlEmails.includes(u.email)) {
+                                girls.push(u);
+                            } else {
+                                boys.push(u);
+                            }
                         });
+
+                        tablesContainer.innerHTML = 
+                            generateTableHTML('Girls', girls, '#ec4899') + 
+                            generateTableHTML('Boys', boys, '#3b82f6');
                     } else {
-                        userListBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 3rem;">No users found.</td></tr>';
+                        tablesContainer.innerHTML = '<div style="text-align: center; padding: 3rem;">No users found.</div>';
                     }
                 } catch (error) {
                     console.error("Error fetching users:", error);
-                    userListBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 3rem; color: #ef4444;">Error loading users list.</td></tr>';
+                    tablesContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: #ef4444;">Error loading users list.</div>';
                 }
             }
         });
