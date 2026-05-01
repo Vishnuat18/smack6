@@ -237,22 +237,27 @@
                 });
                 if (pastExams.length === 0) return;
 
-                // Check the most recently passed exam
-                // Ensure it's sorted by date descending to get the most recent past one
-                pastExams.sort((a, b) => new Date(b.date) - new Date(a.date));
-                const latestPastExam = pastExams[0];
+                // Sort exams by date ascending (oldest past exam first)
+                pastExams.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-                try {
-                    // Check if user already submitted a review for this exam
-                    const reviewDocRef = doc(fs, "exam_reviews", `${userId}_${latestPastExam.id}`);
-                    const reviewDoc = await getDoc(reviewDocRef);
+                for (const exam of pastExams) {
+                    try {
+                        const reviewDocRef = doc(fs, "exam_reviews", `${userId}_${exam.id}`);
+                        const reviewDoc = await getDoc(reviewDocRef);
 
-                    if (!reviewDoc.exists()) {
-                        showReviewModal(userId, userName, latestPastExam, userEmail, userGender);
+                        if (!reviewDoc.exists()) {
+                            // Enforce strict blocking
+                            document.body.style.overflow = 'hidden'; 
+                            showReviewModal(userId, userName, exam, userEmail, userGender);
+                            return; // Stop checking further until this one is submitted
+                        }
+                    } catch (err) {
+                        console.error("Error checking exam review status:", err);
                     }
-                } catch (err) {
-                    console.error("Error checking exam review status:", err);
                 }
+                
+                // If all passed exams are reviewed, restore scroll
+                document.body.style.overflow = '';
             }
 
             let originalReviewHTML = null;
@@ -370,7 +375,12 @@
                             setTimeout(() => {
                                 modal.style.opacity = '0';
                                 modal.style.transition = 'opacity 0.5s ease';
-                                setTimeout(() => modal.style.display = 'none', 500);
+                                setTimeout(() => {
+                                    modal.style.display = 'none';
+                                    
+                                    // Check again for any remaining past exams that need reviews!
+                                    checkExamReview(userId, userName, role, userEmail, userGender);
+                                }, 500);
                             }, 1500);
                         } catch (err) {
                             console.error("Error saving review:", err);
