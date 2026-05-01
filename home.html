@@ -196,17 +196,32 @@
                         if (userDoc.exists()) {
                             const data = userDoc.data();
                             const firstName = data.name.split(' ')[0];
-                             document.getElementById('nav-avatar-header').textContent = data.name.charAt(0).toUpperCase();
+                             document.getElementById('nav-avatar-header').textContent = firstName.charAt(0);
                              
-                             // Time-based greeting
-                             const hour = new Date().getHours();
-                             let greeting = "Good Evening";
-                             if (hour >= 5 && hour < 12) greeting = "Good Morning";
-                             else if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
+                             const navAvatar = document.getElementById('nav-avatar');
+                             const navUserName = document.getElementById('nav-user-name');
+                             if (navAvatar) navAvatar.textContent = firstName.charAt(0);
+                             if (navUserName) navUserName.textContent = firstName;
+                             
+                             let isGirl = false;
+                             if (data.gender) {
+                                 isGirl = data.gender === 'girl';
+                             } else {
+                                 isGirl = girlEmails.includes(user.email);
+                             }
+
+                             let badgeHTML = '';
+                             if (data.gender === 'unassigned') {
+                                 badgeHTML = '<i class="fas fa-user" style="color: var(--text-muted); margin-left: 0.5rem; font-size: 1.2rem;" title="Unassigned"></i>';
+                             } else {
+                                 badgeHTML = isGirl ? 
+                                     '<i class="fas fa-venus" style="color: #ec4899; margin-left: 0.5rem; font-size: 1.2rem;" title="Female"></i>' : 
+                                     '<i class="fas fa-mars" style="color: #3b82f6; margin-left: 0.5rem; font-size: 1.2rem;" title="Male"></i>';
+                             }
                              
                              const greetingElement = document.getElementById('user-greeting');
                              if (greetingElement) {
-                                 greetingElement.textContent = `${greeting}, ${firstName}!`;
+                                 greetingElement.innerHTML = `${firstName}${badgeHTML}`;
                              }
 
                              // Role-based UI visibility

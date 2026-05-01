@@ -329,14 +329,14 @@
 
                             let badgeHTML = '';
                             if (data.gender === 'unassigned') {
-                                badgeHTML = '<i class="fas fa-user" style="color: var(--text-muted); margin-right: 0.5rem;" title="Unassigned"></i>';
+                                badgeHTML = '<i class="fas fa-user" style="color: var(--text-muted); margin-left: 0.5rem;" title="Unassigned"></i>';
                             } else {
                                 badgeHTML = isGirl ? 
-                                    '<i class="fas fa-venus" style="color: #ec4899; margin-right: 0.5rem;" title="Female"></i>' : 
-                                    '<i class="fas fa-mars" style="color: #3b82f6; margin-right: 0.5rem;" title="Male"></i>';
+                                    '<i class="fas fa-venus" style="color: #ec4899; margin-left: 0.5rem;" title="Female"></i>' : 
+                                    '<i class="fas fa-mars" style="color: #3b82f6; margin-left: 0.5rem;" title="Male"></i>';
                             }
 
-                            displayName.innerHTML = `${badgeHTML}${name}`;
+                            displayName.innerHTML = `${name}${badgeHTML}`;
                             editInput.value = name;
                             displayRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
                             displayJoined.textContent = createdAt;
