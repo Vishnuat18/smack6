@@ -229,8 +229,11 @@
             async function checkExamReview(userId, userName) {
                 const now = new Date();
                 
-                // Find all past exams
-                const pastExams = examEvents.filter(e => new Date(e.date) < now);
+                // Find all past exams eligible for review
+                const pastExams = examEvents.filter(e => {
+                    const reviewTime = e.reviewDate ? new Date(e.reviewDate) : new Date(e.date);
+                    return reviewTime < now;
+                });
                 if (pastExams.length === 0) return;
 
                 // Check the most recently passed exam
