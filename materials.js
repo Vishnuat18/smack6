@@ -245,52 +245,70 @@ export const subjectMaterials = {
         ],
         materials: [
             { name: 'ESIA Comprehensive', file: 'esia/notes/ESIA_merged.pdf' },
-            { name: 'Unit 1 & 2 Assessment', file: 'esia/notes/esia_notes.pdf' },
-            { name: 'Unit 3 Monitoring', file: 'esia/notes/esia_u3.pdf' },
-            { name: 'Unit 4 Audit', file: 'esia/notes/esia_u4.pdf' },
-            { name: 'Unit 5 Case Studies', file: 'esia/notes/esia_u5.pdf' },
+            { name: 'Unit 1 & 2: Intro & Assessment', file: 'esia/notes/esia_notes.pdf' },
+            { name: 'Unit 3: Environmental Management Plan', file: 'esia/notes/esia_u3.pdf' },
+            { name: 'Unit 4: Socio Economic Assessment', file: 'esia/notes/esia_u4.pdf' },
+            { name: 'Unit 5: Case Studies', file: 'esia/notes/esia_u5.pdf' },
             { name: '2-Mark Question Bank', file: 'esia/2m/esia_2m.pdf' }
         ],
         previousYearQuestions: [],
         importantQuestions: [
             { 
-                unit: 'Unit 1', 
-                questions: [
-                    'Rio Principles of Sustainable Development', 
-                    'Environmental Impact Assessment (EIA) concepts', 
-                    'EIA Types'
-                ] 
+                unit: '1', 
+                firstHalf: [
+                    'Rio Principles in Sustainable development',
+                    'Environmental Impact Assessment'
+                ],
+                secondHalf: [
+                    'EIA Notification and Legal Framework',
+                    'Selection & Registration Criteria for EIA Consultants'
+                ]
             },
             { 
-                unit: 'Unit 2', 
-                questions: [
-                    'Checklist Method',
-                    'Baseline Monitoring', 
-                    'Prediction and Assessment of impact on: Land, Water, Air, Noise, and Energy'
-                ] 
+                unit: '2', 
+                firstHalf: [
+                    'Baseline monitoring',
+                    'Prediction and Assessment of Impact on land, water, air, noise and energy, flora and fauna'
+                ],
+                secondHalf: [
+                    'Mathematical models for Impact prediction',
+                    'Checklist method'
+                ]
             },
             { 
-                unit: 'Unit 3', 
-                questions: [
-                    'Plan for mitigation/adverse impact on land, water, and air', 
-                    'Environmental Monitoring Plan',
-                    'Cost-Benefit Analysis (CBA)',
-                    'EIA Report Preparation'
-                ] 
+                unit: '3', 
+                firstHalf: [
+                    'Plan for mitigation of adverse impact on water, air and land, water, energy, flora and fauna',
+                    'Environment Monitoring Plan(EMP)'
+                ],
+                secondHalf: [
+                    'EIA Report Preparation',
+                    'Review of EIA Report'
+                ]
             },
             { 
-                unit: 'Unit 4', 
-                questions: [
-                    'Cost-Benefit Analysis', 
-                    'Rehabilitation and Resettlement Plan', 
-                    'Economic Valuation of environmental impacts'
-                ] 
+                unit: '4', 
+                firstHalf: [
+                    'Baseline monitoring of Socio economic environment',
+                    'Rehabilitation and Resettlement Plan'
+                ],
+                secondHalf: [
+                    'Cost-Benefit Analysis',
+                    'Economic valuation of Environmental impacts'
+                ]
             },
             { 
-                unit: 'Unit 5', 
-                questions: [
-                    'Case Studies'
-                ] 
+                unit: '5', 
+                firstHalf: [
+                    'Case Study for Infrastructure projects',
+                    'Case Study for Roads & Bridges',
+                    'Case Study for Mass Rapid Transport System(MRTS)'
+                ],
+                secondHalf: [
+                    'Case Study for Power plants',
+                    'Case Study for Dams & Irrigation',
+                    'Case Study for Mining Projects'
+                ]
             }
         ]
     },
