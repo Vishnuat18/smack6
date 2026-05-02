@@ -203,22 +203,6 @@
                              if (navAvatar) navAvatar.textContent = firstName.charAt(0);
                              if (navUserName) navUserName.textContent = firstName;
                              
-                             let isGirl = false;
-                             if (data.gender) {
-                                 isGirl = data.gender === 'girl';
-                             } else {
-                                 isGirl = girlEmails.includes(user.email);
-                             }
-
-                             let badgeHTML = '';
-                             if (data.gender === 'unassigned') {
-                                 badgeHTML = '<i class="fas fa-user" style="color: var(--text-muted); margin-left: 0.5rem; font-size: 1.2rem;" title="Unassigned"></i>';
-                             } else {
-                                 badgeHTML = isGirl ? 
-                                     '<i class="fas fa-venus" style="color: #ec4899; margin-left: 0.5rem; font-size: 1.2rem;" title="Female"></i>' : 
-                                     '<i class="fas fa-mars" style="color: #3b82f6; margin-left: 0.5rem; font-size: 1.2rem;" title="Male"></i>';
-                             }
-                             
                              // Time-based greeting
                              const hour = new Date().getHours();
                              let greeting = "Good Evening";
@@ -227,7 +211,7 @@
 
                              const greetingElement = document.getElementById('user-greeting');
                              if (greetingElement) {
-                                 greetingElement.innerHTML = `${greeting}, ${firstName}! ${badgeHTML}`;
+                                 greetingElement.innerHTML = `${greeting}, ${firstName}!`;
                              }
 
                              // Role-based UI visibility
