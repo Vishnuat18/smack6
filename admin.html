@@ -111,7 +111,7 @@
 
     <script type="module" src="script.js"></script>
     <script type="module">
-        import { auth, fs, doc, getDoc, collection, getDocs, query, orderBy } from "./firebase-config.js";
+        import { auth, fs, doc, getDoc, collection, getDocs, query, orderBy, deleteDoc, where } from "./firebase-config.js";
         import { subjectMaterials } from "./materials.js";
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -141,11 +141,11 @@
                 const statsSubjects = document.querySelectorAll('.stat-card h2')[2];
 
                 try {
-                    // 1. Fetch total users from Firestore
-                    const querySnapshot = await getDocs(collection(fs, "users"));
-                    statsUsers.textContent = querySnapshot.size || 0;
+                    // 1. Fetch Users count
+                    const usersSnap = await getDocs(collection(fs, "users"));
+                    statsUsers.textContent = usersSnap.size;
 
-                    // 2. Calculate materials and subjects from materials.js
+                    // 2. Calculate Materials & Subjects
                     const subjects = Object.keys(subjectMaterials);
                     let totalMaterials = 0;
                     subjects.forEach(sub => {
@@ -179,44 +179,37 @@
                     const querySnapshot = await getDocs(q);
                     
                     feedbackCount.textContent = `${querySnapshot.size} Total`;
-
+                    feedbackList.innerHTML = '';
+                    
                     if (querySnapshot.empty) {
-                        feedbackList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No feedback received yet.</div>';
+                        feedbackList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No feedback yet.</div>';
                         return;
                     }
 
-                    feedbackList.innerHTML = '';
                     querySnapshot.forEach((doc) => {
-                        const fb = doc.data();
-                        const date = fb.timestamp ? new Date(fb.timestamp.toDate()).toLocaleString() : "Recently";
+                        const feedback = doc.data();
+                        const dateStr = feedback.timestamp ? feedback.timestamp.toDate().toLocaleString() : "Recently";
                         
-                        const fbCard = document.createElement('div');
-                        fbCard.className = 'glass';
-                        fbCard.style.padding = '1rem';
-                        fbCard.style.borderRadius = 'var(--radius-sm)';
-                        fbCard.style.border = '1px solid var(--glass-border)';
-                        fbCard.innerHTML = `
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="fas fa-user-circle" style="color: var(--primary-light);"></i>
-                                    <div style="font-weight: 700; color: var(--primary-light); font-size: 0.9rem;">${fb.userName || 'User'}</div>
-                                </div>
-                                <div style="font-size: 0.7rem; color: var(--text-muted);">${date}</div>
+                        const item = document.createElement('div');
+                        item.className = 'glass';
+                        item.style.padding = '1rem';
+                        item.style.borderRadius = 'var(--radius-sm)';
+                        item.style.borderLeft = '3px solid var(--secondary)';
+                        
+                        item.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                                <strong>${feedback.userName}</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-muted);">${dateStr}</span>
                             </div>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <i class="fas fa-quote-left" style="font-size: 0.7rem; color: var(--secondary); margin-top: 0.3rem;"></i>
-                                <p style="font-size: 0.9rem; margin: 0; color: var(--text-main); line-height: 1.4; flex: 1;">${fb.message}</p>
-                            </div>
-                            <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
-                                <i class="fas fa-envelope-open" style="font-size: 0.6rem;"></i>
-                                ${fb.userEmail}
+                            <div style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5; word-wrap: break-word;">
+                                ${feedback.message}
                             </div>
                         `;
-                        feedbackList.appendChild(fbCard);
+                        feedbackList.appendChild(item);
                     });
                 } catch (error) {
                     console.error("Error fetching feedback:", error);
-                    feedbackList.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;">Error loading feedback.</div>';
+                    feedbackList.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;">Error loading feedback. Check Firestore permissions.</div>';
                 }
             }
 
@@ -225,21 +218,34 @@
                 const reviewsCount = document.getElementById('exam-reviews-count');
 
                 try {
-                    // Removed orderBy to prevent Firestore Missing Index errors. Sorting client-side.
-                    const q = query(collection(fs, "exam_reviews"));
-                    const querySnapshot = await getDocs(q);
+                    // One-time cleanup for old VCE Exam data
+                    try {
+                        const oldQ = query(collection(fs, "exam_reviews"), where("examName", "==", "VCE Exam"));
+                        const oldSnap = await getDocs(oldQ);
+                        if (!oldSnap.empty) {
+                            const delPromises = [];
+                            oldSnap.forEach(d => delPromises.push(deleteDoc(doc(fs, "exam_reviews", d.id))));
+                            await Promise.all(delPromises);
+                        }
+                    } catch(e) { console.error("Auto delete failed", e); }
+
+                    const querySnapshot = await getDocs(collection(fs, "exam_reviews"));
                     
                     reviewsCount.textContent = `${querySnapshot.size} Total`;
-
+                    
                     if (querySnapshot.empty) {
                         reviewsList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No exam reviews yet.</div>';
                         return;
                     }
 
-                    // Group reviews by examName
+                    // Group by exam name
                     const examsMap = {};
                     querySnapshot.forEach((doc) => {
                         const review = doc.data();
+                        
+                        // Ignore any stragglers immediately
+                        if (review.examName === "VCE Exam") return;
+
                         if (!examsMap[review.examName]) {
                             examsMap[review.examName] = [];
                         }
