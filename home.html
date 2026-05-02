@@ -219,9 +219,15 @@
                                      '<i class="fas fa-mars" style="color: #3b82f6; margin-left: 0.5rem; font-size: 1.2rem;" title="Male"></i>';
                              }
                              
+                             // Time-based greeting
+                             const hour = new Date().getHours();
+                             let greeting = "Good Evening";
+                             if (hour >= 5 && hour < 12) greeting = "Good Morning";
+                             else if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
+
                              const greetingElement = document.getElementById('user-greeting');
                              if (greetingElement) {
-                                 greetingElement.innerHTML = `${firstName}${badgeHTML}`;
+                                 greetingElement.innerHTML = `${greeting}, ${firstName}! ${badgeHTML}`;
                              }
 
                              // Role-based UI visibility
@@ -287,7 +293,7 @@
                     originalReviewHTML = optionsContainer.innerHTML;
                 }
 
-                if (exam.id === 'vce-exam-2') {
+                if (exam.id === 'vce-exam-3') {
                     let isGirl = false;
                     if (userGender) {
                         isGirl = userGender === 'girl';
@@ -364,7 +370,7 @@
                             b.style.opacity = '0.5';
                         });
                         
-                        if (exam.id === 'vce-exam-2') {
+                        if (exam.id === 'vce-exam-3') {
                             targetElement.style.borderColor = 'rgba(99, 102, 241, 1)';
                         } else {
                             targetElement.style.background = 'rgba(99, 102, 241, 0.4)';

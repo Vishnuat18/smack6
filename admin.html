@@ -220,11 +220,16 @@
                 try {
                     // One-time cleanup for old VCE Exam data
                     try {
-                        const oldQ = query(collection(fs, "exam_reviews"), where("examName", "==", "VCE Exam"));
-                        const oldSnap = await getDocs(oldQ);
-                        if (!oldSnap.empty) {
-                            const delPromises = [];
-                            oldSnap.forEach(d => delPromises.push(deleteDoc(doc(fs, "exam_reviews", d.id))));
+                        const oldQ1 = query(collection(fs, "exam_reviews"), where("examName", "==", "VCE Exam"));
+                        const oldQ2 = query(collection(fs, "exam_reviews"), where("examName", "==", "VCE Exam "));
+                        
+                        const [snap1, snap2] = await Promise.all([getDocs(oldQ1), getDocs(oldQ2)]);
+                        const delPromises = [];
+                        
+                        snap1.forEach(d => delPromises.push(deleteDoc(doc(fs, "exam_reviews", d.id))));
+                        snap2.forEach(d => delPromises.push(deleteDoc(doc(fs, "exam_reviews", d.id))));
+                        
+                        if (delPromises.length > 0) {
                             await Promise.all(delPromises);
                         }
                     } catch(e) { console.error("Auto delete failed", e); }
@@ -244,7 +249,7 @@
                         const review = doc.data();
                         
                         // Ignore any stragglers immediately
-                        if (review.examName === "VCE Exam") return;
+                        if (review.examName === "VCE Exam" || review.examName === "VCE Exam ") return;
 
                         if (!examsMap[review.examName]) {
                             examsMap[review.examName] = [];
