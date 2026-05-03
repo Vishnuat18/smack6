@@ -244,7 +244,6 @@ export const subjectMaterials = {
             }
         ],
         materials: [
-            { name: 'ESIA Comprehensive', file: 'esia/notes/ESIA_merged.pdf' },
             { name: 'Unit 1: Introduction', file: 'esia/notes/esia_u1.pdf' },
             { name: 'Unit 2: Environmental Assessment', file: 'esia/notes/esia_u2.pdf' },
             { name: 'Unit 3: Environmental Management Plan', file: 'esia/notes/esia_u3.pdf' },
