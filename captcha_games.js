@@ -972,6 +972,612 @@ export function colorSwatchGame() {
     };
 }
 
+// ─── Shared word style helper ─────────────────────────────────────────────────
+const wordBtn = (text, idx, extraStyle = '') =>
+    `<button class="cg-word-btn" data-idx="${idx}" style="
+        padding:0.65rem 0.5rem;border-radius:10px;
+        background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);
+        color:rgba(255,255,255,0.85);font-family:'Outfit',sans-serif;font-weight:600;
+        font-size:0.88rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px;
+        ${extraStyle}">${text}</button>`;
+
+const selectWordBtn = (container) => {
+    let userAnswer = null;
+    container.querySelectorAll('.cg-word-btn').forEach(btn => {
+        btn.onmouseover = () => { if (!btn.classList.contains('selected')) btn.style.background='rgba(99,102,241,0.2)'; };
+        btn.onmouseout  = () => { if (!btn.classList.contains('selected')) btn.style.background='rgba(255,255,255,0.05)'; };
+        btn.onclick = () => {
+            container.querySelectorAll('.cg-word-btn').forEach(b => {
+                b.classList.remove('selected');
+                b.style.background='rgba(255,255,255,0.05)';
+                b.style.borderColor='rgba(255,255,255,0.1)';
+            });
+            btn.classList.add('selected');
+            btn.style.background='rgba(99,102,241,0.3)';
+            btn.style.borderColor='#818cf8';
+            userAnswer = parseInt(btn.dataset.idx);
+        };
+    });
+    return { get: () => userAnswer };
+};
+
+const wordBox = (content) =>
+    `<div style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);
+        border-radius:14px;padding:1.2rem;width:100%;box-sizing:border-box;text-align:center;">${content}</div>`;
+
+const grid2x2 = (items) =>
+    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.55rem;width:100%;">${items}</div>`;
+
+// ─── Game 16: Word Unscramble ──────────────────────────────────────────────────
+export function wordUnscrambleGame() {
+    const pool = [
+        'PLANET','BRIDGE','CASTLE','FLOWER','JUNGLE','MARBLE','PENCIL',
+        'ROCKET','SILVER','TEMPLE','WINDOW','CANDLE','FOREST','GUITAR',
+        'MIRROR','TUNNEL','DESERT','ISLAND','LADDER','SUNSET',
+    ];
+    const word = rnd(pool);
+    let scrambled;
+    do { scrambled = shuffle([...word]).join(''); } while (scrambled === word);
+    const others = shuffle(pool.filter(w => w !== word)).slice(0, 3);
+    const options = shuffle([word, ...others]);
+    const correctIdx = options.indexOf(word);
+    let sel = null;
+
+    return {
+        title: 'Unscramble the word — pick the correct answer',
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;">
+                    ${wordBox(`<span style="font-size:1.6rem;font-weight:800;letter-spacing:6px;
+                        color:#818cf8;font-family:'Outfit',sans-serif;">${scrambled}</span>`)}
+                    ${grid2x2(options.map((w, i) => wordBtn(w, i)).join(''))}
+                </div>`;
+            sel = selectWordBtn(container);
+        },
+        verify() { return sel?.get() === correctIdx; }
+    };
+}
+
+// ─── Game 17: Category Odd One Out (Words) ────────────────────────────────────
+export function wordCategoryGame() {
+    const categories = [
+        { group: ['MARS','VENUS','SATURN','EARTH'],    odd: 'OCEAN' },
+        { group: ['RED','BLUE','GREEN','PURPLE'],      odd: 'STONE' },
+        { group: ['DOG','CAT','LION','TIGER'],         odd: 'TABLE' },
+        { group: ['APPLE','MANGO','GRAPE','LEMON'],    odd: 'BRICK' },
+        { group: ['SHIRT','JEANS','JACKET','BOOTS'],   odd: 'CLOUD' },
+        { group: ['PIANO','GUITAR','VIOLIN','FLUTE'],  odd: 'SPOON' },
+        { group: ['PARIS','TOKYO','ROME','CAIRO'],     odd: 'STORM' },
+        { group: ['GOLD','SILVER','IRON','COPPER'],    odd: 'RIVER' },
+    ];
+    const chosen = rnd(categories);
+    const shown  = shuffle([...shuffle(chosen.group).slice(0,3), chosen.odd]);
+    const oddIdx = shown.indexOf(chosen.odd);
+    let sel = null;
+
+    return {
+        title: 'Pick the word that does NOT belong with the others',
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;">
+                    ${grid2x2(shown.map((w, i) => wordBtn(w, i, 'font-size:0.95rem;')).join(''))}
+                </div>`;
+            sel = selectWordBtn(container);
+        },
+        verify() { return sel?.get() === oddIdx; }
+    };
+}
+
+// ─── Game 18: Missing Letter ───────────────────────────────────────────────────
+export function missingLetterGame() {
+    const words = [
+        'EARTH','BRAIN','CLOCK','DREAM','FLAME','GRACE','HEART','LIGHT',
+        'NIGHT','OCEAN','PLANT','QUEST','RIVER','SPACE','STORM','TRAIN',
+    ];
+    const word     = rnd(words);
+    const blankIdx = Math.floor(Math.random() * word.length);
+    const correct  = word[blankIdx];
+    const allChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter(c => c !== correct);
+    const wrongs   = shuffle(allChars).slice(0, 3);
+    const options  = shuffle([correct, ...wrongs]);
+    const correctIdx = options.indexOf(correct);
+    const masked = [...word].map((c, i) => i === blankIdx
+        ? `<span style="color:#818cf8;border-bottom:2px solid #818cf8;min-width:16px;display:inline-block;">_</span>`
+        : c).join('');
+    let sel = null;
+
+    return {
+        title: 'Fill in the missing letter to complete the word',
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;">
+                    ${wordBox(`<span style="font-size:1.5rem;font-weight:800;letter-spacing:8px;
+                        font-family:'Outfit',sans-serif;color:rgba(255,255,255,0.9);">${masked}</span>`)}
+                    ${grid2x2(options.map((c, i) => wordBtn(c, i, 'font-size:1.2rem;font-weight:800;')).join(''))}
+                </div>`;
+            sel = selectWordBtn(container);
+        },
+        verify() { return sel?.get() === correctIdx; }
+    };
+}
+
+// ─── Game 19: Number Sequence ─────────────────────────────────────────────────
+export function numberSequenceGame() {
+    const sequences = [
+        { seq: [2,4,8,16],    next: 32,  rule: 'Each term ×2' },
+        { seq: [1,4,9,16],    next: 25,  rule: 'Square numbers' },
+        { seq: [3,6,11,18],   next: 27,  rule: '+3,+5,+7,+9' },
+        { seq: [1,1,2,3,5],   next: 8,   rule: 'Fibonacci' },
+        { seq: [100,90,81,73],next: 66,  rule: '-10,-9,-8,-7' },
+        { seq: [5,10,20,40],  next: 80,  rule: 'Each term ×2' },
+        { seq: [1,3,7,13],    next: 21,  rule: '+2,+4,+6,+8' },
+        { seq: [2,6,12,20],   next: 30,  rule: 'n(n+1)' },
+        { seq: [64,32,16,8],  next: 4,   rule: 'Each term ÷2' },
+        { seq: [1,8,27,64],   next: 125, rule: 'Cube numbers' },
+    ];
+    const chosen = rnd(sequences);
+    const shown  = chosen.seq;
+    const next   = chosen.next;
+    const wrongs = shuffle([next+1, next-1, next+2, next*2, next-2].filter(v => v !== next && v > 0)).slice(0, 3);
+    const options = shuffle([next, ...wrongs]);
+    const correctIdx = options.indexOf(next);
+    let sel = null;
+
+    return {
+        title: 'What comes next in the number sequence?',
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;">
+                    ${wordBox(`
+                        <div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;flex-wrap:wrap;">
+                            ${shown.map(n =>
+                                `<span style="font-size:1.3rem;font-weight:800;color:rgba(255,255,255,0.9);
+                                font-family:'Outfit',sans-serif;">${n}</span>
+                                <span style="color:rgba(255,255,255,0.3);font-size:1rem;">›</span>`
+                            ).join('')}
+                            <span style="font-size:1.4rem;font-weight:800;color:#818cf8;
+                                border:2px dashed rgba(99,102,241,0.5);border-radius:8px;
+                                padding:0.1rem 0.6rem;">?</span>
+                        </div>
+                    `)}
+                    ${grid2x2(options.map((v, i) => wordBtn(v, i, 'font-size:1.1rem;font-weight:800;')).join(''))}
+                </div>`;
+            sel = selectWordBtn(container);
+        },
+        verify() { return sel?.get() === correctIdx; }
+    };
+}
+
+// ─── Game 20: Equation Solver ─────────────────────────────────────────────────
+export function equationSolverGame() {
+    const ops = [
+        { sym:'+', fn: (a,b)=>a+b },
+        { sym:'−', fn: (a,b)=>a-b },
+        { sym:'×', fn: (a,b)=>a*b },
+    ];
+    const op = rnd(ops);
+    let a, b, result;
+    if (op.sym === '×') {
+        a = Math.floor(Math.random()*8)+2; b = Math.floor(Math.random()*8)+2;
+    } else if (op.sym === '−') {
+        a = Math.floor(Math.random()*30)+15; b = Math.floor(Math.random()*(a-1))+1;
+    } else {
+        a = Math.floor(Math.random()*40)+5; b = Math.floor(Math.random()*40)+5;
+    }
+    result = op.fn(a, b);
+
+    // Hide one of: a, b, or result
+    const hideWhich = rnd(['a','b','res']);
+    let display, answer;
+    if (hideWhich === 'a')   { display = `? ${op.sym} ${b} = ${result}`;   answer = a; }
+    else if (hideWhich === 'b') { display = `${a} ${op.sym} ? = ${result}`; answer = b; }
+    else                     { display = `${a} ${op.sym} ${b} = ?`;         answer = result; }
+
+    const wrongs = shuffle([answer+1,answer-1,answer+2,answer-2].filter(v=>v>0&&v!==answer)).slice(0,3);
+    const options = shuffle([answer, ...wrongs]);
+    const correctIdx = options.indexOf(answer);
+    let sel = null;
+
+    return {
+        title: 'Solve the equation — find the missing value',
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;">
+                    ${wordBox(`<span style="font-size:1.5rem;font-weight:800;letter-spacing:2px;
+                        font-family:'Outfit',sans-serif;color:rgba(255,255,255,0.95);">${display}</span>`)}
+                    ${grid2x2(options.map((v, i) => wordBtn(v, i, 'font-size:1.15rem;font-weight:800;')).join(''))}
+                </div>`;
+            sel = selectWordBtn(container);
+        },
+        verify() { return sel?.get() === correctIdx; }
+    };
+}
+
+// ─── Game 21: Rhyme Finder ────────────────────────────────────────────────────
+export function rhymeFinderGame() {
+    const rhymes = [
+        { word:'CAT',   right:'BAT',  wrongs:['DOG','PEN','SUN'] },
+        { word:'LIGHT', right:'NIGHT',wrongs:['DARK','BURN','COLD'] },
+        { word:'RAIN',  right:'TRAIN',wrongs:['SNOW','WIND','HAIL'] },
+        { word:'CLOCK', right:'ROCK', wrongs:['TIME','BELL','HOUR'] },
+        { word:'BLUE',  right:'CLUE', wrongs:['RED','GREEN','PINK'] },
+        { word:'MIND',  right:'FIND', wrongs:['THINK','BRAIN','LOSE'] },
+        { word:'STONE', right:'TONE', wrongs:['ROCK','SAND','DUST'] },
+        { word:'FLAME', right:'GAME', wrongs:['FIRE','BURN','HEAT'] },
+        { word:'TREE',  right:'FREE', wrongs:['WOOD','LEAF','ROOT'] },
+        { word:'SPACE', right:'RACE', wrongs:['STAR','MOON','DARK'] },
+    ];
+    const chosen = rnd(rhymes);
+    const options = shuffle([chosen.right, ...chosen.wrongs]);
+    const correctIdx = options.indexOf(chosen.right);
+    let sel = null;
+
+    return {
+        title: `Which word RHYMES with "${chosen.word}"?`,
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;">
+                    ${wordBox(`<span style="font-size:2rem;font-weight:900;letter-spacing:4px;
+                        color:#818cf8;font-family:'Outfit',sans-serif;">${chosen.word}</span>`)}
+                    ${grid2x2(options.map((w, i) => wordBtn(w, i, 'font-size:0.95rem;')).join(''))}
+                </div>`;
+            sel = selectWordBtn(container);
+        },
+        verify() { return sel?.get() === correctIdx; }
+    };
+}
+
+// ─── Game 22: Anagram Check ───────────────────────────────────────────────────
+export function anagramCheckGame() {
+    const pairs = [
+        { a:'LISTEN',  b:'SILENT',  isAnagram:true  },
+        { a:'EARTH',   b:'HEART',   isAnagram:true  },
+        { a:'DUSTY',   b:'STUDY',   isAnagram:true  },
+        { a:'BELOW',   b:'ELBOW',   isAnagram:true  },
+        { a:'ANGEL',   b:'GLEAN',   isAnagram:true  },
+        { a:'PLANET',  b:'CASTLE',  isAnagram:false },
+        { a:'BRIDGE',  b:'GRIMED',  isAnagram:false },
+        { a:'FOREST',  b:'FOSTER',  isAnagram:true  },
+        { a:'MASTER',  b:'STREAM',  isAnagram:true  },
+        { a:'NIGHT',   b:'THING',   isAnagram:true  },
+        { a:'MARBLE',  b:'PLANET',  isAnagram:false },
+        { a:'SILVER',  b:'SLIVER',  isAnagram:true  },
+    ];
+    const chosen = rnd(pairs);
+    let userAnswer = null;
+
+    return {
+        title: 'Are these two words anagrams of each other?',
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1.2rem;width:100%;">
+                    <div style="display:flex;align-items:center;gap:1rem;">
+                        ${wordBox(`<span style="font-size:1.3rem;font-weight:800;letter-spacing:3px;
+                            color:#818cf8;font-family:'Outfit';">${chosen.a}</span>`)}
+                        <span style="font-size:0.8rem;color:rgba(255,255,255,0.3);font-weight:700;">vs</span>
+                        ${wordBox(`<span style="font-size:1.3rem;font-weight:800;letter-spacing:3px;
+                            color:#06b6d4;font-family:'Outfit';">${chosen.b}</span>`)}
+                    </div>
+                    <div class="cg-btn-row">
+                        <button class="cg-choice-btn" data-val="yes">Yes — Anagram</button>
+                        <button class="cg-choice-btn" data-val="no">No — Different</button>
+                    </div>
+                </div>`;
+            container.querySelectorAll('.cg-choice-btn').forEach(btn => {
+                btn.onclick = () => {
+                    container.querySelectorAll('.cg-choice-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    userAnswer = btn.dataset.val;
+                };
+            });
+        },
+        verify() {
+            if (!userAnswer) return false;
+            return chosen.isAnagram ? userAnswer === 'yes' : userAnswer === 'no';
+        }
+    };
+}
+
+// ─── Game 23: Word Length Sort ────────────────────────────────────────────────
+export function wordLengthGame() {
+    const wordPool = [
+        'CAT','FIRE','STONE','BRIDGE','THUNDER','CALENDAR',
+        'DOG','RAIN','CLOCK','PLANET','DISTANT','ELEPHANT',
+        'SKY','WAVE','DREAM','FLOWER','FREEDOM','SPECTRUM',
+    ];
+    // Pick 4 words with different lengths
+    const used = new Set();
+    const chosen = [];
+    while (chosen.length < 4) {
+        const w = rnd(wordPool);
+        if (!used.has(w.length) && !chosen.includes(w)) {
+            chosen.push(w); used.add(w.length);
+        }
+    }
+    const askLongest = Math.random() > 0.5;
+    const target = askLongest
+        ? chosen.reduce((a,b) => a.length > b.length ? a : b)
+        : chosen.reduce((a,b) => a.length < b.length ? a : b);
+    const shuffled   = shuffle(chosen);
+    const correctIdx = shuffled.indexOf(target);
+    let sel = null;
+
+    return {
+        title: askLongest ? 'Click the LONGEST word' : 'Click the SHORTEST word',
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;">
+                    <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);letter-spacing:1px;">
+                        ${askLongest ? 'SELECT THE LONGEST' : 'SELECT THE SHORTEST'}
+                    </div>
+                    ${grid2x2(shuffled.map((w, i) => wordBtn(w, i, `font-size:${0.75+w.length*0.04}rem;`)).join(''))}
+                </div>`;
+            sel = selectWordBtn(container);
+        },
+        verify() { return sel?.get() === correctIdx; }
+    };
+}
+
+// ─── SVG Scene Library (for image puzzles) ───────────────────────────────────
+// Each scene is a 200×200 SVG body — split into 4 quadrants for puzzles
+const IMG_SCENES = [
+    // 0: Sunset landscape
+    `<defs><linearGradient id="sg0" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e3a5f"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs>
+     <rect width="200" height="200" fill="url(#sg0)"/>
+     <circle cx="100" cy="85" r="38" fill="#f59e0b" opacity="0.95"/>
+     <ellipse cx="100" cy="205" rx="110" ry="55" fill="#10b981"/>
+     <ellipse cx="45"  cy="195" rx="55"  ry="40" fill="#059669"/>
+     <ellipse cx="165" cy="198" rx="55"  ry="42" fill="#047857"/>`,
+    // 1: City skyline
+    `<rect width="200" height="200" fill="#0f172a"/>
+     <rect x="10"  y="110" width="28" height="90" fill="#6366f1"/>
+     <rect x="50"  y="80"  width="22" height="120" fill="#8b5cf6"/>
+     <rect x="84"  y="95"  width="32" height="105" fill="#6366f1"/>
+     <rect x="128" y="70"  width="26" height="130" fill="#4f46e5"/>
+     <rect x="165" y="120" width="22" height="80"  fill="#7c3aed"/>
+     <circle cx="100" cy="38" r="22" fill="#fbbf24" opacity="0.85"/>
+     <circle cx="100" cy="38" r="30" fill="#fbbf24" opacity="0.2"/>`,
+    // 2: Overlapping circles
+    `<rect width="200" height="200" fill="#0c0a1e"/>
+     <circle cx="65"  cy="65"  r="55" fill="#f43f5e" opacity="0.65"/>
+     <circle cx="135" cy="65"  r="55" fill="#6366f1" opacity="0.65"/>
+     <circle cx="65"  cy="135" r="55" fill="#06b6d4" opacity="0.65"/>
+     <circle cx="135" cy="135" r="55" fill="#10b981" opacity="0.65"/>`,
+    // 3: Concentric diamonds
+    `<rect width="200" height="200" fill="#1a1a2e"/>
+     <polygon points="100,10 190,100 100,190 10,100" fill="#f59e0b" opacity="0.25"/>
+     <polygon points="100,35 165,100 100,165 35,100" fill="#f43f5e" opacity="0.35"/>
+     <polygon points="100,60 140,100 100,140 60,100" fill="#818cf8" opacity="0.55"/>
+     <polygon points="100,82 118,100 100,118 82,100" fill="#c7d2fe"/>`,
+    // 4: Gradient stripes
+    `<rect x="0"   y="0"   width="200" height="40" fill="#6366f1"/>
+     <rect x="0"   y="40"  width="200" height="40" fill="#7c3aed"/>
+     <rect x="0"   y="80"  width="200" height="40" fill="#9333ea"/>
+     <rect x="0"   y="120" width="200" height="40" fill="#a855f7"/>
+     <rect x="0"   y="160" width="200" height="40" fill="#c084fc"/>`,
+    // 5: Starfield
+    `<rect width="200" height="200" fill="#040d21"/>
+     <circle cx="30"  cy="25"  r="2.5" fill="white" opacity="0.9"/>
+     <circle cx="75"  cy="15"  r="1.5" fill="white" opacity="0.7"/>
+     <circle cx="120" cy="30"  r="3"   fill="white" opacity="0.95"/>
+     <circle cx="170" cy="12"  r="2"   fill="white" opacity="0.8"/>
+     <circle cx="55"  cy="60"  r="1.8" fill="white" opacity="0.6"/>
+     <circle cx="145" cy="75"  r="2.5" fill="white" opacity="0.85"/>
+     <circle cx="100" cy="100" r="18"  fill="#fbbf24" opacity="0.9"/>
+     <circle cx="100" cy="100" r="28"  fill="#fbbf24" opacity="0.15"/>
+     <circle cx="22"  cy="140" r="2"   fill="white" opacity="0.7"/>
+     <circle cx="180" cy="155" r="1.5" fill="white" opacity="0.6"/>
+     <circle cx="88"  cy="170" r="2.2" fill="white" opacity="0.8"/>`,
+    // 6: Abstract X grid
+    `<rect width="200" height="200" fill="#0f172a"/>
+     <line x1="0" y1="0" x2="200" y2="200" stroke="#818cf8" stroke-width="18" stroke-linecap="round" opacity="0.4"/>
+     <line x1="200" y1="0" x2="0" y2="200" stroke="#f43f5e" stroke-width="18" stroke-linecap="round" opacity="0.4"/>
+     <circle cx="100" cy="100" r="40" fill="#1e293b"/>
+     <circle cx="100" cy="100" r="22" fill="#6366f1"/>`,
+];
+
+// ─── Game 24: Pixel Pattern Fill ──────────────────────────────────────────────
+// A colored grid with one missing cell — pick the correct color
+export function pixelPatternGame() {
+    const GRID = 6;
+    const colorPairs = [
+        ['#6366f1','#c7d2fe'], ['#f43f5e','#fecdd3'],
+        ['#10b981','#a7f3d0'], ['#f59e0b','#fde68a'],
+        ['#06b6d4','#a5f3fc'], ['#8b5cf6','#ddd6fe'],
+    ];
+    const [darkC, lightC] = rnd(colorPairs);
+    const patternType = rnd(['checker','stripe_h','stripe_v','diagonal']);
+
+    const getColor = (r, c) => {
+        if (patternType === 'checker')  return (r + c) % 2 === 0 ? darkC : lightC;
+        if (patternType === 'stripe_h') return r % 2 === 0 ? darkC : lightC;
+        if (patternType === 'stripe_v') return c % 2 === 0 ? darkC : lightC;
+        // diagonal
+        return (r + c) % 3 === 0 ? darkC : (r + c) % 3 === 1 ? lightC : '#334155';
+    };
+
+    const blankR = 1 + Math.floor(Math.random() * (GRID - 2));
+    const blankC = 1 + Math.floor(Math.random() * (GRID - 2));
+    const correctColor = getColor(blankR, blankC);
+    const wrongColors  = shuffle(colorPairs.flatMap(p => p).filter(c => c !== correctColor)).slice(0, 3);
+    const options      = shuffle([correctColor, ...wrongColors]);
+    const correctIdx   = options.indexOf(correctColor);
+    let userAnswer     = null;
+
+    const SZ = 30;
+    const cells = [];
+    for (let r = 0; r < GRID; r++) {
+        for (let c = 0; c < GRID; c++) {
+            const x = c * SZ, y = r * SZ;
+            if (r === blankR && c === blankC) {
+                cells.push(`<rect x="${x}" y="${y}" width="${SZ}" height="${SZ}" fill="rgba(255,255,255,0.04)" stroke="rgba(99,102,241,0.6)" stroke-width="1.5"/>
+                    <text x="${x+SZ/2}" y="${y+SZ/2+5}" text-anchor="middle" font-size="13" font-weight="bold" fill="rgba(99,102,241,0.8)">?</text>`);
+            } else {
+                cells.push(`<rect x="${x}" y="${y}" width="${SZ}" height="${SZ}" fill="${getColor(r,c)}" stroke="rgba(0,0,0,0.15)" stroke-width="0.5"/>`);
+            }
+        }
+    }
+
+    return {
+        title: 'What color fills the missing cell?',
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;">
+                    <div style="border-radius:10px;overflow:hidden;border:1.5px solid rgba(255,255,255,0.1);">
+                        <svg width="${GRID*SZ}" height="${GRID*SZ}" viewBox="0 0 ${GRID*SZ} ${GRID*SZ}">${cells.join('')}</svg>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.55rem;width:100%;">
+                        ${options.map((color, i) => `
+                            <button class="cg-ptile" data-idx="${i}" style="
+                                height:44px;border-radius:10px;background:${color};
+                                border:2.5px solid transparent;cursor:pointer;
+                                transition:all 0.2s;box-shadow:0 4px 12px ${color}44;"></button>`).join('')}
+                    </div>
+                </div>`;
+            container.querySelectorAll('.cg-ptile').forEach(btn => {
+                btn.onmouseover = () => { if (!btn.classList.contains('selected')) btn.style.transform='scale(1.04)'; };
+                btn.onmouseout  = () => { if (!btn.classList.contains('selected')) btn.style.transform='scale(1)'; };
+                btn.onclick = () => {
+                    container.querySelectorAll('.cg-ptile').forEach(b => {
+                        b.classList.remove('selected'); b.style.borderColor='transparent'; b.style.transform='scale(1)';
+                    });
+                    btn.classList.add('selected');
+                    btn.style.borderColor='white'; btn.style.transform='scale(1.05)';
+                    userAnswer = parseInt(btn.dataset.idx);
+                };
+            });
+        },
+        verify() { return userAnswer === correctIdx; }
+    };
+}
+
+// ─── Game 25: Jigsaw Quadrant Puzzle ──────────────────────────────────────────
+// A 2×2 SVG scene with one quadrant missing — pick the correct missing piece
+export function jigsawQuadrantGame() {
+    const sceneIdx  = Math.floor(Math.random() * IMG_SCENES.length);
+    const scene     = IMG_SCENES[sceneIdx];
+    const hiddenIdx = Math.floor(Math.random() * 4);
+
+    // quadrant viewBox offsets
+    const quads = [
+        { vx:0,   vy:0   },  // TL
+        { vx:100, vy:0   },  // TR
+        { vx:0,   vy:100 },  // BL
+        { vx:100, vy:100 },  // BR
+    ];
+
+    // Wrong options: same quadrant from 3 other scenes
+    const wrongIdxs = shuffle(IMG_SCENES.map((_,i)=>i).filter(i=>i!==sceneIdx)).slice(0,3);
+    const optionDefs = shuffle([
+        { si: sceneIdx, qi: hiddenIdx },
+        ...wrongIdxs.map(si => ({ si, qi: hiddenIdx }))
+    ]);
+    const correctOptIdx = optionDefs.findIndex(o => o.si === sceneIdx);
+    let userAnswer = null;
+
+    const tile = (sc, qi, sz) => {
+        const q = quads[qi];
+        return `<svg width="${sz}" height="${sz}" viewBox="${q.vx} ${q.vy} 100 100" style="display:block;border-radius:4px;">${sc}</svg>`;
+    };
+
+    return {
+        title: 'Pick the missing piece to complete the picture',
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;
+                        background:rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;
+                        border:1.5px solid rgba(255,255,255,0.15);width:fit-content;">
+                        ${quads.map((q, i) => `
+                            <div style="width:88px;height:88px;display:flex;align-items:center;justify-content:center;
+                                ${i===hiddenIdx ? 'background:rgba(99,102,241,0.12);border:2px dashed rgba(99,102,241,0.5);' : ''}">
+                                ${i !== hiddenIdx
+                                    ? tile(scene, i, 88)
+                                    : `<span style="font-size:1.8rem;font-weight:900;color:rgba(99,102,241,0.6);">?</span>`}
+                            </div>`).join('')}
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.55rem;width:100%;">
+                        ${optionDefs.map((opt, i) => `
+                            <button class="cg-jig-opt" data-idx="${i}" style="
+                                display:flex;align-items:center;justify-content:center;
+                                border-radius:10px;background:rgba(255,255,255,0.05);
+                                border:1.5px solid rgba(255,255,255,0.1);
+                                cursor:pointer;transition:all 0.2s;overflow:hidden;padding:0.5rem;">
+                                ${tile(IMG_SCENES[opt.si], opt.qi, 68)}
+                            </button>`).join('')}
+                    </div>
+                </div>`;
+            container.querySelectorAll('.cg-jig-opt').forEach(btn => {
+                btn.onmouseover = () => { if (!btn.classList.contains('selected')) btn.style.background='rgba(99,102,241,0.18)'; };
+                btn.onmouseout  = () => { if (!btn.classList.contains('selected')) btn.style.background='rgba(255,255,255,0.05)'; };
+                btn.onclick = () => {
+                    container.querySelectorAll('.cg-jig-opt').forEach(b => {
+                        b.classList.remove('selected'); b.style.background='rgba(255,255,255,0.05)'; b.style.borderColor='rgba(255,255,255,0.1)';
+                    });
+                    btn.classList.add('selected');
+                    btn.style.background='rgba(99,102,241,0.3)'; btn.style.borderColor='#818cf8';
+                    userAnswer = parseInt(btn.dataset.idx);
+                };
+            });
+        },
+        verify() { return userAnswer === correctOptIdx; }
+    };
+}
+
+// ─── Game 26: Broken Tile Finder ──────────────────────────────────────────────
+// 3×3 grid of SVG tiles — all look the same EXCEPT one has different colors.
+// Click the tile that doesn't match.
+export function brokenTileGame() {
+    const GRID = 3;
+    const normalScene = rnd(IMG_SCENES);
+    // "broken" tile = same scene structure but from a visually different scene
+    const brokenScene = rnd(IMG_SCENES.filter(s => s !== normalScene));
+    const brokenIdx   = Math.floor(Math.random() * (GRID * GRID));
+    let userAnswer    = null;
+
+    // render each tile as a zoomed-in random quadrant (same quad for all = consistent)
+    const qi     = Math.floor(Math.random() * 4);
+    const quads  = [{ vx:0,vy:0 },{ vx:100,vy:0 },{ vx:0,vy:100 },{ vx:100,vy:100 }];
+    const q      = quads[qi];
+    const tileSVG = (sc) =>
+        `<svg width="60" height="60" viewBox="${q.vx} ${q.vy} 100 100" style="display:block;">${sc}</svg>`;
+
+    return {
+        title: 'Click the tile that looks DIFFERENT from all the others',
+        render(container) {
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;">
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:fit-content;">
+                        ${Array.from({ length: GRID * GRID }, (_, i) => `
+                            <button class="cg-btile" data-idx="${i}" style="
+                                width:64px;height:64px;
+                                border-radius:8px;overflow:hidden;
+                                border:2px solid rgba(255,255,255,0.08);
+                                cursor:pointer;transition:all 0.2s;
+                                display:flex;align-items:center;justify-content:center;
+                                padding:0;background:none;">
+                                ${tileSVG(i === brokenIdx ? brokenScene : normalScene)}
+                            </button>`).join('')}
+                    </div>
+                    <div style="font-size:0.68rem;color:rgba(255,255,255,0.3);letter-spacing:0.5px;">One tile has a different colour scheme</div>
+                </div>`;
+            container.querySelectorAll('.cg-btile').forEach(btn => {
+                btn.onmouseover = () => { if (!btn.classList.contains('selected')) btn.style.borderColor='rgba(99,102,241,0.5)'; };
+                btn.onmouseout  = () => { if (!btn.classList.contains('selected')) btn.style.borderColor='rgba(255,255,255,0.08)'; };
+                btn.onclick = () => {
+                    container.querySelectorAll('.cg-btile').forEach(b => {
+                        b.classList.remove('selected'); b.style.borderColor='rgba(255,255,255,0.08)'; b.style.background='none';
+                    });
+                    btn.classList.add('selected');
+                    btn.style.borderColor='#818cf8'; btn.style.background='rgba(99,102,241,0.2)';
+                    userAnswer = parseInt(btn.dataset.idx);
+                };
+            });
+        },
+        verify() { return userAnswer === brokenIdx; }
+    };
+}
+
 // ─── Game Selector ────────────────────────────────────────────────────────────
 export function getRandomGame() {
     const games = [
@@ -990,6 +1596,19 @@ export function getRandomGame() {
         shapeSymmetryGame,
         countByShapeGame,
         colorSwatchGame,
+        // Word & Puzzle games
+        wordUnscrambleGame,
+        wordCategoryGame,
+        missingLetterGame,
+        numberSequenceGame,
+        equationSolverGame,
+        rhymeFinderGame,
+        anagramCheckGame,
+        wordLengthGame,
+        // Image puzzle games
+        pixelPatternGame,
+        jigsawQuadrantGame,
+        brokenTileGame,
     ];
     return rnd(games)();
 }

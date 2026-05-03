@@ -453,6 +453,43 @@
             margin-top: 1.4rem;
             align-items: center;
         }
+        /* Progress dots */
+        .cg-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0.3rem 0 0.8rem;
+        }
+        .cg-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border: 1.5px solid rgba(255,255,255,0.2);
+            transition: all 0.35s ease;
+        }
+        .cg-dot.done {
+            background: linear-gradient(135deg,#6366f1,#10b981);
+            border-color: #6366f1;
+            box-shadow: 0 0 8px #6366f188;
+            transform: scale(1.15);
+        }
+        .cg-dot.active {
+            background: rgba(99,102,241,0.25);
+            border-color: #818cf8;
+            animation: cgPulse 1s infinite;
+        }
+        @keyframes cgPulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
+            50%      { box-shadow: 0 0 0 5px rgba(99,102,241,0); }
+        }
+        .cg-step-label {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 0.5px;
+            text-align: center;
+            margin-bottom: 0.3rem;
+        }
         #cg-verify-btn {
             flex: 1;
             padding: 0.75rem 1.2rem;
@@ -715,6 +752,8 @@
                 <button class="cg-close-btn" id="cg-close"><i class="fas fa-times"></i></button>
             </div>
             <div id="cg-game-label" class="cg-game-label">Loading challenge...</div>
+            <div id="cg-step-label" class="cg-step-label">Challenge 1 of 2</div>
+            <div id="cg-progress" class="cg-progress"></div>
             <div id="cg-game-area"></div>
             <div id="cg-msg"></div>
             <div class="cg-footer">
@@ -743,10 +782,25 @@
         const toast      = document.getElementById('cg-toast');
         const dlBtn      = document.getElementById('download-btn');
 
-        let currentGame  = null;
-        let fileUrl      = null;
-        let fileTitle    = null;
-        let isLoggedIn   = false;
+        let currentGame    = null;
+        let fileUrl        = null;
+        let fileTitle      = null;
+        let isLoggedIn     = false;
+        let solveCount     = 0;
+        let requiredSolves = 2;
+
+        const progressEl  = document.getElementById('cg-progress');
+        const stepLabelEl = document.getElementById('cg-step-label');
+
+        function renderProgress() {
+            progressEl.innerHTML = Array.from({ length: requiredSolves }, (_, i) => {
+                const cls = i < solveCount ? 'done' : i === solveCount ? 'active' : '';
+                return `<div class="cg-dot ${cls}"></div>`;
+            }).join('');
+            stepLabelEl.textContent = solveCount < requiredSolves
+                ? `Challenge ${solveCount + 1} of ${requiredSolves}`
+                : `All ${requiredSolves} done!`;
+        }
 
         // ── Toast helper
         function showToast(msg, color = 'white') {
@@ -768,7 +822,10 @@
 
         // ── Open modal
         function openCaptcha() {
+            solveCount     = 0;
+            requiredSolves = Math.random() < 0.5 ? 2 : 3;
             backdrop.classList.add('open');
+            renderProgress();
             loadGame();
         }
 
@@ -819,18 +876,30 @@
             if (!currentGame) return;
             const passed = currentGame.verify();
             if (passed) {
-                msgEl.textContent = 'Correct! Starting download...';
-                msgEl.className = 'success';
-                verifyBtn.disabled = true;
-                setTimeout(() => {
-                    closeCaptcha();
-                    triggerDownload();
-                    showToast('Download started', 'white');
-                    verifyBtn.disabled = false;
-                }, 800);
+                solveCount++;
+                renderProgress();
+                if (solveCount >= requiredSolves) {
+                    msgEl.textContent = `✔ All ${requiredSolves} verified! Downloading...`;
+                    msgEl.className = 'success';
+                    verifyBtn.disabled = true;
+                    setTimeout(() => {
+                        closeCaptcha();
+                        triggerDownload();
+                        showToast('Download started', 'white');
+                        verifyBtn.disabled = false;
+                    }, 900);
+                } else {
+                    msgEl.textContent = `✔ Correct! ${requiredSolves - solveCount} more to go...`;
+                    msgEl.className = 'success';
+                    setTimeout(() => {
+                        msgEl.textContent = '';
+                        msgEl.className = '';
+                        loadGame();
+                    }, 900);
+                }
             } else {
                 shakeModal();
-                msgEl.textContent = 'Wrong answer — try a new challenge.';
+                msgEl.textContent = 'Wrong — try again.';
                 msgEl.className = 'error';
                 setTimeout(loadGame, 1200);
             }
