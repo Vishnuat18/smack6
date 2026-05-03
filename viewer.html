@@ -355,6 +355,303 @@
                 display: none; /* Hide fullscreen on very small screens */
             }
         }
+
+        /* ── Captcha Modal ─────────────────────────────────────── */
+        #captcha-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 9000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        #captcha-backdrop.open { display: flex; }
+
+        #captcha-modal {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+            border-radius: 20px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.15);
+            width: 100%;
+            max-width: 460px;
+            padding: 1.8rem;
+            animation: cgSlideIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            position: relative;
+            overflow: hidden;
+        }
+        #captcha-modal.shake {
+            animation: cgShake 0.5s ease;
+        }
+        @keyframes cgSlideIn {
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes cgShake {
+            0%,100% { transform: translateX(0); }
+            15%     { transform: translateX(-10px); }
+            30%     { transform: translateX(10px); }
+            45%     { transform: translateX(-8px); }
+            60%     { transform: translateX(8px); }
+            75%     { transform: translateX(-4px); }
+            90%     { transform: translateX(4px); }
+        }
+        .cg-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+        }
+        .cg-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .cg-beta-badge {
+            font-size: 0.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 2px 7px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .cg-close-btn {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .cg-close-btn:hover { background: rgba(239,68,68,0.2); color: #ef4444; }
+
+        .cg-game-label {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.55);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-style: italic;
+        }
+        #cg-game-area {
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 0;
+        }
+        .cg-footer {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.4rem;
+            align-items: center;
+        }
+        #cg-verify-btn {
+            flex: 1;
+            padding: 0.75rem 1.2rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        #cg-verify-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.4); }
+        #cg-verify-btn:active { transform: translateY(0); }
+        #cg-skip-btn {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #cg-skip-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+        #cg-msg {
+            font-size: 0.8rem;
+            text-align: center;
+            min-height: 1.2rem;
+            font-weight: 600;
+        }
+        #cg-msg.success { color: #10b981; }
+        #cg-msg.error   { color: #ef4444; }
+
+        /* ── Game Specific Styles ──────────────────────────────── */
+        .cg-eq-pair {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            font-size: 3rem;
+        }
+        .cg-eq-vs {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.4);
+            font-weight: 700;
+        }
+        .cg-btn-row {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .cg-choice-btn {
+            padding: 0.65rem 1.4rem;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.07);
+            border: 1.5px solid rgba(255,255,255,0.12);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cg-choice-btn:hover  { background: rgba(99,102,241,0.2); border-color: var(--primary); }
+        .cg-choice-btn.selected { background: rgba(99,102,241,0.35); border-color: #818cf8; color: #c7d2fe; }
+
+        .cg-color-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            width: 100%;
+        }
+        .cg-color-btn {
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            font-size: 1.4rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+        .cg-color-btn:hover  { background: rgba(255,255,255,0.1); transform: scale(1.03); }
+        .cg-color-btn.selected { border-color: #818cf8; background: rgba(99,102,241,0.2); }
+
+        .cg-num-pair {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .cg-num-btn {
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.07);
+            border: 1.5px solid rgba(255,255,255,0.12);
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 90px;
+        }
+        .cg-num-btn:hover  { background: rgba(99,102,241,0.25); border-color: var(--primary); }
+        .cg-num-btn.selected { background: rgba(99,102,241,0.4); border-color: #818cf8; }
+
+        .cg-mem-status {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #a5b4fc;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .cg-mem-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        .cg-mem-cell {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .cg-mem-cell.lit     { background: #6366f1; border-color: #818cf8; box-shadow: 0 0 14px rgba(99,102,241,0.6); }
+        .cg-mem-cell.selected { background: rgba(99,102,241,0.4); border-color: #818cf8; }
+        .cg-mem-cell:hover   { border-color: rgba(99,102,241,0.5); }
+
+        .cg-odd-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .cg-odd-cell {
+            padding: 0.6rem;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.06);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 62px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cg-odd-cell:hover   { background: rgba(255,255,255,0.12); transform: scale(1.05); }
+        .cg-odd-cell.selected { background: rgba(99,102,241,0.3); border-color: #818cf8; }
+
+        /* download button style */
+        #download-btn {
+            position: relative;
+        }
+        #download-btn .beta-dot {
+            position: absolute;
+            top: -3px; right: -3px;
+            width: 8px; height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            border: 1.5px solid #0f172a;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
+            50%      { box-shadow: 0 0 0 5px rgba(16,185,129,0); }
+        }
+        /* toast */
+        #cg-toast {
+            position: fixed;
+            bottom: 5.5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(15,23,42,0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 0.65rem 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            z-index: 9100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            white-space: nowrap;
+        }
+        #cg-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -370,9 +667,10 @@
             <div id="page-indicator" class="glass" style="padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
                 <span id="page-num">1</span> / <span id="page-count">-</span>
             </div>
-            <a id="download-link" href="#" download class="eye-btn" title="Download">
+            <button id="download-btn" class="eye-btn" title="Download (Admin)" style="position:relative;">
                 <i class="fas fa-download"></i>
-            </a>
+                <span class="beta-dot"></span>
+            </button>
             <div id="full-screen-toggle" class="eye-btn" title="Full Screen">
                 <i class="fas fa-expand"></i>
             </div>
@@ -405,7 +703,146 @@
         </div>
     </div>
 
+    <!-- ── Captcha Modal ─────────────────────────────────────── -->
+    <div id="captcha-backdrop">
+        <div id="captcha-modal">
+            <div class="cg-header">
+                <div class="cg-title-row">
+                    <i class="fas fa-shield-alt" style="color:#6366f1;"></i>
+                    <span style="font-family:'Outfit';font-weight:700;font-size:1rem;">Verify to Download</span>
+                    <span class="cg-beta-badge">β Beta</span>
+                </div>
+                <button class="cg-close-btn" id="cg-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="cg-game-label" class="cg-game-label">Loading challenge...</div>
+            <div id="cg-game-area"></div>
+            <div id="cg-msg"></div>
+            <div class="cg-footer">
+                <button id="cg-skip-btn"><i class="fas fa-refresh"></i> New Challenge</button>
+                <button id="cg-verify-btn"><i class="fas fa-check-circle"></i> Verify &amp; Download</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="cg-toast"></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script type="module">
+        import { auth, fs, doc, getDoc } from "./firebase-config.js";
+        import { getRandomGame } from "./captcha_games.js";
+
+        const backdrop   = document.getElementById('captcha-backdrop');
+        const modal      = document.getElementById('captcha-modal');
+        const gameArea   = document.getElementById('cg-game-area');
+        const gameLabel  = document.getElementById('cg-game-label');
+        const verifyBtn  = document.getElementById('cg-verify-btn');
+        const skipBtn    = document.getElementById('cg-skip-btn');
+        const closeBtn   = document.getElementById('cg-close');
+        const msgEl      = document.getElementById('cg-msg');
+        const toast      = document.getElementById('cg-toast');
+        const dlBtn      = document.getElementById('download-btn');
+
+        let currentGame  = null;
+        let fileUrl      = null;
+        let fileTitle    = null;
+        let isLoggedIn   = false;
+
+        // ── Toast helper
+        function showToast(msg, color = 'white') {
+            toast.textContent = msg;
+            toast.style.borderColor = color === 'white' ? 'rgba(255,255,255,0.1)' : color;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ── Load a fresh game
+        function loadGame() {
+            currentGame = getRandomGame();
+            gameLabel.textContent = currentGame.title;
+            gameArea.innerHTML = '';
+            msgEl.textContent = '';
+            msgEl.className = '';
+            currentGame.render(gameArea);
+        }
+
+        // ── Open modal
+        function openCaptcha() {
+            backdrop.classList.add('open');
+            loadGame();
+        }
+
+        // ── Close modal
+        function closeCaptcha() {
+            backdrop.classList.remove('open');
+            msgEl.textContent = '';
+        }
+
+        // ── Shake on fail
+        function shakeModal() {
+            modal.classList.remove('shake');
+            void modal.offsetWidth;
+            modal.classList.add('shake');
+            modal.addEventListener('animationend', () => modal.classList.remove('shake'), { once: true });
+        }
+
+        // ── Trigger actual download
+        function triggerDownload() {
+            const a = document.createElement('a');
+            a.href = fileUrl;
+            a.download = fileTitle || 'smack_material.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // ── Auth state — track login
+        auth.onAuthStateChanged((user) => {
+            isLoggedIn = !!user;
+        });
+
+        // ── Download button click (all logged-in users)
+        dlBtn.onclick = () => {
+            if (!fileUrl || fileUrl === '#') {
+                showToast('⚠️ No file available to download.');
+                return;
+            }
+            if (!isLoggedIn) {
+                showToast('🔒 Please log in to download.');
+                return;
+            }
+            openCaptcha();
+        };
+
+        // ── Verify
+        verifyBtn.onclick = () => {
+            if (!currentGame) return;
+            const passed = currentGame.verify();
+            if (passed) {
+                msgEl.textContent = 'Correct! Starting download...';
+                msgEl.className = 'success';
+                verifyBtn.disabled = true;
+                setTimeout(() => {
+                    closeCaptcha();
+                    triggerDownload();
+                    showToast('Download started', 'white');
+                    verifyBtn.disabled = false;
+                }, 800);
+            } else {
+                shakeModal();
+                msgEl.textContent = 'Wrong answer — try a new challenge.';
+                msgEl.className = 'error';
+                setTimeout(loadGame, 1200);
+            }
+        };
+
+        skipBtn.onclick = loadGame;
+        closeBtn.onclick = closeCaptcha;
+        backdrop.onclick = (e) => { if (e.target === backdrop) closeCaptcha(); };
+
+        // ── Expose fileUrl setter for the main script below
+        window.__setCaptchaFile = (url, title) => { fileUrl = url; fileTitle = title; };
+    </script>
     <script>
         const { pdfjsLib } = globalThis;
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
@@ -561,8 +998,10 @@
 
             if (file) {
                 const url = decodeURIComponent(file);
-                viewerTitle.textContent = title ? decodeURIComponent(title) : 'Material';
-                downloadLink.href = url;
+                const decodedTitle = title ? decodeURIComponent(title) : 'Material';
+                viewerTitle.textContent = decodedTitle;
+                // Pass file info to the captcha module
+                if (window.__setCaptchaFile) window.__setCaptchaFile(url, decodedTitle);
                 if (subject) backLink.href = `subject_details.html?subject=${subject}`;
 
                 const loadingStatus = document.getElementById('loading-status');

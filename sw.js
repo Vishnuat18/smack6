@@ -9,6 +9,7 @@ const urlsToCache = [
   './style.css',
   './script.js',
   './materials.js',
+  './captcha_games.js',
   './firebase-config.js',
   './logo.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
