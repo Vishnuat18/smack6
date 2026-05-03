@@ -251,7 +251,10 @@ export const subjectMaterials = {
             { name: 'Unit 5: Case Studies', file: 'esia/notes/esia_u5.pdf', isUpdated: true },
             { name: '2-Mark Question Bank', file: 'esia/2m/esia_2m.pdf' }
         ],
-        previousYearQuestions: [],
+        previousYearQuestions: [
+            { year: 'Apr/May 2024', file: 'esia/qn/Apr May 2024.pdf' },
+            { year: 'Nov/Dec 2021', file: 'esia/qn/EIA qn 2021.pdf' }
+        ],
         importantQuestions: [
             { 
                 unit: '1', 
