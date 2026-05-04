@@ -762,9 +762,7 @@
                     return;
                 }
 
-                loadingStatus.textContent = "Fetching S6 Material...";
 
-                pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
                     const elapsed = Date.now() - startTime;
                     const remaining = Math.max(0, minLoadingTime - elapsed);
 
