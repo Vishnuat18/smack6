@@ -1,4 +1,4 @@
-const CACHE_NAME = 's6-notes-cache-v1';
+
 const urlsToCache = [
   './',
   './index.html',
