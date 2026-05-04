@@ -249,7 +249,8 @@ export const subjectMaterials = {
             { name: 'Unit 3: Environmental Management Plan', file: 'esia/notes/esia_u3.pdf' },
             { name: 'Unit 4: Socio Economic Assessment', file: 'esia/notes/esia_u4.pdf' },
             { name: 'Unit 5: Case Studies', file: 'esia/notes/esia_u5.pdf' },
-            { name: '2-Mark Question Bank', file: 'esia/2m/esia_2m.pdf' }
+            { name: '2-Mark Question Bank', file: 'esia/2m/esia_2m.pdf' },
+            { name: 'Combined Question Bank', file: 'esia/qn/ESIA_merged.pdf' }
         ],
         previousYearQuestions: [
             { year: 'Apr/May 2024', file: 'esia/qn/Apr May 2024.pdf' },

@@ -780,21 +780,7 @@
                         renderPage(pageNum);
                         renderThumbnails();
                     }, remaining);
-                }).catch(err => {
-                    console.error('Error loading PDF:', err);
-                    const elapsed = Date.now() - startTime;
-                    const remaining = Math.max(0, minLoadingTime - elapsed);
 
-                    setTimeout(() => {
-                        loadingOverlay.innerHTML = `
-                            <div style="text-align: center; color: #ef4444;">
-                                <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                                <p style="font-weight: 600;">Error loading S6 Material.</p>
-                                <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-muted);">Please check your connection or try again later.</p>
-                            </div>
-                        `;
-                    }, remaining);
-                });
             }
 
             pageSlider.oninput = function() {
