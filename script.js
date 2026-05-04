@@ -86,7 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error("Error managing user profile:", error);
             }
         } else {
-            if (page !== "index.html" && page !== "") {
+            const guestPages = ["index.html", "", "arcade.html", "smackKIQ.html", "reflex_game.html"];
+            if (!guestPages.includes(page)) {
                 window.location.href = "index.html";
             }
         }

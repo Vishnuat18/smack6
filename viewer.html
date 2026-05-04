@@ -761,8 +761,9 @@
                     }, minLoadingTime);
                     return;
                 }
+                loadingStatus.textContent = "Fetching S6 Material...";
 
-
+                pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
                     const elapsed = Date.now() - startTime;
                     const remaining = Math.max(0, minLoadingTime - elapsed);
 
@@ -778,6 +779,10 @@
                         renderPage(pageNum);
                         renderThumbnails();
                     }, remaining);
+                }).catch(err => {
+                    console.error("PDF Load error:", err);
+                    loadingStatus.textContent = "Error loading PDF. Please try again.";
+                });
 
             }
 
