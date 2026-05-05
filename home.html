@@ -204,9 +204,27 @@
                              
                              // Time-based greeting
                              const hour = new Date().getHours();
-                             let greeting = "Good Evening";
-                             if (hour >= 5 && hour < 12) greeting = "Good Morning";
-                             else if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
+                             let greeting = "";
+                             
+                             if (hour >= 6 && hour < 8) {
+                                 greeting = "Good morning";
+                             } else if (hour === 12) {
+                                 greeting = "Good afternoon";
+                             } else if (hour === 17) {
+                                 greeting = "Good evening";
+                             } else {
+                                 const randomGreetings = [
+                                     "Good to see you",
+                                     "Welcome back",
+                                     "Hey there",
+                                     "Yo",
+                                     "What’s up",
+                                     "Let’s continue learning",
+                                     "Time to focus",
+                                     "Ready to study"
+                                 ];
+                                 greeting = randomGreetings[Math.floor(Math.random() * randomGreetings.length)];
+                             }
 
                              const greetingElement = document.getElementById('user-greeting');
                              if (greetingElement) {
