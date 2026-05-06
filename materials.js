@@ -9,6 +9,7 @@ export const subjectMaterials = {
         shortName: 'OOSE',
         courseCode: 'CCS356',
         icon: 'fas fa-code-branch',
+        bgImage: 'oose/oose_bg.png',
         syllabus: [
             {
                 unit: 'UNIT I',
@@ -108,6 +109,7 @@ export const subjectMaterials = {
         shortName: 'VCE',
         courseCode: 'CCS371',
         icon: 'fas fa-video',
+        bgImage: 'vce/vce_bg.png',
         syllabus: [
             {
                 unit: 'UNIT I',
@@ -216,6 +218,7 @@ export const subjectMaterials = {
         shortName: 'ESIA',
         courseCode: 'OCE351',
         icon: 'fas fa-leaf',
+        bgImage: 'esia/esia_bg.png',
         syllabus: [
             {
                 unit: 'UNIT I',
@@ -320,6 +323,7 @@ export const subjectMaterials = {
         shortName: 'PPL',
         courseCode: 'CCS358',
         icon: 'fas fa-terminal',
+        bgImage: 'ppl/ppl_bg.png',
         materials: [
             { name: 'Principles of PL Full', file: 'ppl/PPL.pdf' },
             { name: 'Unit 1 Overview', file: 'ppl/ppl_unit 1.pdf' },
@@ -337,6 +341,7 @@ export const subjectMaterials = {
         shortName: 'BA',
         courseCode: 'CCW331',
         icon: 'fas fa-chart-line',
+        bgImage: 'ba/ba_bg.png',
         materials: [
             { name: 'Unit 1 & 2 Notes', file: 'ba/Ba_notes.pdf' },
             { name: 'Full Lecture Notes', file: 'ba/CCW331-Business-Analytics-Lecture-Notes-2.pdf' },
@@ -352,6 +357,7 @@ export const subjectMaterials = {
         shortName: 'EH',
         courseCode: 'CCS344',
         icon: 'fas fa-user-secret',
+        bgImage: 'eh/eh_bg.png',
         syllabus: [
             {
                 unit: 'UNIT I',

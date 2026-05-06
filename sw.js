@@ -1,4 +1,4 @@
-
+const CACHE_NAME = 'smack-v2';
 const urlsToCache = [
   './',
   './index.html',
@@ -6,57 +6,73 @@ const urlsToCache = [
   './resources.html',
   './subject_details.html',
   './viewer.html',
-  './arcade.html',
-  './smackKIQ.html',
-  './reflex_game.html',
   './style.css',
   './script.js',
   './materials.js',
-  './captcha_games.js',
-  './reflex_engine.js',
-  './smackkiq.js',
-  './firebase-config.js',
   './logo.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js'
+  'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap'
 ];
 
 // Install Event: Cache essential files
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
+        console.log('Service Worker: Caching critical assets');
         return cache.addAll(urlsToCache);
       })
   );
 });
 
-// Fetch Event: Stale-While-Revalidate Strategy for fast loading & offline support
-self.addEventListener('fetch', event => {
-  // Only cache GET requests
-  if (event.request.method !== 'GET') return;
-  
-  // Don't cache Firestore/Auth API calls
-  if (event.request.url.includes('firestore.googleapis.com') || event.request.url.includes('identitytoolkit.googleapis.com')) {
-      return;
-  }
-
-
-});
-
 // Activate Event: Clean up old caches
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Service Worker: Clearing Old Cache', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    })
+  );
+  return self.clients.claim();
+});
+
+// Fetch Event: Stale-While-Revalidate Strategy
+// This allows the app to load instantly from cache while updating it in the background
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  
+  const url = event.request.url;
+
+  // Don't cache Firestore/Auth/Firebase Internal API calls
+  if (url.includes('firestore.googleapis.com') || 
+      url.includes('identitytoolkit.googleapis.com') ||
+      url.includes('firebasestorage.googleapis.com')) {
+      return;
+  }
+
+  event.respondWith(
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.match(event.request).then(response => {
+        const fetchPromise = fetch(event.request).then(networkResponse => {
+          // If network request is successful, update the cache
+          if (networkResponse && networkResponse.status === 200) {
+            cache.put(event.request, networkResponse.clone());
+          }
+          return networkResponse;
+        }).catch(() => {
+            // If network fails, we already have the 'response' from cache if it existed
+        });
+
+        // Return the cached response if available, else wait for the network
+        return response || fetchPromise;
+      });
     })
   );
 });

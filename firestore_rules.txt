@@ -2,46 +2,53 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Helper function to check if the user is an admin
+    // Helper: Check if user is logged in
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper: Check if user is an admin (by role or hardcoded email)
     function isAdmin() {
-      return request.auth != null && 
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return isAuthenticated() && 
+             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+              request.auth.token.email == 'vishnurajan24766@gmail.com');
     }
 
-    // Rules for the 'users' collection
-    match /users/{userId} {
-      // Users can always read and write their own data
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-      
-      // Admins can manage all users
-      allow read, write: if isAdmin();
-    }
-
-    // Rules for study materials
-    match /materials/{document=**} {
-      allow read: if request.auth != null;
+    // 1. Subjects Collection (The missing link!)
+    match /subjects/{subjectId} {
+      allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
 
-    // Rules for feedback collection
-    match /feedback/{feedbackId} {
-      // Any authenticated user can send feedback
-      allow create: if request.auth != null;
-      
-      // Only admins can read or manage feedback
-      allow read, update, delete: if isAdmin();
+    // 2. Users Collection
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
     }
 
-    // Rules for exam reviews collection
+    // 3. Feedback Collection
+    match /feedback/{feedbackId} {
+      allow create: if isAuthenticated();
+      allow read, delete: if isAdmin();
+    }
+
+    // 4. Exam Reviews Collection
     match /exam_reviews/{reviewId} {
-      allow create: if request.auth != null;
-      allow read: if request.auth != null && (resource == null || request.auth.uid == resource.data.userId || isAdmin());
+      allow create: if isAuthenticated();
+      // Allow user to read their own reviews or admin to read all
+      allow read: if isAuthenticated() && (reviewId.startsWith(request.auth.uid) || isAdmin());
       allow update, delete: if isAdmin();
     }
 
-    // Default deny
+    // 5. Materials Collection (Legacy support)
+    match /materials/{document=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Default: Only admins can touch other stuff
     match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if isAdmin();
     }
   }
 }

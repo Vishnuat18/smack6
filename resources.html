@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resources - Sem 6 Notes</title>
     <link rel="manifest" href="manifest.json">
+    
+    <!-- Resource Hints for Ultra-Fast Loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    
     <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="logo.png" as="image">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
 </head>
@@ -46,35 +54,38 @@
 
         <div class="subject-grid" id="resources-grid">
             <!-- Previous Year QPs Card -->
-            <div class="subject-card glass" id="prev-year-card" style="cursor: pointer; transition: transform 0.2s;">
-                <div class="badge" style="background: rgba(236, 72, 153, 0.2); color: var(--secondary);">ACTIVE</div>
-                <i class="fas fa-file-invoice" style="color: var(--secondary);"></i>
+            <div class="subject-card glass" id="prev-year-card" style="cursor: pointer;">
+                <div class="badge-premium" style="color: var(--secondary); border-color: rgba(244, 63, 94, 0.3);">Active</div>
+                <i class="fas fa-file-invoice"></i>
                 <h3>Previous Year QPs</h3>
                 <p>Access university question papers from previous years for all subjects.</p>
-                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--secondary);">
-                    <i class="fas fa-bolt"></i> Click to view all
+                <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem;">
+                    <span style="color: var(--text-muted);">Question Bank</span>
+                    <span style="color: var(--secondary); font-weight: 700;">View all <i class="fas fa-arrow-right" style="font-size: 0.7rem; margin-left: 4px;"></i></span>
                 </div>
             </div>
 
             <!-- Important Qns Card -->
-            <div class="subject-card glass" id="important-card" style="cursor: pointer; transition: transform 0.2s;">
-                <div class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent);">ACTIVE</div>
-                <i class="fas fa-question-circle" style="color: var(--accent);"></i>
+            <div class="subject-card glass" id="important-card" style="cursor: pointer;">
+                <div class="badge-premium" style="color: var(--accent); border-color: rgba(16, 185, 129, 0.3);">Active</div>
+                <i class="fas fa-question-circle"></i>
                 <h3>Important Qns</h3>
                 <p>Hand-picked questions based on frequency and university importance.</p>
-                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--accent);">
-                    <i class="fas fa-bolt"></i> Click to view all
+                <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem;">
+                    <span style="color: var(--text-muted);">Exam Focus</span>
+                    <span style="color: var(--accent); font-weight: 700;">View all <i class="fas fa-arrow-right" style="font-size: 0.7rem; margin-left: 4px;"></i></span>
                 </div>
             </div>
 
             <!-- 2-Mark Notes Card -->
-            <div class="subject-card glass" id="2marks-card" style="cursor: pointer; transition: transform 0.2s;">
-                <div class="badge" style="background: rgba(99, 102, 241, 0.2); color: var(--primary-light);">ACTIVE</div>
+            <div class="subject-card glass" id="2marks-card" style="cursor: pointer;">
+                <div class="badge-premium" style="color: var(--primary-light); border-color: rgba(129, 140, 248, 0.3);">Active</div>
                 <i class="fas fa-marker"></i>
                 <h3>2-Mark Notes</h3>
                 <p>Concise notes specifically targeted for Part-A (2 marks) questions.</p>
-                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--primary-light);">
-                    <i class="fas fa-bolt"></i> Click to view all
+                <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem;">
+                    <span style="color: var(--text-muted);">Quick Revision</span>
+                    <span style="color: var(--primary-light); font-weight: 700;">View all <i class="fas fa-arrow-right" style="font-size: 0.7rem; margin-left: 4px;"></i></span>
                 </div>
             </div>
         </div>
@@ -95,9 +106,18 @@
 
     <!-- Mobile Nav Foot -->
     <div class="mobile-nav">
-        <a href="home.html"><i class="fas fa-home"></i></a>
-        <a href="resources.html" class="active"><i class="fas fa-book-open"></i></a>
-        <a href="profile.html"><i class="fas fa-user"></i></a>
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="resources.html" class="nav-item active">
+            <i class="fas fa-book-open"></i>
+            <span>Materials</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </a>
     </div>
 
     <script type="module" src="script.js"></script>

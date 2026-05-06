@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subject Materials - Sem 6 Notes</title>
     <link rel="manifest" href="manifest.json">
+    
+    <!-- Resource Hints for Ultra-Fast Loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    
     <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="logo.png" as="image">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
 </head>
@@ -113,10 +121,18 @@
 
     <!-- Mobile Nav -->
     <div class="mobile-nav">
-        <a href="home.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-home"></i></a>
-        <a href="resources.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-book-open"></i></a>
-        <a href="profile.html" class="back-btn" style="background: transparent; border: none;"><i class="fas fa-user"></i></a>
-        <a href="admin.html" id="mobile-admin-btn" class="back-btn" style="background: transparent; border: none; display: none;"><i class="fas fa-cog"></i></a>
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="resources.html" class="nav-item">
+            <i class="fas fa-book-open"></i>
+            <span>Materials</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </a>
     </div>
 
     <script type="module">
