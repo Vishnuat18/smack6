@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         refreshCaptcha.addEventListener('click', generateCaptcha);
     }
 
-    // 3. Auth Persistence Check
+    // 3. Auth Persistence & Global Profile Sync
     onAuthStateChanged(auth, async (user) => {
         const path = window.location.pathname;
         const page = path.split("/").pop();
@@ -56,13 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (user) {
             console.log("User logged in:", user.email);
             
-            // Check if user has a profile, if not create one (Joined Date logic)
             try {
                 const userRef = doc(fs, "users", user.uid);
                 const userDoc = await getDoc(userRef);
                 
                 if (!userDoc.exists()) {
-                    // First time login or missing profile
                     await setDoc(userRef, {
                         name: user.displayName || user.email.split('@')[0],
                         email: user.email,
@@ -72,15 +70,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
                 
-                if (page === "index.html" || page === "") {
-                    window.location.href = "home.html";
+                // Global UI Sync (Header, Avatar, Admin Links)
+                const userData = (await getDoc(userRef)).data();
+                if (userData) {
+                    const firstName = userData.name.split(' ')[0];
+                    const char = firstName.charAt(0).toUpperCase();
+                    
+                    // Sync elements by ID across all pages
+                    const elements = {
+                        'nav-avatar-header': char,
+                        'nav-avatar': char,
+                        'nav-user-name': firstName,
+                        'header-user-name': firstName,
+                        'display-name': userData.name
+                    };
+
+                    Object.entries(elements).forEach(([id, val]) => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            el.textContent = val;
+                            el.classList.add('profile-sync-fade'); // Smooth appearance
+                        }
+                    });
+
+                    // Admin Access Sync
+                    const adminLinks = document.querySelectorAll('a[href="admin.html"]');
+                    if (userData.role === 'admin') {
+                        adminLinks.forEach(link => link.style.display = 'flex');
+                    } else {
+                        adminLinks.forEach(link => link.style.display = 'none');
+                    }
                 }
 
-                // Show username using Firestore
-                const userNameDisplay = document.getElementById('user-name');
-                if (userNameDisplay) {
-                    const data = userDoc.exists() ? userDoc.data() : { name: user.email.split('@')[0] };
-                    userNameDisplay.textContent = data.name || user.email.split('@')[0];
+                if (page === "index.html" || page === "") {
+                    window.location.href = "home.html";
                 }
             } catch (error) {
                 console.error("Error managing user profile:", error);
@@ -190,15 +213,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 9. Register Service Worker for PWA
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(registration => {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                }, err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
+    // 10. Smooth Page Transitions
+    const transitionOverlay = document.createElement('div');
+    transitionOverlay.className = 'page-transition-overlay';
+    document.body.appendChild(transitionOverlay);
+
+    window.addEventListener('pageshow', () => {
+        transitionOverlay.classList.remove('active');
+    });
+
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href && !href.startsWith('#') && !link.target && !e.ctrlKey && !e.shiftKey && !e.metaKey && !link.classList.contains('no-transition')) {
+                const targetPage = href.split('/').pop();
+                const currentPage = window.location.pathname.split('/').pop();
+                if (targetPage === currentPage || (targetPage === "" && currentPage === "home.html")) return;
+                
+                e.preventDefault();
+                transitionOverlay.classList.add('active');
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 350);
+            }
         });
-    }
+    });
 });
